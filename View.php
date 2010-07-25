@@ -2,6 +2,17 @@
 	namespace Frawst;
 	
 	class View {
+		/**#@+
+		 * Response MIME type
+		 * @var string
+		 */
+		const RESPONSE_JSON = 'application/json';
+		const RESPONSE_HTML = 'text/html';
+		const RESPONSE_TEXT = 'text/plain';
+		const RESPONSE_XML = 'text/xml';
+		
+		protected $responseType;
+		
 		protected $helpers;
 		protected $Request;
 		protected $layoutData = array();
@@ -9,16 +20,37 @@
 		
 		public function __construct($request) {
 			$this->Request = $request;
+			$this->responseType = self::RESPONSE_HTML;
+		}
+		
+		/**
+		 * Sets the response content-type, or simply returns it
+		 * @return string The response content-type
+		 */
+		public function responseType($mime = null) {
+			if(!is_null($mime)) {
+				$this->responseType = $mime;
+			}
+			return $this->responseType;
+		}
+		
+		/**
+		 * Convenience method for responding as JSON
+		 */
+		public function respondAsJson() {
+			$this->responseType = self::RESPONSE_JSON;
 		}
 		
 		public function render($file, $data = array()) {
 			if(($path = Loader::importPath('Frawst\\View\\'.$file)) !== null) {
 				$content = $this->renderFile($path, $data);
-				if(!$this->isAjax() && !is_null($layoutPath = Loader::importPath('Frawst\\View\\layout\\'.$this->layout))) {
-					return $this->renderFile($layoutPath, array('content' => $content) + $this->layoutData);
+				if(!$this->isAjax() && !is_null($this->layout) && !is_null($layoutPath = Loader::importPath('Frawst\\View\\layout\\'.$this->layout))) {
+					$render = $this->renderFile($layoutPath, array('content' => $content) + $this->layoutData);
 				} else {
-					return $content;
+					$render = $content;
 				}
+				header('Content-Type: '.$this->responseType);
+				return $render;
 			} else {
 				throw new Exception\Frawst('Invalid view: '.$file);
 			}

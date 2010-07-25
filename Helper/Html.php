@@ -11,11 +11,11 @@
 		);
 		
 		public function image($path, $attrs = array()) {
-			return $this->output(sprintf($this->tags['image'], \Frawst\PUB.'/images/'.$path, $this->parseAttributes($attrs)));
+			return sprintf($this->tags['image'], $this->View->path('public/images/'.$path), $this->parseAttributes($attrs));
 		}
 		
 		public function link($uri, $content, $attrs = array()) {
-			return $this->output(sprintf($this->tags['link'], $uri, $this->parseAttributes($attrs), $content));
+			return sprintf($this->tags['link'], $uri, $this->parseAttributes($attrs), $content);
 		}
 		
 		public function appLink($route, $content, $attrs = array()) {

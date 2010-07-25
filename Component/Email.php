@@ -1,4 +1,8 @@
 <?php
+	/**
+	 * Note: This file is out of date, and will no longer work as a component.
+	 * It should be moved to Libraries.
+	 */
 	namespace Frawst\Component;
 	use \Frawst\Component,
 		\Frawst\Library\Config;

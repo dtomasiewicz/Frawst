@@ -28,14 +28,18 @@
 			$this->data = $this->View->Request->data();
 			$this->errors = $errors;
 			
-			$attrs['method'] = isset($attrs['method']) ? $attrs['method'] : 'POST';
+			$attrs['method'] = isset($attrs['method']) ? strtoupper($attrs['method']) : 'POST';
 			$attrs['action'] = isset($attrs['action'])
 				? $attrs['action']
 				: $this->View->Request->path();
 			
 			$out = '<form '.$this->parseAttributes($attrs).'>';
+			// hack for browsers that don't support PUT or DELETE
+			if($attrs['method'] == 'PUT' || $attrs['method'] == 'DELETE') {
+				$out .= $this->hidden('___METHOD', $attrs['method']);
+			}
 			
-			return $this->output($out);
+			return $out;
 		}
 		
 		public function hidden($name, $value = null, $attrs = array()) {
@@ -58,7 +62,7 @@
 		}
 		
 		public function input($attrs = array()) {
-			return $this->output('<input '.$this->parseAttributes($attrs).'>');
+			return '<input '.$this->parseAttributes($attrs).'>';
 		}
 		
 		/**
@@ -72,7 +76,7 @@
 			if(!isset($attrs['cols']))
 				$attrs['cols'] = 40;
 			
-			return $this->output('<textarea '.$this->parseAttributes($attrs).'>'.Sanitize::html($value) .'</textarea>');
+			return '<textarea '.$this->parseAttributes($attrs).'>'.Sanitize::html($value) .'</textarea>';
 		}
 		
 		/**
@@ -116,7 +120,7 @@
 				}
 				$out .= ' value="'.Sanitize::html($value).'">'.Sanitize::html($text).'</option>';
 			}
-			return $this->output($out.'</select>');
+			return $out.'</select>';
 		}
 		
 		/**
@@ -141,7 +145,7 @@
 		}
 		
 		public function close() {
-			return $this->output('</form>');
+			return '</form>';
 		}
 		
 		public function errors($field, $attrs = array()) {

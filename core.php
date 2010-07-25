@@ -66,12 +66,34 @@
 		$mapper = new $c($ormConfig, $data, $cache);
 	}
 	
-	if($_SERVER['REQUEST_METHOD'] == 'POST') {
-		$method = 'POST';
+	$method = $_SERVER['REQUEST_METHOD'];
+	if($method == 'GET') {
+		$requestData = $_GET;
+	} elseif($method == 'POST') {
 		$requestData = $_POST;
 	} else {
-		$method = 'GET';
-		$requestData = $_GET;
+		$requestData = array();
+		parse_str(file_get_contents('php://input'), $requestData);
+	}
+	
+	/**
+	 * I HATE YOU MAGIC QUOTES
+	 */
+	if(function_exists('get_magic_quotes_gpc') && get_magic_quotes_gpc()) {
+	 	function stripslashes_deep($value) {
+			$value = (is_array($value)) ?
+				array_map('stripslashes_deep', $value) :
+				stripslashes($value);
+			return $value;
+		}
+		
+		$requestData = stripslashes_deep($requestData);
+		$_COOKIE = stripslashes_deep($_COOKIE);
+		// these two lines could be taken out... if they are, accessing
+		// form data with $_GET and $_POST will be inconsistent, but it's
+		// also unneccessary
+		$_GET = stripslashes_deep($_GET);
+		$_POST = stripslashes_deep($_POST);
 	}
 	
 	$route = isset($_SERVER['PATH_INFO'])
@@ -88,4 +110,3 @@
 	}
 	
 	echo Request::make($route, $method, $requestData, $headers, $data, $mapper, $cache);
-	//echo getRuntime() - SCRIPT_START;

@@ -18,7 +18,4 @@
 			}
 			return trim($str);
 		}
-		protected function output($str) {
-			return $str;
-		}
 	}
