@@ -4,10 +4,12 @@
 		\Frawst\Exception;
 	
 	class Matrix implements \ArrayAccess {
-		private $data;
+		private $data = array();
 		
 		public function __construct($data = array()) {
-			$this->data = $data;
+			foreach($data as $key => $value) {
+				$this->set($key, $value);
+			}
 		}
 		
 		/**
@@ -53,16 +55,16 @@
 		 * Required for ArrayAccess
 		 */
 		public function offsetGet($offset) {
-			return is_null($offset) ? $this->data : self::pathGet($this->_data, $offset);
+			return $this->get($offset);
 		}
 		public function offsetSet($offset, $value) {
-			self::pathSet($this->data, $offset, $value);
+			$this->set($offset, $value);
 		}
 		public function offsetExists($offset) {
-			return self::pathExists($this->data, $offset);
+			return $this->exists($offset);
 		}
 		public function offsetUnset($offset) {
-			self::pathUnset($this->data, $offset);
+			$this->remove($offset);
 		}
 		
 		/**
@@ -194,5 +196,21 @@
 			}
 			
 			unset($target[$segs[0]]);
+		}
+		
+		public function get($index = null) {
+			return self::pathGet($this->data, $index);
+		}
+		
+		public function set($index, $value) {
+			self::pathSet($this->data, $index, $value);
+		}
+		
+		public function exists($index) {
+			return self::pathExists($this->data, $index);
+		}
+		
+		public function remove($index) {
+			self::pathUnset($this->data, $index);
 		}
 	}

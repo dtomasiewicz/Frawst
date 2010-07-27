@@ -9,10 +9,9 @@
 		private $feedback;
 		
 		public function init() {
-			$this->feedback = $this['FEEDBACK'];
-			if(is_null($this->feedback)) {
-				$this->feedback = array();
-			}
+			$this->feedback = isset($this['FEEDBACK'])
+				? unserialize($this['FEEDBACK'])
+				: array();
 			
 			$this->start();
 		}
@@ -50,7 +49,7 @@
 		
 		public function addFeedback($message, $status = 0) {
 			$this->feedback[] = array('message' => $message, 'status' => $status);
-			$this['FEEDBACK'] = $this->feedback;
+			$this['FEEDBACK'] = serialize($this->feedback);
 		}
 		
 		public function getFeedback() {

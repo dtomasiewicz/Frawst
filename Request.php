@@ -79,6 +79,11 @@
 		protected $requestData;
 		
 		/**
+		 * A Form object, if formdata was submitted with the request
+		 */
+		protected $Form = null;
+		
+		/**
 		 * The data returned by executing the request action; usually an
 		 * associative array of view-bound data
 		 * @var mixed
@@ -303,12 +308,17 @@
 		 * @return mixed The value returned from the action
 		 */
 		public function execute($method = 'GET', $data = array()) {
-			// REST hack for browsers that don't support PUT and DELETE methods
-			if(isset($data['___METHOD']) && in_array($data['___METHOD'], array('GET', 'POST', 'PUT', 'DELETE'))) {
-				$method = $data['___METHOD'];
-				unset($data['___METHOD']);
-			} else {
-				$this->method = strtoupper($method);
+			$this->method = strtoupper($method);
+			
+			// check for submitted formdata and create a FORM object if found
+			if(isset($data['___FORMNAME'])) {
+				$formName = $data['___FORMNAME'];
+				unset($data['___FORMNAME']);
+				
+				$class = 'Frawst\\Form\\'.$formName;
+				if(class_exists($class) && $class::compatible($data)) {
+					$this->Form = new $class($data);
+				}
 			}
 			
 			$this->requestData = $data;
@@ -409,5 +419,18 @@
 			} else {
 				return $default;
 			}
+		}
+		
+		/**
+		 * @return Frawst\Form Submitted form data or null
+		 */
+		public function form($formName = null) {
+			$form = $this->Form;
+			                 
+			if(!is_null($form) && !is_null($formName) && $form->name() !== $formName) {
+				$form = null;
+			}
+			
+			return $form;
 		}
 	}

@@ -1,168 +1,242 @@
 <?php
 	namespace Frawst\Helper;
-	use \Frawst\Helper,
-		\Frawst\Library\Matrix,
-		\Frawst\Library\Sanitize;
+	use \Frawst\Library\Matrix,
+	    \Frawst\Library\Sanitize;
 	
-	/**
-	 * Frawst FormHelper Class
-	 *
-	 * Simplifies form creation and handles retrieving of errors.
-	 */
-	class Form extends Helper {
-		private $data;
-		private $errors;
+	class Form extends \Frawst\Helper {
+		protected $Form;
 		
-		private function value($field, $default = null) {
-			if(Matrix::pathExists($this->data, $field)) {
-				return Matrix::pathGet($this->data, $field);
-			} else {
-				return $default;
+		public function open($formName, $action = null, $method = 'POST', $attrs = array()) {
+			if(!($form = $this->View->Request->form($formName))) {
+				$class = 'Frawst\\Form\\'.$formName;
+				$form = new $class();
 			}
+			$this->Form = $form;
+			
+			$attrs['action'] = $action;
+			$attrs['method'] = $method;
+			
+			return '<form '.$this->parseAttributes($attrs).'>'.
+			       '<input type="hidden" name="___METHOD" value="'.$method.'">'.
+			       '<input type="hidden" name="___FORMNAME" value="'.$formName.'">';
 		}
 		
-		/**
-		 * Creates a form. data, method, attributes, action
-		 */
-		public function create($errors = array(), $attrs = array()) {
-			$this->data = $this->View->Request->data();
-			$this->errors = $errors;
-			
-			$attrs['method'] = isset($attrs['method']) ? strtoupper($attrs['method']) : 'POST';
-			$attrs['action'] = isset($attrs['action'])
-				? $attrs['action']
-				: $this->View->Request->path();
-			
-			$out = '<form '.$this->parseAttributes($attrs).'>';
-			// hack for browsers that don't support PUT or DELETE
-			if($attrs['method'] == 'PUT' || $attrs['method'] == 'DELETE') {
-				$out .= $this->hidden('___METHOD', $attrs['method']);
+		public function close() {
+			$this->Form = null;
+			return '</form>';
+		}
+		
+		public function errors($field) {
+			$errors = $this->Form->errors($field);
+			$out = '';
+			if(count($errors)) {
+				$out .= '<ul class="fieldErrors">';
+				foreach($errors as $message) {
+					$out .= '<li>'.$message.'</li>';
+				}
+				$out .= '</ul>';
 			}
-			
 			return $out;
 		}
 		
-		public function hidden($name, $value = null, $attrs = array()) {
-			$attrs['type'] = 'hidden';
-			$attrs['name'] = Matrix::dotToBracket($name);
-			$attrs['value'] = $this->value($name, $value);
-			
-			return $this->input($attrs);
+		/*
+		public function fieldValue($name) {
+			if(Matrix::pathExists($this->data, $name)) {
+				return Matrix::pathGet($this->data, $name);
+			} elseif(array_key_exists('default', $this->fields[$name])) {
+				return $this->fields[$name]['default'];
+			} else {
+				return null;
+			}
+		}
+		*
+		
+		/**
+		 * Renders the full form
+		 * @return string The rendered form
+		 *
+		public function render() {
+			$out = $this->renderOpen();
+			foreach($this->fields as $field => $config) {
+				$out .= $config['type'] == self::FIELD_HIDDEN
+					? $this->renderField($field)
+					: '<p>'.$this->renderField($field, true).'</p>';
+			}
+			return $out.$this->renderClose();
 		}
 		
 		/**
-		 * Text field.
-		 */
-		public function text($name, $value = null, $attrs = array()) {
-			$attrs['type'] = 'text';
-			$attrs['name'] = Matrix::dotToBracket($name);
-			$attrs['value'] = $this->value($name, $value);
+		 * Renders the specified field
+		 * @param string $name
+		 * @param bool $renderLabel If true, will use the configured label or
+		 *                          fallback to the field name.
+		 * @return string The rendered field (and label)
+		 *
+		public function renderField($name, $renderLabel = false) {
+			$method = 'render'.ucfirst($this->fields[$name]['type']);
+			$field = static::$method($name);
 			
-			return $this->input($attrs);
+			if($renderLabel) {
+				$label = isset($this->fields[$name]['label'])
+					? $this->fields[$name]['label']
+					: $name;
+				return static::label($label, $field);
+			} else {
+				return $field;
+			}
 		}
 		
-		public function input($attrs = array()) {
+		public static function open($action = null, $method = 'POST', $attrs = array()) {
+			$attrs['action'] = $action;
+			$attrs['method'] = $method;
+			
+			return '<form '.self::parseAttributes($attrs).'>';
+		}
+		protected function renderOpen() {
+			return static::open($this->action, $this->method, $this->attrs).
+			// REST hack to get PUT and DELETE methods working in all browsers
+			       static::hidden('___METHOD', $this->method).
+			       static::hidden('___FORMNAME', static::name());
+			       
+		}
+		
+		public static function close() {
+			return '</form>';
+		}
+		protected function renderClose() {
+			return static::close();
+		}
+		
+		/**
+		 * Label
+		 *
+		public static function label($label, $content) {
+			return '<label>'.$label.' '.$content.'</label>';
+		}*/
+		
+		public function input($name, $attrs = array()) {
+			$attrs['name'] = Matrix::dotToBracket($name);
+			$attrs['value'] = $this->Form[$name];
+			return '<input '.$this->parseAttributes($attrs).'>';
+		}
+		
+		/**
+		 * Hidden
+		 */
+		public function hidden($name, $attrs = array()) {
+			$attrs['type'] = 'hidden';
+			return $this->input($name, $attrs);
+		}
+		
+		/**
+		 * Text
+		 */
+		public function text($name, $attrs = array()) {
+			$attrs['type'] = 'text';
+			return $this->input($name, $attrs);
+		}
+		
+		/**
+		 * Password
+		 */
+		public function password($name, $attrs = array()) {
+			$attrs['type'] = 'password';
+			return $this->input($name, $attrs);
+		}
+		
+		/**
+		 * Checkbox
+		 */
+		public function checkbox($name, $attrs = array()) {
+			$attrs['name'] = Matrix::dotToBracket($name);
+			$attrs['type'] = 'checkbox';
+			$attrs['checked'] = $this->Form[$name] ? 'checked' : null;
+			$attrs['value'] = isset($attrs['value']) ? $attrs['value'] : 1;
+			return '<input '.$this->parseAttributes($attrs).'>';
+		}
+		
+		/**
+		 * Radio
+		 */
+		public function radio($name, $value, $attrs = array()) {
+			$attrs['name'] = Matrix::dotToBracket($name);
+			$attrs['type'] = 'radio';
+			$attrs['value'] = $value;
+			$attrs['checked'] = $value == $this->Form[$name]
+				? 'checked'
+				: null;
 			return '<input '.$this->parseAttributes($attrs).'>';
 		}
 		
 		/**
 		 * Textarea
 		 */
-		public function textarea($name, $value = null, $attrs = array()) {
+		public function textarea($name, $attrs = array()) {
 			$attrs['name'] = Matrix::dotToBracket($name);
-			$value = $this->value($name, $value);
-			if(!isset($attrs['rows']))
-				$attrs['rows'] = 5;
-			if(!isset($attrs['cols']))
-				$attrs['cols'] = 40;
-			
-			return '<textarea '.$this->parseAttributes($attrs).'>'.Sanitize::html($value) .'</textarea>';
+			return '<textarea '.$this->parseAttributes($attrs).'>'.Sanitize::html($this->Form[$name]).'</textarea>';
 		}
 		
 		/**
-		 * Password field. Note that password input is NOT cached.
+		 * Select
 		 */
-		public function password($name, $value = null, $attrs = array()) {
-			$attrs['type'] = 'password';
+		public function select($name, $options, $attrs = array()) {
 			$attrs['name'] = Matrix::dotToBracket($name);
-			$attrs['value'] = $value;
+			$out = '<select '.$this->parseAttributes($attrs).'>';
 			
-			return $this->input($attrs);
-		}
-		
-		/**
-		 * Select field.
-		 */
-		public function select($name, $options = array(), $selected = null, $multiple = false, $attrs = array()) {
-			if($options instanceof ModelSet) {
-				$options->indexByPrimaryKey();
-			}
-			if($selected instanceof Model || $selected instanceof ModelSet) {
-				$selected = $selected->primaryKey();
-			}
-			
-			$out = '';
-			$attrs['name'] = Matrix::dotToBracket($name);
-			$selected = $this->value($name, $selected);
-			if($multiple) {
-				// for multiple-selects, add a hidden 0 field so it still gets submitted
-				$attrs['name'] .= '[]';
-				$attrs['multiple'] = 'multiple';
-				$attrs['size'] = $multiple;
-				$out .= '<input type="hidden" value="0" name="'.Matrix::dotToBracket($name).'">';
-			}
-			
-			$out .= '<select '.$this->parseAttributes($attrs).'>';
-			foreach($options as $value => $text) {
-				$out .= '<option';
-				if($value == $selected || ($multiple && is_array($selected) && in_array($value, $selected))) {
+			$selected = $this->Form[$name];
+			foreach($options as $value => $content) {
+				$out .= '<option value="'.$value.'"';
+				if($selected == $value) {
 					$out .= ' selected="selected"';
 				}
-				$out .= ' value="'.Sanitize::html($value).'">'.Sanitize::html($text).'</option>';
+				$out .= '>'.Sanitize::html($content).'</option>';
 			}
 			return $out.'</select>';
 		}
 		
-		/**
-		 * Checkbox
-		 */
-		public function checkbox($name, $checked = null, $attrs = array()) {
-			$attrs['type'] = 'checkbox';
-			$attrs['checked'] = $this->value($name, $checked);
-			
-			return $this->input($attrs);
-		}
-		
-		/**
-		 * Submit button
-		 */
-		public function submit($value = null, $name = null, $attrs = array()) {
-			$attrs['value'] = $value;
-			$attrs['name'] = $name;
+		public function submit($value = null, $attrs = array()) {
 			$attrs['type'] = 'submit';
-			
-			return $this->input($attrs);
+			$attrs['value'] = $value;
+			return '<input '.$this->parseAttributes($attrs).'>';
 		}
 		
-		public function close() {
-			return '</form>';
+		/**
+		 * Select box for 24 hours
+		 */
+		public function selectHour24($name, $attrs = array()) {
+			$hours = array(
+				0 => '00', 1 => '01', 2 => '02', 3 => '03', 4 => '04', 5 => '05', 6 => '06', 7 => '07', 8 => '08', 9 => '09', 10 => '10', 11 => '11',
+				12 => '12', 13 => '13', 14 => '14', 15 => '15', 16 => '16', 17 => '17', 18 => '18', 19 => '19', 20 => '20', 21 => '21', 22 => '22', 23 => '23'
+			);
+			return $this->select($name, $hours, $attrs);
 		}
 		
-		public function errors($field, $attrs = array()) {
-			if(Matrix::pathExists($this->errors, $field)) {
-				$errors = Matrix::pathGet($this->errors, $field);
-				
-				if(!isset($attrs['class'])) {
-					$attrs['class'] = 'errors';
-				}
-				
-				$str = '<ul '.$this->parseAttributes($attrs).'>';
-				foreach($errors as $error) {
-					$str .= '<li>'.$error.'</li>';
-				}
-				return $str.'</ul>';
-			} else {
-				return '';
-			}
+		/**
+		 * Select box for 60 minutes
+		 */
+		public function selectMinute($name, $attrs = array()) {
+			$minutes = array(
+				0 => '00', 1 => '01', 2 => '02', 3 => '03', 4 => '04', 5 => '05', 6 => '06', 7 => '07', 8 => '08', 9 => '09', 10 => '10', 11 => '11',
+				12 => '12', 13 => '13', 14 => '14', 15 => '15', 16 => '16', 17 => '17', 18 => '18', 19 => '19', 20 => '20', 21 => '21', 22 => '22', 23 => '23',
+				24 => '24', 25 => '25', 26 => '26', 27 => '27', 28 => '28', 29 => '29', 30 => '30', 31 => '31', 32 => '32', 33 => '33', 34 => '34', 35 => '35',
+				36 => '36', 37 => '37', 38 => '38', 39 => '39', 40 => '40', 41 => '41', 42 => '42', 43 => '43', 44 => '44', 45 => '45', 46 => '46', 47 => '47',
+				48 => '48', 49 => '49', 50 => '50', 51 => '51', 52 => '52', 53 => '53', 54 => '54', 55 => '55', 56 => '56', 57 => '57', 58 => '58', 59 => '59'
+			);
+			return $this->select($name, $minutes, $attrs);
+		}
+		
+		/**
+		 * Yes/no select box (returns 1 for yes, 0 for no)
+		 */
+		public function selectYesNo($name, $attrs = array()) {
+			$opts = array(
+				0 => 'No',
+				1 => 'Yes'
+			);
+			return $this->select($name, $opts, $attrs);
+		}
+		
+		public function __call($method, $args) {
+			return call_user_func_array(array($this->Form, $method), $args);
 		}
 	}

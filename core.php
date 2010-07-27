@@ -76,6 +76,12 @@
 		parse_str(file_get_contents('php://input'), $requestData);
 	}
 	
+	// REST hack for browsers that don't support PUT and DELETE methods
+	if(isset($requestData['___METHOD'])) {
+		$method = $requestData['___METHOD'];
+		unset($requestData['___METHOD']);
+	}
+	
 	/**
 	 * I HATE YOU MAGIC QUOTES
 	 */

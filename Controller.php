@@ -109,12 +109,4 @@
 		public function offsetUnset($offset) {
 			unset($this->persist[$offset]);
 		}
-		
-		protected function data($key = null, $default = null) {
-			return $this->Request->data($key, $default);
-		}
-		
-		protected function postData($key = null, $default = null) {
-			return $this->Request->postData($key, $default);
-		}
 	}

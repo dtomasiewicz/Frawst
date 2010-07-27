@@ -12,7 +12,7 @@
 		public function __construct($name, $value = null, $expires = 0, $path = null, $domain = null) {
 			$this->name = $name;
 			$this->value = is_null($value) && Matrix::pathExists($_COOKIE, $this->name)
-				? unserialize(Matrix::pathGet($_COOKIE, $this->name))
+				? Matrix::pathGet($_COOKIE, $this->name)
 				: $value;
 			$this->expires = $expires;
 			$this->path = is_null($path) ? \Frawst\WEB_ROOT : $path;
@@ -20,8 +20,8 @@
 		}
 		
 		public function save() {
-			setcookie(Matrix::dotToBracket($this->name), serialize($this->value), $this->expires, $this->path, $this->domain);
-			Matrix::pathSet($_COOKIE, $this->name, serialize($this->value));
+			setcookie(Matrix::dotToBracket($this->name), $this->value, $this->expires, $this->path, $this->domain);
+			Matrix::pathSet($_COOKIE, $this->name, $this->value);
 		}
 		
 		public function delete() {
