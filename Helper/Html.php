@@ -5,21 +5,21 @@
 		\Frawst\Library\Inflector;
 	
 	class Html extends Helper {
-		public $tags = array(
+		protected $_tags = array(
 			'image' => '<img src="%s" %s>',
 			'link' => '<a href="%s" %s>%s</a>'
 		);
 		
 		public function image($path, $attrs = array()) {
-			return sprintf($this->tags['image'], $this->View->path('public/images/'.$path), $this->parseAttributes($attrs));
+			return sprintf($this->_tags['image'], $this->_View->path('public/images/'.$path), $this->parseAttributes($attrs));
 		}
 		
 		public function link($uri, $content, $attrs = array()) {
-			return sprintf($this->tags['link'], $uri, $this->parseAttributes($attrs), $content);
+			return sprintf($this->_tags['link'], $uri, $this->parseAttributes($attrs), $content);
 		}
 		
 		public function appLink($route, $content, $attrs = array()) {
-			return $this->link($this->View->path($route), $content, $attrs);
+			return $this->link($this->_View->path($route), $content, $attrs);
 		}
 		
 		public function sanitize($string) {

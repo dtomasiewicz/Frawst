@@ -2,116 +2,88 @@
 	namespace Frawst;
 	
 	class View {
-		/**#@+
-		 * Response MIME type
-		 * @var string
-		 */
-		const RESPONSE_JSON = 'application/json';
-		const RESPONSE_HTML = 'text/html';
-		const RESPONSE_TEXT = 'text/plain';
-		const RESPONSE_XML = 'text/xml';
-		
-		protected $responseType;
-		
-		protected $helpers;
-		protected $Request;
-		protected $layoutData = array();
-		protected $layout = 'default';
+		protected $_helpers;
+		protected $_Response;
+		protected $_layoutData = array();
+		protected $_layout = 'default';
 		
 		public function __construct($request) {
-			$this->Request = $request;
-			$this->responseType = self::RESPONSE_HTML;
-		}
-		
-		/**
-		 * Sets the response content-type, or simply returns it
-		 * @return string The response content-type
-		 */
-		public function responseType($mime = null) {
-			if(!is_null($mime)) {
-				$this->responseType = $mime;
-			}
-			return $this->responseType;
-		}
-		
-		/**
-		 * Convenience method for responding as JSON
-		 */
-		public function respondAsJson() {
-			$this->responseType = self::RESPONSE_JSON;
-		}
-		
-		public function render($file, $data = array()) {
-			if(($path = Loader::importPath('Frawst\\View\\'.$file)) !== null) {
-				$content = $this->renderFile($path, $data);
-				if(!$this->isAjax() && !is_null($this->layout) && !is_null($layoutPath = Loader::importPath('Frawst\\View\\layout\\'.$this->layout))) {
-					$render = $this->renderFile($layoutPath, array('content' => $content) + $this->layoutData);
-				} else {
-					$render = $content;
-				}
-				header('Content-Type: '.$this->responseType);
-				return $render;
-			} else {
-				throw new Exception\Frawst('Invalid view: '.$file);
-			}
-		}
-		
-		private function renderFile($___file, $___data) {
-			extract($___data);
-			ob_start();
-			require($___file);
-			return ob_get_clean();
-		}
-		
-		protected function partial($partial, $data = array()) {
-			return $this->renderFile(Loader::importPath('Frawst\\View\\partial\\'.$partial), $data);
-		}
-
-		public function isAjax() {
-			return $this->Request->isAjax();
-		}
-		
-		public function path($route = null) {
-			return $this->Request->path($route);
-		}
-
-		/**
-		 * Makes a sub-request. If $headers is set to true, the request will behave
-		 * as if it were ajax.
-		 */
-		public function subRequest($route, $method = 'GET', $data = array(), $headers = true) {
-			if($headers === true) {
-				$headers = array('X-Requested-With' => 'XMLHttpRequest');
-			} elseif(!is_array($headers)) {
-				$headers = array();
-			}
-			
-			return $this->Request->subRequest($route, $method, $data, $headers);
+			$this->_Response = $request;
 		}
 		
 		/**
 		 * Attempt to load Helpers on-demand
 		 */
 		public function __get($name) {
-			if($name == 'Request') {
-				return $this->Request;
-			} elseif($helper = $this->helper($name)) {
+			if($name == 'Response') {
+				return $this->_Response;
+			} elseif($helper = $this->_helper($name)) {
 				return $helper;
 			} else {
 				throw new Exception\Frawst('Invalid helper: '.$name);
 			}
  		}
+		
+		public function render($file, $data = array()) {
+			if(($path = Loader::importPath('Frawst\\View\\'.$file)) !== null) {
+				$content = $this->_renderFile($path, $data);
+				if(!$this->isAjax() && !is_null($this->_layout) && !is_null($layoutPath = Loader::importPath('Frawst\\View\\layout\\'.$this->_layout))) {
+					$render = $this->_renderFile($layoutPath, array('content' => $content) + $this->_layoutData);
+				} else {
+					$render = $content;
+				}
+				return $render;
+			} else {
+				throw new Exception\Frawst('Invalid view: '.$file);
+			}
+		}
+		
+		protected function _renderFile($___file, $___data) {
+			extract($___data);
+			ob_start();
+			require($___file);
+			return ob_get_clean();
+		}
+		
+		public function partial($partial, $data = array()) {
+			return $this->_renderFile(Loader::importPath('Frawst\\View\\partial\\'.$partial), $data);
+		}
+
+		public function isAjax() {
+			return $this->_Response->Request->isAjax();
+		}
+		
+		public function path($route = null) {
+			return $this->_Response->Request->path($route);
+		}
+		
+		public function modGet($changes = array()) {
+			$qs = '?';
+			foreach($changes + $this->_Response->Request->getData() as $key => $value) {
+				$qs .= $key.'='.$value.'&';
+			}
+			return rtrim($this->_Response->Request->route(true).$qs, '?&');
+		}
+
+		public function ajax($route, $method = 'GET', $data = array(), $headers = array()) {
+			$headers['X-Requested-With'] = 'XMLHttpRequest';
+			$request = $this->_Response->Request->subRequest($route, $headers);
+			return $request->execute($method, $data)->render();
+		}
  		
- 		public function helper($name) {
- 			if(!isset($this->helpers[$name])) {
- 				$this->helpers[$name] = class_exists($class = '\\Frawst\\Helper\\'.$name)
+ 		protected function _helper($name) {
+ 			if(!isset($this->_helpers[$name])) {
+ 				$this->_helpers[$name] = class_exists($class = '\\Frawst\\Helper\\'.$name)
  					? new $class($this)
  					: false;
  			}
- 			return $this->helpers[$name];
+ 			return $this->_helpers[$name];
  		}
  		
- 		public function useLayout($layout) {
- 			$this->layout = $layout;
+ 		public function layout($layout = null) {
+ 			if(!is_null($layout)) {
+ 				$this->_layout = $layout;
+ 			}
+ 			return $this->_layout;
  		}
 	}

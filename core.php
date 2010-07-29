@@ -115,4 +115,5 @@
 		$headers['X-Requested-With'] = $_SERVER['HTTP_X_REQUESTED_WITH'];
 	}
 	
-	echo Request::make($route, $method, $requestData, $headers, $data, $mapper, $cache);
+	$request = new Request($route, $headers, $data, $mapper, $cache);
+	$request->execute($method, $requestData)->send();

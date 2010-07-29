@@ -3,18 +3,18 @@
 	use \Frawst\Exception;
 		
 	class FileMatrix extends Matrix {
-		private $directory;
-		private $count = 0;
+		protected $_directory;
+		
 		public function __construct($directory, $data = array()) {
 			parent::__construct($data);
-			$this->directory = $directory;
+			$this->_directory = $directory;
 		}
 		
 		public function offsetExists($offset) {
 			if(parent::offsetExists($offset)) {
 				return true;
 			} else {
-				$path = $this->directory.DIRECTORY_SEPARATOR.str_replace('.', DIRECTORY_SEPARATOR, $offset);
+				$path = $this->_directory.DIRECTORY_SEPARATOR.str_replace('.', DIRECTORY_SEPARATOR, $offset);
 				return file_exists($path);
 			}
 		}
@@ -24,7 +24,7 @@
 				return parent::offsetGet($offset);
 			}
 			
-			$path = $this->directory.DIRECTORY_SEPARATOR.str_replace('.', DIRECTORY_SEPARATOR, $offset);
+			$path = $this->_directory.DIRECTORY_SEPARATOR.str_replace('.', DIRECTORY_SEPARATOR, $offset);
 			
 			if(!file_exists($path) || !is_readable(dirname($path))) {
 				throw new Exception\File('Cannot get value from FileMatrix at: '.$offset);
@@ -37,7 +37,7 @@
 		}
 		
 		public function offsetSet($offset, $value) {
-			$path = $this->directory.DIRECTORY_SEPARATOR.str_replace('.', DIRECTORY_SEPARATOR, $offset);
+			$path = $this->_directory.DIRECTORY_SEPARATOR.str_replace('.', DIRECTORY_SEPARATOR, $offset);
 			
 			if(!file_exists(dirname($path))) {
 				mkdir(dirname($path), 0, true);
@@ -52,7 +52,7 @@
 		}
 		
 		public function offsetUnset($offset) {
-			$path = $this->directory.DIRECTORY_SEPARATOR.str_replace('.', DIRECTORY_SEPARATOR, $offset);
+			$path = $this->_directory.DIRECTORY_SEPARATOR.str_replace('.', DIRECTORY_SEPARATOR, $offset);
 			
 			if(file_exists($path)) {
 				if(is_writable($path)) {

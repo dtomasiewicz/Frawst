@@ -1,7 +1,6 @@
 <?php
 	namespace Frawst;
 	use \Frawst\Library\Matrix,
-		\Frawst\View\AppView,
 		\Frawst\Exception;
 	
 	/**
@@ -16,92 +15,75 @@
 		 * @access public (get)
 		 * @var object
 		 */
-		protected $Data;
+		protected $_DataController;
 		
 		/**
 		 * The data mapper to be used by this request
 		 * @access public (get)
 		 * @var object
 		 */
-		protected $Mapper;
+		protected $_DataMapper;
 		
 		/**
 		 * The cache controller to be used by this request
 		 * @access public (get)
 		 * @var object
 		 */
-		protected $Cache;
+		protected $_CacheController;
 		
 		/**
 		 * The request controller
 		 * @var Frawst\Controller
 		 */
-		protected $Controller;
+		protected $_Controller;
 		
 		/**
 		 * An array of request route segments
 		 * @var array
 		 */
-		protected $route;
+		protected $_route;
 		
 		/**
 		 * The name of the request action, should be the name of a
 		 * public method of $Controller
 		 * @var string
 		 */
-		protected $action;
+		protected $_action;
 		
 		/**
 		 * An array of (unnamed) request parameters, not to be confused
 		 * with GET data
 		 * @var array
 		 */
-		protected $params;
+		protected $_params;
 		
 		/**
 		 * Associative array of headers sent to this request
 		 * @var array
 		 */
-		protected $headers;
+		protected $_headers;
 		
 		/**
 		 * The method through which this request was performed
 		 * @example 'POST'
 		 * @var string
 		 */
-		protected $method;
+		protected $_method;
 		
 		/**
 		 * Associative array of data sent to this request
 		 * @example form data from a POST request, querystring data from GET
 		 * @var array
 		 */
-		protected $requestData;
+		protected $_data;
 		
 		/**
-		 * A Form object, if formdata was submitted with the request
+		 * A Form object, created if formdata was submitted with the request
+		 * @var Frawst\Form
 		 */
-		protected $Form = null;
+		protected $_Form;
 		
-		/**
-		 * The data returned by executing the request action; usually an
-		 * associative array of view-bound data
-		 * @var mixed
-		 */
-		protected $actionData;
-		
-		/**
-		 * If a redirect is queued, the destination is stored here to allow
-		 * full execution of the request action
-		 * @var string
-		 */
-		protected $redirectTo;
-		
-		/**
-		 * The View used by this request for rendering
-		 * @var Frawst\AppView
-		 */
-		protected $View;
+		protected $_Response;
 		
 		/**
 		 * Constructor
@@ -112,11 +94,13 @@
 		 * @param object $cache
 		 */
 		public function __construct($route, $headers = array(), $data = null, $mapper = null, $cache = null) {
-			$this->headers = $headers;
-			$this->Data = $data;
-			$this->Mapper = $mapper;
-			$this->Cache = $cache;
-			$this->dispatch($route);
+			$this->_headers = $headers;
+			$this->_DataController = $data;
+			$this->_DataMapper = $mapper;
+			$this->_CacheController = $cache;
+			$this->_dispatch($route);
+			
+			$this->_Response = new Response($this);
 		}
 		
 		/**
@@ -126,12 +110,14 @@
 		 */
 		public function __get($name) {
 			switch($name) {
+				case 'Response':
+					return $this->_Response;
 				case 'Data':
-					return $this->Data;
+					return $this->_DataController;
 				case 'Mapper':
-					return $this->Mapper;
+					return $this->_DataMapper;
 				case 'Cache':
-					return $this->Cache;
+					return $this->_CacheController;
 				default:
 					throw new Exception\Frawst('Trying to access undeclared property Request::$'.$name);
 			}
@@ -142,38 +128,8 @@
 		 * @return bool
 		 */
 		public function isAjax() {
-			return (bool) (isset($this->headers['X-Requested-With']) && $this->headers['X-Requested-With'] == 'XMLHttpRequest'); 
-		}
-		
-		/**
-		 * Queues a redirect. If a redirect is queued, it will happen before a
-		 * view is rendered. This is to allow controllers to make sub-requests
-		 * to others and use the data returned from execute() without worrying about
-		 * the top-level request being redirected.
-		 * @param string $to The route to redirect to
-		 * @param bool $external If true, $to should be a URI instead of a route
-		 * @return true
-		 */
-		public function queueRedirect($to = '', $external = false) {
-			$this->redirectTo = $external ? $to : $this->path($to);
-			// some browsers (e.g. Firefox) fail to pass non-standard headers to next page
-			// this is somewhat of a hack to get it to work
-			if($this->isAjax()) {
-				$this->redirectTo .= AJAX_SUFFIX;
-			}
-			return true;
-		}
-		
-		/**
-		 * Attempts to perform a queued redirection
-		 * @return bool false if there was no redirect queued
-		 */
-		public function redirect() {
-			if(isset($this->redirectTo)) {
-				exit(header('Location: '.$this->redirectTo));
-			} else {
-				return false;
-			}
+			return (bool) (isset($this->_headers['X-Requested-With']) &&
+				strtolower($this->_headers['X-Requested-With']) == 'xmlhttprequest'); 
 		}
 		
 		/**
@@ -183,10 +139,9 @@
 		 */
 		public function path($route = null) {
 			if(is_null($route)) {
-				$route = $this->route();
+				$route = $this->route(true);
 			}
-			
-			return WEB_ROOT.'/'.trim($route, '/\\');
+			return rtrim(WEB_ROOT.'/'.$route, '/');
 		}
 		
 		/**
@@ -197,42 +152,14 @@
 		 * @param array $changes Associative array of changes to be made to GET data
 		 * @return string The resolved route with changes applied
 		 */
-		public function route($changes = null) {
-			$route = strtolower(implode('/', $this->route)).'/'.implode($this->params);
+		public function route($params = false) {
+			$route = implode('/', $this->_route);
 			
-			if($this->method == 'GET' && is_array($changes)) {
-				$get = $changes + $this->requestData;
-			
-				$qString = '?';
-				foreach($get as $key => $value) {
-					if(is_int($key)) {
-						$route .= '/'.$value;
-					} else {
-						$qString .= $key.'='.$value.'&';
-					}
-				}
-				$route = $route . rtrim($qString, '&?');
+			if($params) {
+				$route .= '/'.implode($this->_params);
 			}
-
+			
 			return $route;
-		}
-		
-		/**
-		 * Convenience method for creating, executing, and rendering
-		 * a full request
-		 * @param string $route
-		 * @param string $method
-		 * @param array $requestData
-		 * @param array $headers
-		 * @param object $Data
-		 * @param object $Mapper
-		 * @param object $Cache
-		 * @return string The rendered request view
-		 */
-		public static function make($route, $method = 'GET', $requestData = array(), $headers = array(), $data = null, $mapper = null, $cache = null) {
-			$request = new Request($route, $headers, $data, $mapper, $cache);
-			$request->execute($method, $requestData);
-			return $request->render();
 		}
 		
 		/**
@@ -244,8 +171,8 @@
 		 * @param array $headers
 		 * @return string The rendered request view
 		 */
-		public function subRequest($route, $method = 'GET', $requestData = array(), $headers = array()) {
-			return self::make($route, $method, $requestData, $headers, $this->Data, $this->Mapper, $this->Cache);
+		public function subRequest($route, $headers = array()) {
+			return new Request($route, $headers, $this->Data, $this->Mapper, $this->Cache);
 		}
 		
 		/**
@@ -253,13 +180,16 @@
 		 * on the given route. Also instantiates the controller.
 		 * @param string $route
 		 */
-		public function dispatch($route) {
-			$route = explode('/', strtolower(trim($route, '/')));
+		protected function _dispatch($route) {
+			$route = explode('/', trim($route, '/'));
+			if($route[0] == '') {
+				unset($route[0]);
+			}
 			
 			// get top-level (root) controller
 			$name = 'Root';
 			if(isset($route[0])) {
-				$name = ucfirst($route[0]);
+				$name = ucfirst(strtolower($route[0]));
 				if(class_exists('\\Frawst\\Controller\\'.$name)) {
 					array_shift($route);
 				} else {
@@ -267,14 +197,14 @@
 				}
 			}
 			$class = '\\Frawst\\Controller\\'.$name;
-			$this->route[] = $name;
+			$this->_route[] = $name;
 			
 			// check for sub-controllers
 			$exists = true;
 			while(count($route) && $exists) {
-				$subname = ucfirst($route[0]);
+				$subname = ucfirst(strtolower($route[0]));
 				if(class_exists($c = $class.'\\'.$subname)) {
-					$this->route[] = $subname;
+					$this->_route[] = $subname;
 					$class = $c;
 					array_shift($route);
 				} else {
@@ -285,20 +215,22 @@
 			// if the class is abstract, use the /Main subcontroller
 			$rClass = new \ReflectionClass($class);
 			if($rClass->isAbstract()) {
-				$this->route[] = 'Main';
+				$this->_route[] = 'Main';
 				$class .= '\\Main';
 			}
 			
-			$this->Controller = new $class($this);
+			$this->_Controller = new $class($this);
 			
 			// determine action
-			if(isset($route[0]) && $this->Controller->actionExists($route[0])) {
-				$this->action = array_shift($route);
+			if(isset($route[0]) && $this->_Controller->hasAction($action = strtolower(ltrim($route[0], '_')))) {
+				$this->_action = $action;
+				array_shift($route);
 			} else {
-				$this->action = 'index';
+				$this->_action = 'index';
 			}
-			$this->route[] = $this->action;
-			$this->params = $route;
+			
+			$this->_route[] = $this->_action;
+			$this->_params = $route;
 		}
 		
 		/**
@@ -308,54 +240,26 @@
 		 * @return mixed The value returned from the action
 		 */
 		public function execute($method = 'GET', $data = array()) {
-			$this->method = strtoupper($method);
+			$this->_method = strtoupper($method);			
+			$this->_data = $data;
 			
-			// check for submitted formdata and create a FORM object if found
-			if(isset($data['___FORMNAME'])) {
-				$formName = $data['___FORMNAME'];
-				unset($data['___FORMNAME']);
-				
-				$class = 'Frawst\\Form\\'.$formName;
-				if(class_exists($class) && $class::compatible($data)) {
-					$this->Form = new $class($data);
-				}
-			}
+			$this->_Response->data($this->_Controller->execute($this->_action, $this->_params));
 			
-			$this->requestData = $data;
-			
-			return $this->actionData = $this->Controller->execute($this->action, $this->params);
-		}
-		
-		/**
-		 * Renders the view. If a redirect has been queued, it will happen instead
-		 * @return string The rendered view
-		 */
-		public function render() {
-			if(isset($this->redirectTo) && !$this->redirect()) {
-				throw new Exception\Frawst('Attempting to render view, but action did return an array. Request must redirect, but was not queued.');
-			} else {
-				$data = is_array($this->actionData)
-					? $this->actionData
-					: array('status' => $this->actionData);
-					
-				$this->View = new AppView($this, $this->isAjax());
-				$contentFile = implode(DIRECTORY_SEPARATOR, $this->route);
-				return $this->View->render($contentFile, $data);
-			}
+			return $this->_Response;
 		}
 		
 		/**
 		 * @return string The name of the request action
 		 */
 		public function action() {
-			return $this->action;
+			return $this->_action;
 		}
 		
 		/**
 		 * @return string The request method
 		 */
 		public function method() {
-			return $this->method;
+			return $this->_method;
 		}
 		
 		/**
@@ -365,7 +269,7 @@
 		 * @return array
 		 */
 		public function getData($key = null, $default = null) {
-			return $this->method == 'GET'
+			return $this->_method == 'GET'
 				? $this->data($key, $default)
 				: null;
 		}
@@ -377,7 +281,7 @@
 		 * @return array
 		 */
 		public function postData($key = null, $default = null) {
-			return $this->method == 'POST'
+			return $this->_method == 'POST'
 				? $this->data($key, $default)
 				: null;
 		}
@@ -389,7 +293,7 @@
 		 * @return array
 		 */
 		public function putData($key = null, $default = null) {
-			return $this->method == 'PUT'
+			return $this->_method == 'PUT'
 				? $this->data($key, $default)
 				: null;
 		}
@@ -401,7 +305,7 @@
 		 * @return array
 		 */
 		public function deleteData($key = null, $default = null) {
-			return $this->method == 'DELETE'
+			return $this->_method == 'DELETE'
 				? $this->data($key, $default)
 				: null;
 		}
@@ -414,23 +318,23 @@
 		 * @return mixed
 		 */
 		public function data($key = null, $default = null) {
-			if(Matrix::pathExists($this->requestData, $key)) {
-				return Matrix::pathGet($this->requestData, $key);
+			if(Matrix::pathExists($this->_data, $key)) {
+				return Matrix::pathGet($this->_data, $key);
 			} else {
 				return $default;
 			}
 		}
 		
 		/**
-		 * @return Frawst\Form Submitted form data or null
+		 * @return Frawst\Form
 		 */
-		public function form($formName = null) {
-			$form = $this->Form;
-			                 
-			if(!is_null($form) && !is_null($formName) && $form->name() !== $formName) {
-				$form = null;
+		public function form($formName) {
+			if(isset($this->_Form) && $this->_Form->name() == $formName) {
+				return $this->_Form;
+			} elseif(!empty($this->_data) && class_exists($class = 'Frawst\\Form\\'.$formName) && $class::compatible($this->_data)) {
+				return $this->_Form = new $class($this->_data);
 			}
 			
-			return $form;
+			return null;
 		}
 	}

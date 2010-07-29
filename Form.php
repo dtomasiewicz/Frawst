@@ -1,43 +1,47 @@
 <?php
 	namespace Frawst;
 	use \Frawst\Library\Matrix,
+	    \Frawst\Library\Validator,
 	    \Frawst\Exception;
 	
 	abstract class Form extends Matrix {
-		protected static $fields;
-		protected $defaults;
+		protected static $_fields = array();
+		protected static $_validate = array();
+		protected $_defaults;
 		
-		protected $errors = array();
+		protected $_errors = array();
 		
 		public function __construct($data = array()) {
 			parent::__construct($data);
-			$this->defaults = static::$fields;
+			$this->_defaults = static::$_fields;
 		}
 		
 		public function setDefaults($defaults) {
-			$this->defaults = $defaults+$this->defaults;
+			$this->_defaults = $defaults+$this->_defaults;
 		}
 		
 		public function setErrors($errors) {
-			$this->errors = $errors;
+			$this->_errors = $errors;
 		}
 		
 		public function addErrors($field, $errors) {
 			if(count($errors)) {
-				if(!Matrix::pathExists($this->errors, $field)) {
-					Matrix::pathSet($this->errors, $field, $errors);
+				if(!Matrix::pathExists($this->_errors, $field)) {
+					Matrix::pathSet($this->_errors, $field, $errors);
 				} else {
-					Matrix::pathSet($this->errors, $field, Matrix::pathGet($this->errors, $field) + $errors);
+					Matrix::pathMerge($this->_errors, $field, $errors);
 				}
 			}
 		}
 		
+		public function addError($field, $error) {
+			$this->addErrors($field, array($error));
+		}
+		
 		public function errors($field = null) {
-			if(Matrix::pathExists($this->errors, $field)) {
-				return Matrix::pathGet($this->errors, $field);
-			} else {
-				return array();
-			}
+			return Matrix::pathExists($this->_errors, $field)
+				? Matrix::pathGet($this->_errors, $field)
+				: array();
 		}
 				
 		/**
@@ -56,7 +60,7 @@
 		 */
 		public static function compatible($data) {
 			foreach(Matrix::flatten($data) as $field => $value) {
-				if(!Matrix::pathExists(static::$fields, $field)) {
+				if(!Matrix::pathExists(static::$_fields, $field)) {
 					return false;
 				}
 			}
@@ -69,10 +73,24 @@
 		 * value instead.
 		 */
 		public function get($field = null) {
-			if(parent::exists($field)) {
-				return parent::get($field);
-			} else {
-				return Matrix::pathGet($this->defaults, $field);
+			return parent::exists($field)
+				? parent::get($field)
+				: Matrix::pathGet($this->_defaults, $field);
+		}
+		
+		public function validate() {
+			$this->_errors = array();
+			foreach(static::$_validate as $field => $rules) {
+				if(count($errors = Validator::check($this[$field], $rules, $this))) {
+					Matrix::pathSet($this->_errors, $field, $errors);
+				}
 			}
+			return count($this->_errors) == 0;
+		}
+		
+		public function valid($field = null) {
+			return Matrix::pathExists($this->_errors, field)
+				? (bool) (count(Matrix::pathGet($this->_errors, $field)) == 0)
+				: true;
 		}
 	}

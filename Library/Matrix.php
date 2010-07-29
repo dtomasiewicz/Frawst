@@ -4,7 +4,7 @@
 		\Frawst\Exception;
 	
 	class Matrix implements \ArrayAccess {
-		private $data = array();
+		protected $_data = array();
 		
 		public function __construct($data = array()) {
 			foreach($data as $key => $value) {
@@ -17,7 +17,7 @@
 		 * with dot-separated paths as its keys).
 		 */
 		public static function flatten(&$array, $path = null) {
-			$data = self::pathGet($array, $path);
+			$data = static::pathGet($array, $path);
 			
 			if(is_null($path)) {
 				$path = '';
@@ -29,7 +29,7 @@
 						
 			foreach($data as $key => $value) {
 				if(is_array($value)) {
-					$flat += self::flatten($data, $path.$key);
+					$flat += static::flatten($data, $path.$key);
 				} else {
 					$flat[$path.$key] = $value;
 				}
@@ -45,7 +45,7 @@
 			$matrix = array();
 			
 			foreach($flat as $key => $value) {
-				Matrix::pathSet($matrix, $key, $value);
+				static::pathSet($matrix, $key, $value);
 			}
 			
 			return $matrix;
@@ -198,19 +198,47 @@
 			unset($target[$segs[0]]);
 		}
 		
+		public static function pathPush(&$array, $path, $value) {
+			if(Matrix::pathExists($array, $path) && is_array($val = Matrix::pathGet($array, $path))) {
+				$val[] = $value;
+			} else {
+				throw new Exception\Frawst('Trying to push to non-array: '.$path);
+			}
+		}
+		
+		public static function pathMerge(&$array, $path, $merge, $recursive = false) {
+			if(Matrix::pathExists($array, $path) && is_array($val = Matrix::pathGet($array, $path))) {
+				if($recursive) {
+					Matrix::pathSet($array, $path, array_merge_recursive($val, $merge));
+				} else {
+					Matrix::pathSet($array, $path, array_merge($val, $merge));
+				}
+			} else {
+				throw new Exception\Frawst('Trying to merge with non-array: '.$path);
+			}
+		}
+		
 		public function get($index = null) {
-			return self::pathGet($this->data, $index);
+			return static::pathGet($this->_data, $index);
 		}
 		
 		public function set($index, $value) {
-			self::pathSet($this->data, $index, $value);
+			static::pathSet($this->_data, $index, $value);
 		}
 		
 		public function exists($index) {
-			return self::pathExists($this->data, $index);
+			return static::pathExists($this->_data, $index);
 		}
 		
 		public function remove($index) {
-			self::pathUnset($this->data, $index);
+			static::pathUnset($this->_data, $index);
+		}
+		
+		public function push($index, $value) {
+			static::pathPush($this->_data, $index, $value);
+		}
+		
+		public function merge($index, $array, $recursive = false) {
+			static::pathMerge($this->_data, $index, $array, $recursive);
 		}
 	}

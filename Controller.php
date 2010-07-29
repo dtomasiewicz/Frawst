@@ -2,111 +2,84 @@
 	namespace Frawst;
 	
 	abstract class Controller implements \ArrayAccess {
-		private $components;
-		private $data = array();
-		private $persist = array();
-		protected $Request;
-		protected $Cache;
+		protected $_components;
+		protected $_persist;
+		protected $_Request;
+		protected $_Cache;
 		
 		public function __construct($request) {
-			$this->Request = $request;
-			$this->Cache = $request->Cache;
+			$this->_Request = $request;
+			$this->_Cache = $request->Cache;
 		}
 		
-		/**
-		 * Attempt to load Models or Components on demand. My reasoning for checking
-		 * in this order is: Checking if a component is already loaded is fast and can
-		 * be bypassed quickly on failure. Checking if a Model factory exists is a bit
-		 * slower since it will attempt to load the model. Attempting to load a component
-		 * will only happen once for each controller instance.
-		 */
 		public function __get($name) {
-			if($this->component($name)) {
-				return $this->components[$name];
-			} elseif($model = $this->model($name)) {
-				return $model;
+			if($name == 'Request') {
+				return $this->_Request;
+			} elseif($name == 'Response') {
+				return $this->_Request->Response;
+			} elseif($name == 'Cache') {
+				return $this->_Cache;
+			} elseif($c = $this->_component($name)) {
+				return $c;
+			} elseif($m = $this->_model($name)) {
+				return $m;
 			} else {
-				throw new Exception\Controller('Model or Component unavailable: '.$name);
+				throw new Exception\Controller('Invalid controller property: '.$namel);
 			}
 		}
 		
-		public function component($name) {
-			if(!isset($this->components[$name])) {
-				$this->components[$name] = class_exists($class = '\\Frawst\\Component\\'.$name)
+		protected function _component($name) {
+			if(!isset($this->_components[$name])) {
+				$this->_components[$name] = class_exists($class = '\\Frawst\\Component\\'.$name)
 					? new $class($this)
 					: false;
 			}
-			return $this->components[$name];
+			return $this->_components[$name];
 		}
 		
-		public function model($name) {
-			return $this->Request->Mapper->factory($name);
+		protected function _model($name) {
+			return $this->_Request->Mapper->factory($name);
 		}
 		
-		/**
-		 * Determines if this controller contains the action specified.
-		 * A valid action is any public method that is not inherited from
-		 * Controller. Currently the only (non-hack) way to check this from
-		 * within the Controller class is with the Reflection API. As Reflection
-		 * is slated to be removed from the Core in 6.0, another solution will
-		 * need to be found to allow for widespread PHP6 PNP support. In order for
-		 * an action to be valid, it must:
-		 *  a) Exist
-		 *  b) Be public
-		 *  c) Be declared in get_class($this)
-		 *  d) Not exist in Controller
-		 */
-		public function actionExists($action) {
-			if(!method_exists(get_class($this), $action)) {
+		public function hasAction($action) {
+			if($action[0] == '_') {
 				return false;
 			} else {
-				$method = new \ReflectionMethod(get_class($this), $action);
-				if(!$method->isPublic() || $method->getDeclaringClass()->name != get_class($this)) {
-					return false;
-				}
+				return (bool) method_exists($this, $action) && !method_exists(__CLASS__, $action);
 			}
-			return true;
 		}
 		
 		public function execute($action, $params) {
-			$this->data = array();
+			$this->_persist = array();
 			
-			$before = $this->beforeAction();
-			if(is_array($before)) {
-				$this->data = $before + $this->data;
+			if($this->_beforeAction() !== false) {
+				$actionData = call_user_func_array(array($this, $action), $params);
+				$this->_afterAction();
+			} else {
+				return false;
 			}
 			
-			$action = call_user_func_array(array($this, $action), $params);
-			if(is_array($action)) {
-				$this->data = $action + $this->data;
-			}
-			
-			$after = $this->afterAction();
-			if(is_array($after)) {
-				$this->data = $after + $this->data;
-			}
-			
-			return $this->data;
+			return $actionData;
 		}
 		
-		protected function beforeAction() {
+		protected function _beforeAction() {
 			
 		}
 		
-		protected function afterAction() {
+		protected function _afterAction() {
 			
 		}
 		
 		public function offsetExists($offset) {
-			return array_key_exists($offset, $this->persist);
+			return array_key_exists($offset, $this->_persist);
 		}
 		public function offsetGet($offset) {
-			return $this->persist[$offset];
+			return $this->_persist[$offset];
 		}
 		public function offsetSet($offset, $value) {
-			$this->persist[$offset] = $value;
+			$this->_persist[$offset] = $value;
 		}
 		public function offsetUnset($offset) {
-			unset($this->persist[$offset]);
+			unset($this->_persist[$offset]);
 		}
 	}

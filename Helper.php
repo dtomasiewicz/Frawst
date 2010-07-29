@@ -1,15 +1,29 @@
 <?php
 	namespace Frawst;
-	use \Frawst\Library\Sanitize;
+	use \Frawst\Library\Sanitize,
+	    \Frawst\Exception;
 	
-	class Helper {
-		protected $View;
+	abstract class Helper {
+		protected $_View;
 		
 		public function __construct($view) {
-			$this->View = $view;
+			$this->_View = $view;
+			$this->_init();
 		}
 		
-		protected function parseAttributes($attrs) {
+		public function __get($name) {
+			if($name == 'View') {
+				return $this->_View;
+			} else {
+				throw new Exception\Frawst('Invalid View property: '.$name);
+			}
+		}
+		
+		protected function _init() {
+			
+		}
+		
+		public static function parseAttributes($attrs) {
 			$str = '';
 			foreach($attrs as $attr => $value) {
 				if(!is_null($value)) {

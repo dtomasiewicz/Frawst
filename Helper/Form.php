@@ -4,30 +4,37 @@
 	    \Frawst\Library\Sanitize;
 	
 	class Form extends \Frawst\Helper {
-		protected $Form;
+		protected $_Form;
+		
+		public function __get($name) {
+			if($name == 'Form') {
+				return $this->_Form;
+			} else {
+				return parent::__get($name);
+			}
+		}
 		
 		public function open($formName, $action = null, $method = 'POST', $attrs = array()) {
-			if(!($form = $this->View->Request->form($formName))) {
+			if(!($form = $this->_View->Response->Request->form($formName))) {
 				$class = 'Frawst\\Form\\'.$formName;
 				$form = new $class();
 			}
-			$this->Form = $form;
+			$this->_Form = $form;
 			
 			$attrs['action'] = $action;
 			$attrs['method'] = $method;
 			
 			return '<form '.$this->parseAttributes($attrs).'>'.
-			       '<input type="hidden" name="___METHOD" value="'.$method.'">'.
-			       '<input type="hidden" name="___FORMNAME" value="'.$formName.'">';
+			       '<input type="hidden" name="___METHOD" value="'.$method.'">';
 		}
 		
 		public function close() {
-			$this->Form = null;
+			$this->_Form = null;
 			return '</form>';
 		}
 		
 		public function errors($field) {
-			$errors = $this->Form->errors($field);
+			$errors = $this->_Form->errors($field);
 			$out = '';
 			if(count($errors)) {
 				$out .= '<ul class="fieldErrors">';
@@ -116,7 +123,7 @@
 		
 		public function input($name, $attrs = array()) {
 			$attrs['name'] = Matrix::dotToBracket($name);
-			$attrs['value'] = $this->Form[$name];
+			$attrs['value'] = $this->_Form[$name];
 			return '<input '.$this->parseAttributes($attrs).'>';
 		}
 		
@@ -150,7 +157,7 @@
 		public function checkbox($name, $attrs = array()) {
 			$attrs['name'] = Matrix::dotToBracket($name);
 			$attrs['type'] = 'checkbox';
-			$attrs['checked'] = $this->Form[$name] ? 'checked' : null;
+			$attrs['checked'] = $this->_Form[$name] ? 'checked' : null;
 			$attrs['value'] = isset($attrs['value']) ? $attrs['value'] : 1;
 			return '<input '.$this->parseAttributes($attrs).'>';
 		}
@@ -162,7 +169,7 @@
 			$attrs['name'] = Matrix::dotToBracket($name);
 			$attrs['type'] = 'radio';
 			$attrs['value'] = $value;
-			$attrs['checked'] = $value == $this->Form[$name]
+			$attrs['checked'] = $value == $this->_Form[$name]
 				? 'checked'
 				: null;
 			return '<input '.$this->parseAttributes($attrs).'>';
@@ -173,7 +180,7 @@
 		 */
 		public function textarea($name, $attrs = array()) {
 			$attrs['name'] = Matrix::dotToBracket($name);
-			return '<textarea '.$this->parseAttributes($attrs).'>'.Sanitize::html($this->Form[$name]).'</textarea>';
+			return '<textarea '.$this->parseAttributes($attrs).'>'.Sanitize::html($this->_Form[$name]).'</textarea>';
 		}
 		
 		/**
@@ -183,7 +190,7 @@
 			$attrs['name'] = Matrix::dotToBracket($name);
 			$out = '<select '.$this->parseAttributes($attrs).'>';
 			
-			$selected = $this->Form[$name];
+			$selected = $this->_Form[$name];
 			foreach($options as $value => $content) {
 				$out .= '<option value="'.$value.'"';
 				if($selected == $value) {
@@ -237,6 +244,6 @@
 		}
 		
 		public function __call($method, $args) {
-			return call_user_func_array(array($this->Form, $method), $args);
+			return call_user_func_array(array($this->_Form, $method), $args);
 		}
 	}

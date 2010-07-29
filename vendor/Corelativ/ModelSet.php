@@ -23,7 +23,7 @@
 		}
 		
 		public function indexByPrimaryKey() {
-			$class = $this->getType();
+			$class = $this->type();
 			parent::indexBy($class::primaryKeyField());
 		}
 		

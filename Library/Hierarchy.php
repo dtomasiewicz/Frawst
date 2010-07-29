@@ -11,8 +11,8 @@
 	 * "Children."
 	 */
 	class Hierarchy extends ModelSet {
-		private $structure;
-		private $lookup;
+		protected $_structure;
+		protected $_lookup;
 		
 		/**
 		 * If a ModelSet is passed as the first parameter, the type will be
@@ -25,8 +25,8 @@
 			}
 			parent::__construct($type);
 			
-			$this->structure = array();
-			$this->lookup = array();
+			$this->_structure = array();
+			$this->_lookup = array();
 			
 			$roots->indexByPrimaryKey();
 			$this->computeStructure($roots);
@@ -39,8 +39,8 @@
 			$parents->indexByPrimaryKey();
 			
 			foreach($parents as $id => $parent) {
-				Matrix::pathSet($this->structure, $base.$id, array());
-				$this->lookup[$id] = $base.$id;
+				Matrix::pathSet($this->_structure, $base.$id, array());
+				$this->_lookup[$id] = $base.$id;
 				$this->computeStructure($parent->Children->findAll(), $base.$id.'.');
 			}
 			
@@ -56,8 +56,8 @@
 				$id = $id->primaryKey();
 			}
 			
-			$lookup = $id == 0 ? null : $this->lookup[$id];
-			$children = array_keys(Matrix::pathGet($this->structure, $lookup));
+			$lookup = $id == 0 ? null : $this->_lookup[$id];
+			$children = array_keys(Matrix::pathGet($this->_structure, $lookup));
 			$set = new ModelSet($this->getModelType());
 			
 			foreach($children as $id) {
@@ -76,7 +76,7 @@
 			if($id instanceof Model) {
 				$id = $id->primaryKey();
 			}
-			$lookup = explode('.', $this->lookup[$id]);
+			$lookup = explode('.', $this->_lookup[$id]);
 			array_pop($lookup);
 			if(!is_null($parent = array_pop($lookup))) {
 				return $this[$parent];
@@ -92,7 +92,7 @@
 			if($id instanceof Model) {
 				$id = $id->primaryKey();
 			}
-			$lookup = explode('.', $this->lookup[$id]);
+			$lookup = explode('.', $this->_lookup[$id]);
 			if(!$includeThis) {
 				array_pop($lookup);
 			}

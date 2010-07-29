@@ -3,16 +3,16 @@
 	use \Frawst\Library\Matrix;
 	
 	class Cookie {
-		protected $name;
+		protected $_name;
 		public $value;
 		public $expires;
 		public $path;
 		public $domain;
 		
 		public function __construct($name, $value = null, $expires = 0, $path = null, $domain = null) {
-			$this->name = $name;
-			$this->value = is_null($value) && Matrix::pathExists($_COOKIE, $this->name)
-				? Matrix::pathGet($_COOKIE, $this->name)
+			$this->_name = $name;
+			$this->value = is_null($value) && Matrix::pathExists($_COOKIE, $this->_name)
+				? Matrix::pathGet($_COOKIE, $this->_name)
 				: $value;
 			$this->expires = $expires;
 			$this->path = is_null($path) ? \Frawst\WEB_ROOT : $path;
@@ -20,13 +20,13 @@
 		}
 		
 		public function save() {
-			setcookie(Matrix::dotToBracket($this->name), $this->value, $this->expires, $this->path, $this->domain);
-			Matrix::pathSet($_COOKIE, $this->name, $this->value);
+			setcookie(Matrix::dotToBracket($this->_name), $this->value, $this->expires, $this->path, $this->domain);
+			Matrix::pathSet($_COOKIE, $this->_name, $this->value);
 		}
 		
 		public function delete() {
-			setcookie(Matrix::dotToBracket($this->name), '', time()-3600, $this->path, $this->domain);
-			Matrix::pathUnset($_COOKIE, $this->name);
+			setcookie(Matrix::dotToBracket($this->_name), '', time()-3600, $this->path, $this->domain);
+			Matrix::pathUnset($_COOKIE, $this->_name);
 		}
 		
 		public static function exists($name) {

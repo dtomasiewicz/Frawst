@@ -7,10 +7,10 @@
 	 * like arrays, but allows storage of extra data that arrays do not.
 	 */
 	class Collection extends ArrayList {
-		private $type;
+		protected $_type;
 		
 		public function __construct($type, $data = null) {
-			$this->type = $type;
+			$this->_type = $type;
 			parent::__construct($data);
 		}
 		
@@ -18,7 +18,7 @@
 			if($this->welcomes($value)) {
 				parent::set($index, $value);
 			} else {
-				$this->notWelcome($item);
+				$this->__notWelcome($item);
 			}
 		}
 		
@@ -26,7 +26,7 @@
 			if($this->welcomes($item)) {
 				return parent::unshift($item);
 			} else {
-				$this->notWelcome($item);
+				$this->__notWelcome($item);
 			}
 		}
 		
@@ -34,21 +34,21 @@
 			if($this->welcomes($item)) {
 				return parent::push($item);
 			} else {
-				$this->notWelcome($item);
+				$this->__notWelcome($item);
 			}
 		}
 		
-		protected function notWelcome($item) {
+		private function __notWelcome($item) {
 			$type = is_object($item) ? get_class($item) : gettype($item);
-			throw new Exception\Frawst('Variable of type '.$type.' is not welcome in a Collection of type '.$this->getType().'.');
+			throw new Exception\Frawst('Variable of type '.$type.' is not welcome in a Collection of type '.$this->type().'.');
 		}
 		
 		public function welcomes($item) {
-			return $item instanceof $this->type;
+			return $item instanceof $this->_type;
 		}
 		
-		public function getType() {
-			return $this->type;
+		public function type() {
+			return $this->_type;
 		}
 		
 		/**

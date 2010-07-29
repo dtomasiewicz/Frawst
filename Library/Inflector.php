@@ -5,8 +5,8 @@
 	 * Provides various tools for manipulating strings.
 	 */
 	class Inflector {
-		private static $camelBack = array();
-		private static $underscore = array();
+		protected static $_camelBack = array();
+		protected static $_underscore = array();
 		
 		public static function upperFirst($str) {
 			$str = substr($str, 0, 1);
@@ -31,8 +31,8 @@
 		 * @return string			The underscore formatted string.
 		 */
 		public static function underscore($string) {
-			if(isset(self::$underscore[$string])) {
-				return self::$underscore[$string];
+			if(isset(self::$_underscore[$string])) {
+				return self::$_underscore[$string];
 			}
 			
 			$str = lcfirst($string);
@@ -47,7 +47,7 @@
 				}
 			}
 			
-			return self::$underscore[$string] = $str;
+			return self::$_underscore[$string] = $str;
 		}
 		
 		/**
@@ -57,17 +57,17 @@
 		 * @param	string $str The underscore string to be formatted.
 		 * @return string			The formatted string.
 		 */
-		static function camelBack($str) {
-			if(isset(self::$camelBack[$str])) {
-				return self::$camelBack[$str];
+		public static function camelBack($str) {
+			if(isset(self::$_camelBack[$str])) {
+				return self::$_camelBack[$str];
 			}
 			
 			while(false !== ($pos = strpos($str, '_'))) {
 				$char = strtoupper(substr($str, $pos+1, 1));
-				$str = substr($str, 0, $pos) . $char . substr($str, $pos+2);
+				$str = substr($str, 0, $pos).$char.substr($str, $pos+2);
 			}
 			
-			return self::$camelBack[$str] = $str;
+			return self::$_camelBack[$str] = $str;
 		}
 		
 		public static function isUpper($str) {

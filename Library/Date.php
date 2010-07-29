@@ -61,7 +61,7 @@
 					? (isset($formats['year'][1]) && $years != 1 ? $formats['year'][1] : $formats['year'][0])
 					: $formats['year'];
 				
-				$string .= sprintf($format, $years) . $glue;
+				$string .= sprintf($format, $years).$glue;
 				
 				if(YEAR >= $cutoff) {
 					$cut = true;
@@ -73,7 +73,7 @@
 					? (isset($formats['month'][1]) && $months != 1 ? $formats['month'][1] : $formats['month'][0])
 					: $formats['month'];
 				
-				$string .= sprintf($format, $months) . $glue;
+				$string .= sprintf($format, $months).$glue;
 				
 				if(self::MONTH >= $cutoff) {
 					$cut = true;
@@ -85,7 +85,7 @@
 					? (isset($formats['month'][1]) && $months != 1 ? $formats['month'][1] : $formats['month'][0])
 					: $formats['month'];
 				
-				$string .= sprintf($format, $days) . $glue;
+				$string .= sprintf($format, $days).$glue;
 				
 				if(self::DAY >= $cutoff) {
 					$cut = true;
@@ -97,7 +97,7 @@
 					? (isset($formats['hour'][1]) && $hours != 1 ? $formats['hour'][1] : $formats['hour'][0])
 					: $formats['hour'];
 				
-				$string .= sprintf($format, $hours) . $glue;
+				$string .= sprintf($format, $hours).$glue;
 				
 				if(self::HOUR >= $cutoff) {
 					$cut = true;
@@ -109,7 +109,7 @@
 					? (isset($formats['minute'][1]) && $minutes != 1 ? $formats['minute'][1] : $formats['minute'][0])
 					: $formats['minute'];
 				
-				$string .= sprintf($format, $minutes) . $glue;
+				$string .= sprintf($format, $minutes).$glue;
 				
 				if(self::MINUTE >= $cutoff) {
 					$cut = true;
@@ -121,7 +121,7 @@
 					? (isset($formats['second'][1]) && $seconds != 1 ? $formats['second'][1] : $formats['second'][0])
 					: $formats['second'];
 				
-				$string .= sprintf($format, $seconds) . $glue;
+				$string .= sprintf($format, $seconds).$glue;
 			}
 			
 			return substr($string, 0, strlen($glue)*-1);

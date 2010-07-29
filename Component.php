@@ -2,13 +2,22 @@
 	namespace Frawst;
 	
 	abstract class Component {
-		protected $Controller;
+		protected $_Controller;
 		
-		public function __construct($Controller) {
-			$this->Controller = $Controller;
-			$this->init();
+		public function __construct($controller) {
+			$this->_Controller = $controller;
+			$this->_init();
 		}
-		public function init() {
+		
+		public function __get($name) {
+			if($name == 'Controller') {
+				return $this->_Controller;
+			} else {
+				throw new Exception\Frawst('Invalid Component property: '.$name);
+			}
+		}
+		
+		protected function _init() {
 			
 		}
 	}

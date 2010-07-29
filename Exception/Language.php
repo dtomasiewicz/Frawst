@@ -2,7 +2,7 @@
 	namespace Frawst\Exception;
 	
 	class Language extends Frawst {
-		private $severity;
+		public $severity;
 		
 		public function __construct($message, $code, $severity, $file, $line) {
 			parent::__construct($message, $code);

@@ -10,7 +10,7 @@
 		 *   
 		 * @var array
 		 */
-		private static $paths = array(
+		protected static $_paths = array(
 			'priority' => array(),
 			'app' => array(),
 			'core' => array()
@@ -24,11 +24,11 @@
 		 * @param string $scope The loading priority of the path.
 		 */
 		public static function addPath($path, $pathType = '*', $scope = 'priority') {
-			if(!isset(self::$paths[$scope][$pathType])) {
-				self::$paths[$scope][$pathType] = array();
+			if(!isset(self::$_paths[$scope][$pathType])) {
+				self::$_paths[$scope][$pathType] = array();
 			}
 			
-			self::$paths[$scope][$pathType][] = $path;
+			self::$_paths[$scope][$pathType][] = $path;
 		}
 		
 		/**
@@ -52,7 +52,7 @@
 		public static function importPath($class, $scope = null) {
 			if(is_null($scope)) {
 				// scope not set, try all of them
-				foreach(array_keys(self::$paths) as $scope) {
+				foreach(array_keys(self::$_paths) as $scope) {
 					if(null !== $path = self::importPath($class, $scope)) {
 						return $path;
 					}
@@ -72,8 +72,8 @@
 						$pathType = '*';
 					}
 					
-					if(isset(self::$paths[$scope][$pathType])) {
-						foreach(self::$paths[$scope][$pathType] as $rootPath) {
+					if(isset(self::$_paths[$scope][$pathType])) {
+						foreach(self::$_paths[$scope][$pathType] as $rootPath) {
 							if(file_exists($file = $rootPath.DIRECTORY_SEPARATOR.$subPath.'.php')) {
 								return $file;
 							}
