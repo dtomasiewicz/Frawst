@@ -12,21 +12,21 @@
 	class Request {
 		/**
 		 * The data controller to be used by this request
-		 * @access public (get)
+		 * @access public-read
 		 * @var object
 		 */
 		protected $_DataController;
 		
 		/**
 		 * The data mapper to be used by this request
-		 * @access public (get)
+		 * @access public-read
 		 * @var object
 		 */
 		protected $_DataMapper;
 		
 		/**
 		 * The cache controller to be used by this request
-		 * @access public (get)
+		 * @access public-read
 		 * @var object
 		 */
 		protected $_CacheController;
@@ -38,7 +38,7 @@
 		protected $_Controller;
 		
 		/**
-		 * An array of request route segments
+		 * An array of request route segments (controllers and an action)
 		 * @var array
 		 */
 		protected $_route;
@@ -83,6 +83,11 @@
 		 */
 		protected $_Form;
 		
+		/**
+		 * The response object for this request
+		 * @access public-read
+		 * @var Frawst\Response
+		 */
 		protected $_Response;
 		
 		/**
@@ -106,7 +111,7 @@
 		/**
 		 * Hacked to give the illusion of public readonly properties
 		 * @param string $name
-		 * @return object
+		 * @return object A read-only property
 		 */
 		public function __get($name) {
 			switch($name) {
@@ -121,6 +126,24 @@
 				default:
 					throw new Exception\Frawst('Trying to access undeclared property Request::$'.$name);
 			}
+		}
+		
+		/**
+		 * @return array Associative array of request headers
+		 */
+		public function headers() {
+			return $this->_headers;
+		}
+		
+		/**
+		 * Gets the value of a request header
+		 * @param string $name
+		 * @return string The value of the request header, or null if not set
+		 */
+		public function header($name) {
+			return isset($this->_headers[$name])
+				? $this->_headers[$name]
+				: null;
 		}
 		
 		/**
@@ -145,12 +168,9 @@
 		}
 		
 		/**
-		 * Returns the resolved route of the current request, with parameters.
-		 * If $changes is an associative array and the request method is GET,
-		 * will also append a querystring with $changes applied to the current
-		 * GET data (useful for pagination and sorting).
-		 * @param array $changes Associative array of changes to be made to GET data
-		 * @return string The resolved route with changes applied
+		 * Returns the resolved route of the current request.
+		 * @param bool $params If true, request parameters will also be appended
+		 * @return string The resolved route
 		 */
 		public function route($params = false) {
 			$route = implode('/', $this->_route);
@@ -163,13 +183,11 @@
 		}
 		
 		/**
-		 * Executes and renders a sub-request, using the same data controller,
-		 * data mapper, and cache controller as this request.
+		 * Creates a sub-request with the same DataController, DataMapper, and
+		 * CacheController as this one.
 		 * @param string $route
-		 * @param string $method
-		 * @param array $requestData
 		 * @param array $headers
-		 * @return string The rendered request view
+		 * @return Frawst\Request The sub-request object
 		 */
 		public function subRequest($route, $headers = array()) {
 			return new Request($route, $headers, $this->Data, $this->Mapper, $this->Cache);
@@ -234,10 +252,11 @@
 		}
 		
 		/**
-		 * Executes the controller action
+		 * Executes the controller action and sets the return data to this
+		 * Request's response object.
 		 * @param string $method Request method (POST, GET, etc)
 		 * @param array $data Request data
-		 * @return mixed The value returned from the action
+		 * @return mixed The response object for this Request
 		 */
 		public function execute($method = 'GET', $data = array()) {
 			$this->_method = strtoupper($method);			
@@ -256,7 +275,7 @@
 		}
 		
 		/**
-		 * @return string The request method
+		 * @return string The request method (POST, GET, etc.)
 		 */
 		public function method() {
 			return $this->_method;
@@ -311,7 +330,7 @@
 		}
 		
 		/**
-		 * Returns the request data
+		 * Returns request data
 		 * @param string $key A dot-style associative array index
 		 * @param string $default The value to return if the specified index was
 		 *                        not found
@@ -326,6 +345,7 @@
 		}
 		
 		/**
+		 * Returns a Form object using the request data, if it is compatible.
 		 * @return Frawst\Form
 		 */
 		public function form($formName) {

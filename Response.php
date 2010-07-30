@@ -3,18 +3,56 @@
 	use \Frawst\Exception,
 	    \Frawst\View\AppView;
 	
+   /**
+    * Handles a response to a Request. In charge of response headers, redirection,
+    * and rendering of a View if necessary.
+    */
 	class Response {
+		/**
+		 * The Request object to which this Response is responding to.
+		 * @access public-read
+		 * @var Request
+		 */
 		protected $_Request;
+		
+		/**
+		 * Response data, most likely the return value of the Request's
+		 * controller's execute() method.
+		 * @var array
+		 */
 		protected $_data;
+		
+		/**
+		 * Associative array of response headers. Never sent if the response
+		 * is simply "rendered" (as a sub-request).
+		 * @var array
+		 */
+		protected $_headers = array();
+		
+		/**
+		 * For internal redirects only, used if trying to render a redirected
+		 * request
+		 * @var string
+		 */
+		protected $_redirect;
+		
+		/**
+		 * View object. Should be able to render() the response data into an
+		 * information string.
+		 * @access public-read
+		 * @var AppView
+		 */
 		protected $_View;
-		protected $_headers = array(
-			'Content-Type' => 'text/html'
-		);
 		
 		public function __construct($request) {
 			$this->_Request = $request;
 		}
 		
+		/**
+		 * Faux readonly property simulation.
+		 * @param string $name
+		 * @return mixed A readonly property
+		 */
 		public function __get($name) {
 			switch($name) {
 				case 'Request':
@@ -24,6 +62,11 @@
 			}
 		}
 		
+		/**
+		 * Returns the response data. Will set the data first, if provided.
+		 * @param mixed $data If not null, data will be set to this.
+		 * @return mixed Response data
+		 */
 		public function data($data = null) {
 			if(!is_null($data)) {
 				$this->_data = $data;
@@ -31,56 +74,102 @@
 			return $this->_data;
 		}
 		
-		public function contentType($mime = null) {
-			if(!is_null($mime)) {
-				$this->_headers['Content-Type'] = $mime;
-			}
-			return $this->_headers['Content-Type'];
+		/**
+		 * @return array Associative array of response headers
+		 */
+		public function headers() {
+			return $this->_headers;
 		}
 		
+		/**
+		 * Returns the value of a response header. Will set the value first,
+		 * if provided.
+		 * @param string $name The name of the header
+		 * @param string $value The value to set the header to
+		 * @return The response header value
+		 */
+		public function header($name, $value = null) {
+			if(!is_null($value)) {
+				$this->_headers[$name] = $value;
+			}
+			
+			return isset($this->_headers[$name])
+				? $this->_headers[$name]
+				: null;
+		}
+		
+		/**
+		 * Convenience method for setting/getting the response Content-Type.
+		 * @param string $mime Mimetype to set
+		 * @return string The response Content-Type
+		 */
+		public function contentType($mime = null) {
+			return $this->header('Content-Type', $mime);
+		}
+		
+		/**
+		 * Queues the Response for redirection. Will NOT occur immediately, so
+		 * it is important to break or return in the calling context if further
+		 * execution is not desired. This is so that sub-requests to controller
+		 * actions do not result in an unexpected redirect.
+		 * 
+		 * HTTP redirection occurs when send() is invoked, before rendering. If the
+		 * redirect is internal and render() is invoked instead of send(), a sub-
+		 * request will be created to the target route, and the rendering of that
+		 * request will be returned instead.
+		 * 
+		 * @param string $to The destination route or (if external) URI
+		 * @param bool $external If specifying a URI instead of an internal
+		 *                       route, set this to true.
+		 * @return bool false
+		 */
 		public function redirect($to = '', $external = false) {
 			if(!$external) {
-				$to = rtrim(WEB_ROOT.'/'.$to, '/');
+				$this->_redirect = $to = trim($to, '/');
 				// some browsers (e.g. Firefox) fail to pass non-standard headers to next page
 				// this is somewhat of a hack to get it to work
 				if($this->_Request->isAjax()) {
 					$to .= AJAX_SUFFIX;
 				}
+				$to = WEB_ROOT.'/'.$to;
 			}
-			$this->location($to);
+			
+			$this->header('Location', $to);
+			
 			return false;
 		}
 		
-		public function location($location = null) {
-			if(!is_null($location)) {
-				$this->_headers['Location'] = $location;
-			}
-			return $this->_headers['Location'];
-		}
-		
 		/**
-		 * Renders the view. If a redirect has been queued, it will happen instead
+		 * Renders the view. If internally redirected, will render a sub-request.
 		 * @return string The rendered view
 		 */
 		public function render() {
-			$data = is_array($this->_data)
-				? $this->_data
-				: array('status' => $this->_data);
-				
-			$this->_View = new AppView($this);
-			return $this->_View->render(str_replace('/', DIRECTORY_SEPARATOR, $this->_Request->route()), $data);
+			if(isset($this->_redirect)) {
+				return $this->_Request->subRequest($this->_redirect, $this->_Request->headers())->execute()->render();
+			} elseif($this->header('Location')) {
+				throw new Exception\Frawst('Cannot render a request pending an external redirection.');
+			} else {
+				$this->_View = new AppView($this);
+				return $this->_View->render(str_replace('/', DIRECTORY_SEPARATOR, $this->_Request->route()), $this->_data);
+			}
 		}
 		
+		/**
+		 * Sends any response headers to the browser, along with the view rendering.
+		 * Redirection will happen instead, if it has been queued.
+		 */
 		public function send() {
 			foreach($this->_headers as $key => $value) {
 				header($key.': '.$value);
 				
 				// make sure it doesn't continue to render if redirected
 				if($key == 'Location') {
-					exit();
+					exit;
 				}
 			}
 			
 			echo $this->render();
+			// do not combine with above line, in case the rendering is an integer
+			exit;
 		}
 	}
