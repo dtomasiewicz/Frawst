@@ -26,6 +26,9 @@
 		
 		public function render($file, $data = array()) {
 			if(($path = Loader::importPath('Frawst\\View\\'.$file)) !== null) {
+				if(!is_array($data)) {
+					$data = array('status' => $data);
+				}
 				$content = $this->_renderFile($path, $data);
 				if(!$this->isAjax() && !is_null($this->_layout) && !is_null($layoutPath = Loader::importPath('Frawst\\View\\layout\\'.$this->_layout))) {
 					$render = $this->_renderFile($layoutPath, array('content' => $content) + $this->_layoutData);

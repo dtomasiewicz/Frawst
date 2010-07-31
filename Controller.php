@@ -45,7 +45,7 @@
 			if($action[0] == '_') {
 				return false;
 			} else {
-				return (bool) method_exists($this, $action) && !method_exists(__CLASS__, $action);
+				return (bool) (method_exists($this, $action) && !method_exists(__CLASS__, $action));
 			}
 		}
 		

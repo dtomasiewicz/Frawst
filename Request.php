@@ -243,8 +243,11 @@
 			if(isset($route[0]) && $this->_Controller->hasAction($action = strtolower(ltrim($route[0], '_')))) {
 				$this->_action = $action;
 				array_shift($route);
-			} else {
+			} elseif($this->_Controller->hasAction('index')) {
 				$this->_action = 'index';
+			} else {
+				//@todo better 404 handling
+				exit('404');
 			}
 			
 			$this->_route[] = $this->_action;
@@ -346,15 +349,36 @@
 		
 		/**
 		 * Returns a Form object using the request data, if it is compatible.
+		 * @param string $formName The name of the form. If not provided, will check for a
+		 *                         ___FORMNAME key in the request data.
 		 * @return Frawst\Form
 		 */
-		public function form($formName) {
-			if(isset($this->_Form) && $this->_Form->name() == $formName) {
-				return $this->_Form;
-			} elseif(!empty($this->_data) && class_exists($class = 'Frawst\\Form\\'.$formName) && $class::compatible($this->_data)) {
-				return $this->_Form = new $class($this->_data);
+		public function form($formName = null) {
+			if(isset($this->_Form)) {
+				return is_null($formName) || $this->_Form->name() == $formName
+					? $this->_Form
+					: null;
+			} elseif(empty($this->_data)) {
+				return false;
 			}
 			
-			return null;
+			$data = $this->_data;
+			
+			if(isset($data['___FORMNAME'])) {
+				if(is_null($formName)) {
+					$formName = $data['___FORMNAME'];
+				}
+				unset($data['___FORMNAME']);
+			}
+			
+			if(is_null($formName)) {
+				return false;
+			}
+			
+			if(class_exists($class = 'Frawst\\Form\\'.$formName) && $class::compatible($data)) {
+				return $this->_Form = new $class($data);
+			} else {
+				return null;
+			}
 		}
 	}

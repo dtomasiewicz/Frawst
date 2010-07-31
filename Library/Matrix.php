@@ -16,7 +16,7 @@
 		 * Returns a flattened version of the data (one-dimensional array
 		 * with dot-separated paths as its keys).
 		 */
-		public static function flatten(&$array, $path = null) {
+		public static function flatten($array, $path = null) {
 			$data = static::pathGet($array, $path);
 			
 			if(is_null($path)) {

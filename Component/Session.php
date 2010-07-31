@@ -1,26 +1,25 @@
 <?php
 	namespace Frawst\Component;
 	use \Frawst\Component,
-		\Frawst\Library\Security;
+		\Frawst\Library\Security,
+		\Frawst\Library\Cookie as CookieLib;
 	
 	class Session extends Component implements \ArrayAccess {
 		const cookieName = 'Session';
 		protected $_id;
-		protected $_feedback;
 		
 		protected function _init() {
-			$this->_feedback = isset($this['FEEDBACK'])
-				? unserialize($this['FEEDBACK'])
-				: array();
-			
 			$this->start();
 		}
 		
 		public function start() {
-			$id = $this->_Controller->Cookie[self::cookieName.'.SESSID'];
-			if($id === null) {
+			$cookie = new CookieLib(self::cookieName.'.SESSID');
+			if(isset($cookie->value)) {
+				$id = $cookie->value;
+			} else {
 				$id = Security::hash(microtime(true));
-				$this->_Controller->Cookie[self::cookieName.'.SESSID'] = $id;
+				$cookie->value = $id;
+				$cookie->save();
 			}
 			// the session ID here is NOT the same as the one in the cookie. the
 			// ID used internally is the cookie ID combined with the remote address,
@@ -29,16 +28,19 @@
 		}
 		
 		public function offsetSet($offset, $value) {
-			$this->_Controller->Cookie[self::cookieName.'.'.$offset] = $value;
+			$cookie = new CookieLib(self::cookieName.'.'.$offset, $value);
+			$cookie->save();
 		}
 		public function offsetGet($offset) {
-			return $this->_Controller->Cookie[self::cookieName.'.'.$offset];
+			$cookie = new CookieLib(self::cookieName.'.'.$offset);
+			return $cookie->value;
 		}
 		public function offsetExists($offset) {
-			return isset($this->_Controller->Cookie[self::cookieName.'.'.$offset]);
+			return CookieLib::exists(self::cookieName.'.'.$offset);
 		}
 		public function offsetUnset($offset) {
-			unset($this->_Controller->Cookie[self::cookieName.'.'.$offset]);
+			$cookie = new CookieLib(self::cookieName.'.'.$offset);
+			$cookie->delete();
 		}
 		
 		public function id() {
@@ -46,17 +48,23 @@
 		}
 		
 		public function destroy() {
-			unset($this->_Controller->Cookie[self::cookieName]);
+			unset($this['SESSID']);
 			$this->start();
 		}
 		
 		public function addFeedback($message, $status = 0) {
-			$this->_feedback[] = array('message' => $message, 'status' => $status);
-			$this['FEEDBACK'] = serialize($this->_feedback);
+			$feedback = isset($this['FEEDBACK']) ? unserialize($this['FEEDBACK']) : array();
+			$feedback[] = array('message' => $message, 'status' => $status);
+			$this['FEEDBACK'] = serialize($feedback);
 		}
 		
 		public function feedback() {
-			unset($this['FEEDBACK']);
-			return $this->_feedback;
+			if(isset($this['FEEDBACK'])) {
+				$feedback = unserialize($this['FEEDBACK']);
+				unset($this['FEEDBACK']);
+				return $feedback;
+			} else {
+				return array();
+			}
 		}
 	}

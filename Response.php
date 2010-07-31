@@ -156,19 +156,25 @@
 		
 		/**
 		 * Sends any response headers to the browser, along with the view rendering.
-		 * Redirection will happen instead, if it has been queued.
+		 * 
+		 * Headers are sent after the view is rendered and before it is outputted,
+		 * in case the headers are changed from within the view. The only exception is
+		 * the Location (redirect) header, which will be sent first since rendering a
+		 * redirected request would be a waste of time.
 		 */
 		public function send() {
-			foreach($this->_headers as $key => $value) {
-				header($key.': '.$value);
-				
-				// make sure it doesn't continue to render if redirected
-				if($key == 'Location') {
-					exit;
-				}
+			if($redirect = $this->header('Location')) {
+				header('Location: '.$redirect);
+				exit;
 			}
 			
-			echo $this->render();
+			$out = $this->render();
+			
+			foreach($this->_headers as $key => $value) {
+				header($key.': '.$value);
+			}
+			
+			echo $out;
 			// do not combine with above line, in case the rendering is an integer
 			exit;
 		}

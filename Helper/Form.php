@@ -25,6 +25,7 @@
 			$attrs['method'] = $method;
 			
 			return '<form '.$this->parseAttributes($attrs).'>'.
+			       '<input type="hidden" name="___FORMNAME" value="'.$this->name().'">'.
 			       '<input type="hidden" name="___METHOD" value="'.$method.'">';
 		}
 		
@@ -35,14 +36,13 @@
 		
 		public function errors($field) {
 			$errors = $this->_Form->errors($field);
-			$out = '';
-			if(count($errors)) {
-				$out .= '<ul class="fieldErrors">';
-				foreach($errors as $message) {
-					$out .= '<li>'.$message.'</li>';
-				}
-				$out .= '</ul>';
+			
+			$out = '<ul class="fieldErrors fieldErrors-'.str_replace('.', '-', $field).'">';
+			foreach($errors as $message) {
+				$out .= '<li>'.$message.'</li>';
 			}
+			$out .= '</ul>';
+			
 			return $out;
 		}
 		
