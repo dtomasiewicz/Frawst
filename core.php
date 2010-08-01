@@ -63,22 +63,6 @@
 		date_default_timezone_set(Config::read('general.timezone'));
 		setlocale(LC_ALL, Config::read('general.locale'));
 		
-		$data = null;
-		$mapper = null;
-		$cache = null;
-		if($cacheConfig = Config::read('cache')) {
-			$c = $cacheConfig['controller'];
-			$cache = new $c($cacheConfig);
-		}
-		if($dataConfig = Config::read('data')) {
-			$c = $dataConfig['controller'];
-			$data = new $c($dataConfig, $cache);
-		}
-		if($ormConfig = Config::read('orm')) {
-			$c = $ormConfig['mapper'];
-			$mapper = new $c($ormConfig, $data, $cache);
-		}
-		
 		$method = $_SERVER['REQUEST_METHOD'];
 		if($method == 'GET') {
 			$requestData = $_GET;
@@ -89,7 +73,8 @@
 			parse_str(file_get_contents('php://input'), $requestData);
 		}
 		
-		// REST hack for browsers that don't support PUT and DELETE methods
+		// REST hack for browsers that don't support all methods. only works if the
+		// originating script passes this magic parameter, of course
 		if(isset($requestData['___METHOD'])) {
 			$method = $requestData['___METHOD'];
 			unset($requestData['___METHOD']);
@@ -108,12 +93,18 @@
 			
 			$requestData = stripslashes_deep($requestData);
 			$_COOKIE = stripslashes_deep($_COOKIE);
-			// these two lines could be taken out... if they are, accessing
+			// the following two lines could be taken out... if they are, accessing
 			// form data with $_GET and $_POST will be inconsistent, but it's
-			// also unneccessary
+			// also unneccessary. but really, if you're the type of person who
+			// has magic quotes turned on at all, saving a few microseconds isn't
+			// going to help you, i'm afraid.
 			$_GET = stripslashes_deep($_GET);
 			$_POST = stripslashes_deep($_POST);
 		}
+		
+		/**
+		 * Pull request route, method, and variables from $_SERVER
+		 */
 		
 		$route = isset($_SERVER['PATH_INFO'])
 			? $_SERVER['PATH_INFO']
@@ -127,6 +118,30 @@
 		} elseif(isset($_SERVER['HTTP_X_REQUESTED_WITH'])) {
 			$headers['X-Requested-With'] = $_SERVER['HTTP_X_REQUESTED_WITH'];
 		}
+		
+		/**
+		 * Data, ORM, and Cache initialization
+		 */
+		
+		$data = null;
+		$mapper = null;
+		$cache = null;
+		if($cacheConfig = Config::read('cache')) {
+			$c = $cacheConfig['controller'];
+			$cache = new $c($cacheConfig);
+		}
+		if($dataConfig = Config::read('data')) {
+			$c = $dataConfig['controller'];
+			$data = new $c($dataConfig, $cache);
+		}
+		if($ormConfig = Config::read('orm')) {
+			$c = $ormConfig['mapper'];
+			$mapper = new $c($ormConfig, $data, $cache);
+		}
+		
+		/**
+		 * And finally, the request itself.
+		 */
 		
 		$request = new Request($route, $headers, $data, $mapper, $cache);
 		$request->execute($method, $requestData)->send();
