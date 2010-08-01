@@ -68,10 +68,10 @@
 			return rtrim($this->_Response->Request->route(true).$qs, '?&');
 		}
 
-		public function ajax($route, $method = 'GET', $data = array(), $headers = array()) {
+		public function ajax($route, $data = array(), $method = 'GET', $headers = array()) {
 			$headers['X-Requested-With'] = 'XMLHttpRequest';
-			$request = $this->_Response->Request->subRequest($route, $headers);
-			return $request->execute($method, $data)->render();
+			$request = $this->_Response->Request->subRequest($route, $data, $method, $headers);
+			return $request->execute()->render();
 		}
  		
  		protected function _helper($name) {

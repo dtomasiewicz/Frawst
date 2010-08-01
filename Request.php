@@ -6,8 +6,6 @@
 	/**
 	 * Request object. Each request consists of a single controller and,
 	 * optionally, a single View.
-	 * @author ShudderTech
-	 *
 	 */
 	class Request {
 		/**
@@ -89,22 +87,36 @@
 		 * @var Frawst\Response
 		 */
 		protected $_Response;
-		
+	
 		/**
 		 * Constructor
 		 * @param string $route
+		 * @param array $data
+		 * @param string $method
 		 * @param array $headers
-		 * @param object $data
-		 * @param object $mapper
-		 * @param object $cache
+		 * @param object $dataController
+		 * @param object $dataMapper
+		 * @param object $cacheController
 		 */
-		public function __construct($route, $headers = array(), $data = null, $mapper = null, $cache = null) {
-			$this->_headers = $headers;
-			$this->_DataController = $data;
-			$this->_DataMapper = $mapper;
-			$this->_CacheController = $cache;
-			$this->_dispatch($route);
+		public function __construct($route, $data = array(), $method = 'GET', $headers = array(),
+		  $dataController = null, $dataMapper = null, $cacheController = null) {
+		  	if(isset($data['___FORMNAME'])) {
+		  		$formName = $data['___FORMNAME'];
+		  		unset($data['___FORMNAME']);
+		  		$this->_data = $data;
+		  		$this->_Form = $this->form($formName);
+		  	} else {
+		  		$this->_data = $data;
+		  	}
+		  	
+		  	$this->_method = $method;
+		  	$this->_headers = $headers;
+		  	
+			$this->_DataController = $dataController;
+			$this->_DataMapper = $dataMapper;
+			$this->_CacheController = $cacheController;
 			
+			$this->_dispatch($route);
 			$this->_Response = new Response($this);
 		}
 		
@@ -189,8 +201,8 @@
 		 * @param array $headers
 		 * @return Frawst\Request The sub-request object
 		 */
-		public function subRequest($route, $headers = array()) {
-			return new Request($route, $headers, $this->Data, $this->Mapper, $this->Cache);
+		public function subRequest($route, $data = array(), $method = 'GET', $headers = array()) {
+			return new Request($route, $data, $method, $headers, $this->Data, $this->Mapper, $this->Cache);
 		}
 		
 		/**
@@ -260,13 +272,11 @@
 		 * @param string $method Request method (POST, GET, etc)
 		 * @param array $data Request data
 		 * @return mixed The response object for this Request
+		 * @todo move $method and $data to constructor, attempt to construct form in constructor
+		 *       (get rid of ___FORMNAME early)
 		 */
-		public function execute($method = 'GET', $data = array()) {
-			$this->_method = strtoupper($method);			
-			$this->_data = $data;
-			
+		public function execute() {
 			$this->_Response->data($this->_Controller->execute($this->_action, $this->_params));
-			
 			return $this->_Response;
 		}
 		
@@ -358,25 +368,10 @@
 				return is_null($formName) || $this->_Form->name() == $formName
 					? $this->_Form
 					: null;
-			} elseif(empty($this->_data)) {
-				return false;
-			}
-			
-			$data = $this->_data;
-			
-			if(isset($data['___FORMNAME'])) {
-				if(is_null($formName)) {
-					$formName = $data['___FORMNAME'];
-				}
-				unset($data['___FORMNAME']);
-			}
-			
-			if(is_null($formName)) {
-				return false;
-			}
-			
-			if(class_exists($class = 'Frawst\\Form\\'.$formName) && $class::compatible($data)) {
-				return $this->_Form = new $class($data);
+			} elseif(empty($this->_data) || is_null($formName)) {
+				return null;
+			} elseif(class_exists($class = 'Frawst\\Form\\'.$formName) && $class::compatible($this->_data)) {
+				return new $class($this->_data);
 			} else {
 				return null;
 			}

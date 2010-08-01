@@ -143,6 +143,6 @@
 		 * And finally, the request itself.
 		 */
 		
-		$request = new Request($route, $headers, $data, $mapper, $cache);
-		$request->execute($method, $requestData)->send();
+		$request = new Request($route, $requestData, $method, $headers, $data, $mapper, $cache);
+		$request->execute()->send();
 	}
