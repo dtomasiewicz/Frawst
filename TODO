@@ -1,6 +1,5 @@
-- put Validator in core library
-- form validation
 - re-integrate ORM into core? partially at least
+  - decision: allow it to use core libraries, but still do not reference it from the core
 - make ORM accessible to Form objects
 - having to pass in the data object to Models every time they're constructed is
   a pain

@@ -1,4 +1,4 @@
-Frawst Application Development Framework 0.1d (the *d* is for *development*)
+Frawst Application Development Framework 0.1d (the *d* is for *development*!)
 ======
 
 **What is this?**
@@ -24,3 +24,7 @@ At the moment, there is zero to no documentation available, so I don't really ex
 If you somehow managed to find this project, despite the non-existence of a website or any substantial documentation, then feel free to try it out and modify it at your own risk. Remember that it's still in initial development, so don't use it for anything important.
 
 Eventually there will be a link to a website and perhaps some tutorials here; seeing as though I'm working and school is starting soon, I'm not sure when that will be.
+
+Daniel Tomasiewicz
+dtomasiewicz@gmail.com
+http://www.fourstaples.com

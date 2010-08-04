@@ -3,7 +3,7 @@
 	
 	abstract class Controller implements \ArrayAccess {
 		protected $_components;
-		protected $_persist;
+		protected $_data;
 		protected $_Request;
 		protected $_Cache;
 		
@@ -71,15 +71,15 @@
 		}
 		
 		public function offsetExists($offset) {
-			return array_key_exists($offset, $this->_persist);
+			return array_key_exists($offset, $this->_data);
 		}
 		public function offsetGet($offset) {
-			return $this->_persist[$offset];
+			return $this->_data[$offset];
 		}
 		public function offsetSet($offset, $value) {
-			$this->_persist[$offset] = $value;
+			$this->_data[$offset] = $value;
 		}
 		public function offsetUnset($offset) {
-			unset($this->_persist[$offset]);
+			unset($this->_data[$offset]);
 		}
 	}

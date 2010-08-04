@@ -87,6 +87,11 @@
 		 * @var Frawst\Response
 		 */
 		protected $_Response;
+		
+		/**
+		 * Persistent data to be sent to sub-requests.
+		 */
+		protected $_persist;
 	
 		/**
 		 * Constructor
@@ -97,9 +102,10 @@
 		 * @param object $dataController
 		 * @param object $dataMapper
 		 * @param object $cacheController
+		 * @param array $persist
 		 */
 		public function __construct($route, $data = array(), $method = 'GET', $headers = array(),
-		  $dataController = null, $dataMapper = null, $cacheController = null) {
+		  $dataController = null, $dataMapper = null, $cacheController = null, $persist = array()) {
 		  	if(isset($data['___FORMNAME'])) {
 		  		$formName = $data['___FORMNAME'];
 		  		unset($data['___FORMNAME']);
@@ -118,6 +124,8 @@
 			
 			$this->_dispatch($route);
 			$this->_Response = new Response($this);
+			
+			$this->_persist = $persist;
 		}
 		
 		/**
@@ -202,7 +210,7 @@
 		 * @return Frawst\Request The sub-request object
 		 */
 		public function subRequest($route, $data = array(), $method = 'GET', $headers = array()) {
-			return new Request($route, $data, $method, $headers, $this->Data, $this->Mapper, $this->Cache);
+			return new Request($route, $data, $method, $headers, $this->Data, $this->Mapper, $this->Cache, $this->_persist);
 		}
 		
 		/**
@@ -375,5 +383,21 @@
 			} else {
 				return null;
 			}
+		}
+		
+		/**
+		 * Get and set persistent data (passed on to sub-requests)
+		 * @param string $key A key for the data being set or retrieved
+		 * @param mixed $value The value being persisted
+		 * @return mixed The value stored under the persisted value
+		 */
+		public function persist($key, $value = null) {
+			if(!is_null($value)) {
+				$this->_persist[$key] = $value;
+			}
+			
+			return array_key_exists($key, $this->_persist)
+				? $this->_persist[$key]
+				: null;
 		}
 	}
