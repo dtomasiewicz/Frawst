@@ -3,13 +3,13 @@
 	use \DataPane;
 	
 	class HasOne extends Singular {
-		public function uniqueProperty() {
+		public function uniqueProperty () {
 			//@TODO make this behavior different if object is set
 			return array($this->subjectKeyField => $this->Subject->primaryKey());
 		}
 		
-		public function save() {
-			if($this->changed) {
+		public function save () {
+			if ($this->changed) {
 				$objectTable = $this->Object->tableName();
 			
 				// unlink old relation if exists
@@ -24,9 +24,9 @@
 				$delink->exec($this->Object->dataSource());
 			
 				// link the new association
-				if($this->related instanceof \Corelativ\Model) {
+				if ($this->related instanceof \Corelativ\Model) {
 					$this->related->{$this->subjectKeyField} = $this->Subject->primaryKey();
-					if($this->related->save()) {
+					if ($this->related->save()) {
 						$this->changed = false;
 					}
 				} else {

@@ -14,7 +14,7 @@
 		protected $objectKeyField;
 		protected $Subject;
 		
-		public function __construct($config, $mapper) {
+		public function __construct ($config, $mapper) {
 			parent::__construct($config, $mapper);
 			$this->Subject = $config['subject'];
 			
@@ -35,16 +35,16 @@
 				: lcfirst($this->objectAlias).ucfirst($this->Object->primaryKeyField());
 		}
 		/*
-		public function __call($method, $args) {
-			if(substr($method, 0, 4) == 'find' || substr($method, 0, 6) == 'delete') {
+		public function __call ($method, $args) {
+			if (substr($method, 0, 4) == 'find' || substr($method, 0, 6) == 'delete') {
 				// if it's a find/delete operation, inject the additional condition
 				$condition = $this->uniqueCondition();
 				
 				// if doing a findBy operation, shift indices over one
 				$shift = preg_match('/^(find|delete)(All)?By\w+$/', $method) ? 1 : 0;
 				
-				if(isset($args[$shift])) {
-					if(is_array($args[$shift]) || $args[$shift] instanceof Query || $args[$shift] instanceof ConditionSet) {
+				if (isset($args[$shift])) {
+					if (is_array($args[$shift]) || $args[$shift] instanceof Query || $args[$shift] instanceof ConditionSet) {
 						$args[$shift] = Model::addCondition($args[$shift], $condition);
 					} else {
 						$args[$shift+1] = $args[$shift];
@@ -58,7 +58,7 @@
 			return call_user_func_array(array(Model::factory($this->objectName), $method), $args);
 		}*/
 		
-		public function findAll($params = array()) {
+		public function findAll ($params = array()) {
 			$params = $this->normalizeParams($params);
 			$condition = $this->uniqueCondition();
 			$condition->add($params->where);
@@ -66,7 +66,7 @@
 			return parent::findAll($params);
 		}
 		
-		abstract protected function uniqueCondition();
-		abstract public function set($related);
-		abstract public function save();
+		abstract protected function uniqueCondition ();
+		abstract public function set ($related);
+		abstract public function save ();
 	}

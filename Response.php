@@ -44,7 +44,7 @@
 		 */
 		protected $_View;
 		
-		public function __construct($request) {
+		public function __construct ($request) {
 			$this->_Request = $request;
 		}
 		
@@ -53,8 +53,8 @@
 		 * @param string $name
 		 * @return mixed A readonly property
 		 */
-		public function __get($name) {
-			switch($name) {
+		public function __get ($name) {
+			switch ($name) {
 				case 'Request':
 					return $this->_Request;
 				default:
@@ -67,8 +67,8 @@
 		 * @param mixed $data If not null, data will be set to this.
 		 * @return mixed Response data
 		 */
-		public function data($data = null) {
-			if(!is_null($data)) {
+		public function data ($data = null) {
+			if (!is_null($data)) {
 				$this->_data = $data;
 			}
 			return $this->_data;
@@ -77,7 +77,7 @@
 		/**
 		 * @return array Associative array of response headers
 		 */
-		public function headers() {
+		public function headers () {
 			return $this->_headers;
 		}
 		
@@ -88,8 +88,8 @@
 		 * @param string $value The value to set the header to
 		 * @return The response header value
 		 */
-		public function header($name, $value = null) {
-			if(!is_null($value)) {
+		public function header ($name, $value = null) {
+			if (!is_null($value)) {
 				$this->_headers[$name] = $value;
 			}
 			
@@ -103,7 +103,7 @@
 		 * @param string $mime Mimetype to set
 		 * @return string The response Content-Type
 		 */
-		public function contentType($mime = null) {
+		public function contentType ($mime = null) {
 			return $this->header('Content-Type', $mime);
 		}
 		
@@ -123,12 +123,12 @@
 		 *                       route, set this to true.
 		 * @return bool false
 		 */
-		public function redirect($to = '', $external = false) {
-			if(!$external) {
+		public function redirect ($to = '', $external = false) {
+			if (!$external) {
 				$this->_redirect = $to = trim($to, '/');
 				// some browsers (e.g. Firefox) fail to pass non-standard headers to next page
 				// this is somewhat of a hack to get it to work
-				if($this->_Request->isAjax()) {
+				if ($this->_Request->isAjax()) {
 					$to .= AJAX_SUFFIX;
 				}
 				$to = WEB_ROOT.'/'.$to;
@@ -143,10 +143,10 @@
 		 * Renders the view. If internally redirected, will render a sub-request.
 		 * @return string The rendered view
 		 */
-		public function render() {
-			if(isset($this->_redirect)) {
+		public function render () {
+			if (isset($this->_redirect)) {
 				return $this->_Request->subRequest($this->_redirect, array(), 'GET', $this->_Request->headers())->execute()->render();
-			} elseif($this->header('Location')) {
+			} elseif ($this->header('Location')) {
 				throw new Exception\Frawst('Cannot render a request pending an external redirection.');
 			} else {
 				$this->_View = new AppView($this);
@@ -162,15 +162,15 @@
 		 * the Location (redirect) header, which will be sent first since rendering a
 		 * redirected request would be a waste of time.
 		 */
-		public function send() {
-			if($redirect = $this->header('Location')) {
+		public function send () {
+			if ($redirect = $this->header('Location')) {
 				header('Location: '.$redirect);
 				exit;
 			}
 			
 			$out = $this->render();
 			
-			foreach($this->_headers as $key => $value) {
+			foreach ($this->_headers as $key => $value) {
 				header($key.': '.$value);
 			}
 			

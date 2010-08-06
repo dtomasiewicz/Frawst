@@ -20,11 +20,11 @@
 		protected $Data;
 		protected $source;
 		
-		public function __construct($type, $tables, $params = array(), $data = null) {
+		public function __construct ($type, $tables, $params = array(), $data = null) {
 			$this->type = $type;
 			$this->tables = (array) $tables;
 			
-			if($params instanceof ConditionSet) {
+			if ($params instanceof ConditionSet) {
 				$params = array('where' => $params);
 			}
 			
@@ -56,8 +56,8 @@
 			$this->Data = $data;
 		}
 		
-		public function where($field, $value = null) {
-			if($field instanceof ConditionSet) {
+		public function where ($field, $value = null) {
+			if ($field instanceof ConditionSet) {
 				$this->where = $field;
 			} else {
 				$this->where = new ConditionSet();
@@ -66,10 +66,10 @@
 			return $this;
 		}
 		
-		public function orderBy($field, $direction = 'ASC') {
+		public function orderBy ($field, $direction = 'ASC') {
 			$this->order = array();
-			if(is_array($field)) {
-				foreach($field as $f => $d) {
+			if (is_array($field)) {
+				foreach ($field as $f => $d) {
 					$this->order[$f] = $d;
 				}
 			} else {
@@ -78,19 +78,19 @@
 			return $this;
 		}
 		
-		public function limit($limit, $offset = null) {
+		public function limit ($limit, $offset = null) {
 			$this->limit = $limit;
 			$this->offset = $offset;
 			return $this;
 		}
 		
-		public function groupBy($field) {
+		public function groupBy ($field) {
 			$this->group = (array) $field;
 			return $this;
 		}
 		
-		public function having($field, $value = null) {
-			if($field instanceof ConditionSet) {
+		public function having ($field, $value = null) {
+			if ($field instanceof ConditionSet) {
 				$this->having = $field;
 			} else {
 				$this->having = new ConditionSet();
@@ -99,8 +99,8 @@
 			return $this;
 		}
 		
-		public function set($field, $value = null) {
-			if(is_array($field)) {
+		public function set ($field, $value = null) {
+			if (is_array($field)) {
 				$this->values = $field;
 			} else {
 				$this->values = array($field => $value);
@@ -108,21 +108,21 @@
 			return $this;
 		}
 		
-		public function values($values) {
+		public function values ($values) {
 			$this->values = $values;
 		}
 		
-		public function options($options) {
+		public function options ($options) {
 			$this->options = (array) $options;
 		}
 		
-		public function exec($source = null) {
+		public function exec ($source = null) {
 			$source = is_null($source) ? $this->source : $source;
 			return $this->Data->query($this, $source);
 		}
 		
-		public function __get($name) {
-			if(property_exists($this, $name)) {
+		public function __get ($name) {
+			if (property_exists($this, $name)) {
 				return $this->$name;
 			} else {
 				//@todo exception
@@ -130,8 +130,8 @@
 			}
 		}
 		
-		public function __set($name, $value) {
-			if(property_exists($this, $name)) {
+		public function __set ($name, $value) {
+			if (property_exists($this, $name)) {
 				$this->$name = $value;
 			} else {
 				//@todo exception

@@ -13,7 +13,7 @@
 		protected $config;
 		private $factories = array();
 		
-		public function __construct($config = array(), DataPane\Controller $data = null, $cache = null) {
+		public function __construct ($config = array(), DataPane\Controller $data = null, $cache = null) {
 			$this->Data = $data;
 			$this->Cache = $cache;
 			$this->config = $config;
@@ -21,9 +21,9 @@
 			Model::$defaultMapper = $this;
 		}
 		
-		public function factory($modelName) {
-			if(!isset($this->factories[$modelName])) {
-				if(class_exists('\\Corelativ\\Model\\'.$modelName)) {
+		public function factory ($modelName) {
+			if (!isset($this->factories[$modelName])) {
+				if (class_exists('\\Corelativ\\Model\\'.$modelName)) {
 					$this->factories[$modelName] = new Factory(array('model' => $modelName), $this);
 				} else {
 					return false;
@@ -33,15 +33,15 @@
 			return $this->factories[$modelName];
 		}
 		
-		public function __get($model) {
+		public function __get ($model) {
 			return $this->factory($model);
 		}
 		
-		public function getDataController() {
+		public function getDataController () {
 			return $this->Data;
 		}
 		
-		public function getCacheController() {
+		public function getCacheController () {
 			return $this->Cache;
 		}
 	}

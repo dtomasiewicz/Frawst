@@ -5,13 +5,13 @@
 	class FileMatrix extends Matrix {
 		protected $_directory;
 		
-		public function __construct($directory, $data = array()) {
+		public function __construct ($directory, $data = array()) {
 			parent::__construct($data);
 			$this->_directory = $directory;
 		}
 		
-		public function offsetExists($offset) {
-			if(parent::offsetExists($offset)) {
+		public function offsetExists ($offset) {
+			if (parent::offsetExists($offset)) {
 				return true;
 			} else {
 				$path = $this->_directory.DIRECTORY_SEPARATOR.str_replace('.', DIRECTORY_SEPARATOR, $offset);
@@ -19,14 +19,14 @@
 			}
 		}
 		
-		public function offsetGet($offset) {
-			if(parent::offsetExists($offset)) {
+		public function offsetGet ($offset) {
+			if (parent::offsetExists($offset)) {
 				return parent::offsetGet($offset);
 			}
 			
 			$path = $this->_directory.DIRECTORY_SEPARATOR.str_replace('.', DIRECTORY_SEPARATOR, $offset);
 			
-			if(!file_exists($path) || !is_readable(dirname($path))) {
+			if (!file_exists($path) || !is_readable(dirname($path))) {
 				throw new Exception\File('Cannot get value from FileMatrix at: '.$offset);
 			}
 			
@@ -36,14 +36,14 @@
 			return $data;
 		}
 		
-		public function offsetSet($offset, $value) {
+		public function offsetSet ($offset, $value) {
 			$path = $this->_directory.DIRECTORY_SEPARATOR.str_replace('.', DIRECTORY_SEPARATOR, $offset);
 			
-			if(!file_exists(dirname($path))) {
+			if (!file_exists(dirname($path))) {
 				mkdir(dirname($path), 0, true);
 			}
 			
-			if(!is_writable(dirname($path))) {
+			if (!is_writable(dirname($path))) {
 				throw new Exception\File('Cannot set value to FileMatrix at '.$offset.': Directory is not writable.');
 			}
 			
@@ -51,12 +51,12 @@
 			parent::offsetSet($offset, $value);
 		}
 		
-		public function offsetUnset($offset) {
+		public function offsetUnset ($offset) {
 			$path = $this->_directory.DIRECTORY_SEPARATOR.str_replace('.', DIRECTORY_SEPARATOR, $offset);
 			
-			if(file_exists($path)) {
-				if(is_writable($path)) {
-					if(is_dir($path)) {
+			if (file_exists($path)) {
+				if (is_writable($path)) {
+					if (is_dir($path)) {
 						rmdir($path);
 					} else {
 						unlink($path);
@@ -68,12 +68,12 @@
 			}
 		}
 		
-		private function read($path) {
-			if(is_dir($path)) {
+		private function read ($path) {
+			if (is_dir($path)) {
 				$data = array();
 				$handle = opendir($path);
-				while(false !== ($file = readdir($handle))) {
-					if($file != '.' && $file != '..') {
+				while (false !== ($file = readdir($handle))) {
+					if ($file != '.' && $file != '..') {
 						$data[$file] = self::read($path.DIRECTORY_SEPARATOR.$file);
 					}
 				}

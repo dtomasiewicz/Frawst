@@ -23,8 +23,8 @@
 		 * @param string $pathType The namespace covered by the path, * = global namespace
 		 * @param string $scope The loading priority of the path.
 		 */
-		public static function addPath($path, $pathType = '*', $scope = 'priority') {
-			if(!isset(self::$_paths[$scope][$pathType])) {
+		public static function addPath ($path, $pathType = '*', $scope = 'priority') {
+			if (!isset(self::$_paths[$scope][$pathType])) {
 				self::$_paths[$scope][$pathType] = array();
 			}
 			
@@ -49,11 +49,11 @@
 		 * @param scope The scope to check. If null, all scopes will be checked.
 		 * @return The path to the requested library if it is found, or null.
 		 */
-		public static function importPath($class, $scope = null) {
-			if(is_null($scope)) {
+		public static function importPath ($class, $scope = null) {
+			if (is_null($scope)) {
 				// scope not set, try all of them
-				foreach(array_keys(self::$_paths) as $scope) {
-					if(null !== $path = self::importPath($class, $scope)) {
+				foreach (array_keys(self::$_paths) as $scope) {
+					if (null !== $path = self::importPath($class, $scope)) {
 						return $path;
 					}
 				}
@@ -63,18 +63,18 @@
 				$parts = explode('\\', trim($class, '\\'));
 				$base = array();
 				
-				while(count($parts) > 0) {
+				while (count($parts) > 0) {
 					array_unshift($base, array_pop($parts));
 					$pathType = implode('\\', $parts);
 					$subPath = implode(DIRECTORY_SEPARATOR, $base);
 					
-					if($pathType == '') {
+					if ($pathType == '') {
 						$pathType = '*';
 					}
 					
-					if(isset(self::$_paths[$scope][$pathType])) {
-						foreach(self::$_paths[$scope][$pathType] as $rootPath) {
-							if(file_exists($file = $rootPath.DIRECTORY_SEPARATOR.$subPath.'.php')) {
+					if (isset(self::$_paths[$scope][$pathType])) {
+						foreach (self::$_paths[$scope][$pathType] as $rootPath) {
+							if (file_exists($file = $rootPath.DIRECTORY_SEPARATOR.$subPath.'.php')) {
 								return $file;
 							}
 						}
@@ -92,8 +92,8 @@
 		 * @param string $scope The scope to look in. If null, all scopes will be checked.
 		 * @return True if the library exists and is loaded, false otherwise.
 		 */
-		public static function import($class, $scope = null) {
-			if(null !== $path = self::importPath($class, $scope)) {
+		public static function import ($class, $scope = null) {
+			if (null !== $path = self::importPath($class, $scope)) {
 				require $path;
 				return true;
 			} else {

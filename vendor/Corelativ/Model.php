@@ -116,7 +116,7 @@
 		 * Constructor. This is the only place a primary key can be set from outside
 		 * of the model.
 		 */
-		public function __construct($properties = array(), $mapper = null) {
+		public function __construct ($properties = array(), $mapper = null) {
 			$this->Mapper = $mapper;
 			$this->Data = $mapper->getDataController();
 			$this->Cache = $mapper->getCacheController();
@@ -129,7 +129,7 @@
 			$this->primaryKeyField = static::primaryKeyField();
 			$this->displayField = static::displayField();
 			
-			if($properties instanceof Factory) {
+			if ($properties instanceof Factory) {
 				// empty model for use by a factory
 				$this->Factory = $properties;
 			} else {
@@ -140,9 +140,9 @@
 				
 				$this->saved = isset($properties[$this->primaryKeyField]);
 				
-				foreach($this->schema as $field => $info) {
-					if(isset($properties[$field])) {
-						if($this->saved) {
+				foreach ($this->schema as $field => $info) {
+					if (isset($properties[$field])) {
+						if ($this->saved) {
 							$this->properties[$field] = $properties[$field];
 						} else {
 							$this->properties[$field] = $this->Data->defaultValue($info, $this->dataSource);
@@ -155,23 +155,23 @@
 			}
 		}
 		
-		public function __get($property) {
+		public function __get ($property) {
 			return $this->get($property);
 		}
 		
-		public function __set($property, $value) {
+		public function __set ($property, $value) {
 			$this->set($property, $value);
 		}
 		
-		public function __toString() {
+		public function __toString () {
 			return $this->get($this->displayField);
 		}
 		
-		public function serialize() {
+		public function serialize () {
 			return serialize($this->properties);
 		}
 		
-		public function unserialize($properties) {
+		public function unserialize ($properties) {
 			$this->__construct(unserialize($properties), self::$defaultMapper);
 		}
 		
@@ -183,13 +183,13 @@
 		 * @param string $property The name of the property/relation
 		 * @return mixed The value of the property, or a relation object, if exists.
 		 */
-		public function get($property = null) {
-			if(is_null($property)) {
+		public function get ($property = null) {
+			if (is_null($property)) {
 				return $this->changes + $this->properties;
-			} elseif($this->propertyExists($property)) {
+			} elseif ($this->propertyExists($property)) {
 				return isset($this->changes[$property]) ? $this->changes[$property] : $this->properties[$property];
-			} elseif($rel = $this->relate($property)) {
-				if($rel instanceof Factory\Singular) {
+			} elseif ($rel = $this->relate($property)) {
+				if ($rel instanceof Factory\Singular) {
 					return $rel->find();
 				} else {
 					return $rel;
@@ -219,33 +219,33 @@
 		 * @param array $values An array of property => value pairs to be set
 		 * @param boolean $autoRelate Whether or not to allow relation setting
 		 */
-		public function set($property, $value = '', $autoRelate = true) {
+		public function set ($property, $value = '', $autoRelate = true) {
 			$success = true;
-			if(is_array($property)) {
+			if (is_array($property)) {
 				// signature[2]
 				$autoRelate = $value;
-				if($autoRelate !== false) {
+				if ($autoRelate !== false) {
 					$autoRelate = true;
 				}
 				
-				foreach($property as $p => $v) {
+				foreach ($property as $p => $v) {
 					$this->set($p, $v, $autoRelate);
 				}
 			} else {
-				if($this->propertyExists($property)) {
-					if($property != $this->primaryKeyField) {
+				if ($this->propertyExists($property)) {
+					if ($property != $this->primaryKeyField) {
 						$setMethod = 'set'.ucfirst($property);
 						
-						if(method_exists($this, $setMethod)) {
+						if (method_exists($this, $setMethod)) {
 							$this->changes[$property] = $this->$setMethod($value);
 						} else {
 							$this->changes[$property] = $value;
 						}
-					} elseif($value != $this->primaryKey()) {
+					} elseif ($value != $this->primaryKey()) {
 						//@todo exception
 						exit('trying to set a primary key different from the saved primary key.');
 					}
-				} elseif($autoRelate && ($rel = $this->relate($property))) {
+				} elseif ($autoRelate && ($rel = $this->relate($property))) {
 					$rel->set($value);
 				} else {
 					//@todo exception
@@ -266,19 +266,19 @@
 		 * @signature[2] (array $properties)
 		 * @param array $properties An array of properties/relations to be reverted
 		 */
-		public function revert($property = null) {
-			if(is_array($property)) {
+		public function revert ($property = null) {
+			if (is_array($property)) {
 				// signature[2]
-				foreach($property as $p) {
+				foreach ($property as $p) {
 					$this->revert($p);
 				}
-			} elseif(is_null($property)) {
+			} elseif (is_null($property)) {
 				$this->changes = array();
 				$this->relations = array();
 			} else {
-				if($this->propertyExists($property) && isset($this->changes[$property])) {
+				if ($this->propertyExists($property) && isset($this->changes[$property])) {
 					unset($this->changes[$property]);
-				} elseif(isset($this->relations[$property])) {
+				} elseif (isset($this->relations[$property])) {
 					unset($this->relations[$property]);
 				}
 			}
@@ -287,23 +287,23 @@
 		/**
 		 * Saves models.
 		 */
-		public function save($relationships = true) {
-			if(!$this->callHook('beforeValidate')) {
+		public function save ($relationships = true) {
+			if (!$this->callHook('beforeValidate')) {
 				return false;
 			}
 			
-			if($this->validate($relationships) !== true) {
+			if ($this->validate($relationships) !== true) {
 				return false;
 			}
 			
-			if(!$this->callHook('beforeSave')) {
+			if (!$this->callHook('beforeSave')) {
 				return false;
 			}
 			
 			$success = true;
 			// only go through with the save if the model is unsaved or has changes
-			if(count($this->changes) || !$this->saved) {
-				if($this->saved) {
+			if (count($this->changes) || !$this->saved) {
+				if ($this->saved) {
 					$q = new DataPane\Query('update', $this->tableName, array(
 						'values' => $this->changes,
 						'where' => new DataPane\ConditionSet(array($this->primaryKeyField => $this->primaryKey())),
@@ -313,11 +313,11 @@
 					$q = new DataPane\Query('insert', $this->tableName, array('values' => $this->changes));
 				}
 				
-				if($success = $this->Data->query($q, $this->dataSource)) {
+				if ($success = $this->Data->query($q, $this->dataSource)) {
 					$this->properties = $this->changes + $this->properties;
 					$this->changes = array();
 							
-					if($q->type == 'insert') {
+					if ($q->type == 'insert') {
 						$this->properties[$this->primaryKeyField] = $this->Data->insertId($this->dataSource);
 						$this->saved = true;
 					}
@@ -325,8 +325,8 @@
 			}
 			
 			// save model relations
-			if($success) {
-				if($relationships) {
+			if ($success) {
+				if ($relationships) {
 					$this->saveRelationships();
 				}
 				$this->callHook('afterSave');
@@ -340,8 +340,8 @@
 		/**
 		 * Saves relationships.
 		 */
-		private function saveRelationships() {
-			foreach($this->relations as $relation) {
+		private function saveRelationships () {
+			foreach ($this->relations as $relation) {
 				$relation->save();
 			}
 		}
@@ -349,19 +349,19 @@
 		/**
 		 * Returns true if validation passes
 		 */
-		public function validate($relationships = true) {
+		public function validate ($relationships = true) {
 			$validate = Validator::check($this, $this->validation);
-			if(is_array($validate)) {
+			if (is_array($validate)) {
 				$this->errors = $validate;
 			} else {
 				$this->errors = array();
 			}
 			
-			if($relationships) {
+			if ($relationships) {
 				// validate relations too
-				foreach($this->relations as $alias => $relation) {
+				foreach ($this->relations as $alias => $relation) {
 					$rValidate = $relation->validate();
-					if(is_array($rValidate)) {
+					if (is_array($rValidate)) {
 						$this->errors[$alias] = $rValidate;
 					}
 				}
@@ -373,13 +373,13 @@
 		/**
 		 * Deletes this model.
 		 */
-		public function delete() {
+		public function delete () {
 			$q = new DataPane\Query('delete', $this->tableName, array(
 				'limit' => 1,
 				'where' => new DataPane\ConditionSet(array($this->primaryKeyField => $this->primaryKey()))
 			));
 			
-			if($result = $this->Data->query($q, $this->dataSource)) {
+			if ($result = $this->Data->query($q, $this->dataSource)) {
 				//@TODO delete relations?
 				$this->properties[$this->primaryKeyField] = '';
 				$this->saved = false;
@@ -392,20 +392,20 @@
 		/**
 		 * Methods to return validation errors from the previous validation attempt.
 		 */
-		public function errors($field = null) {
-			if(is_null($field)) {
+		public function errors ($field = null) {
+			if (is_null($field)) {
 				return $this->errors;
 			} else {
 				return $this->errors[$field];
 			}
 		}
 		
-		public function setErrors($field, $errors = array()) {
+		public function setErrors ($field, $errors = array()) {
 			$this->errors[$field] = $errors;
 		}
 		
-		public function addError($field, $error) {
-			if($old = $this->errors[$field]) {
+		public function addError ($field, $error) {
+			if ($old = $this->errors[$field]) {
 				$old[] = $error;
 				$this->errors[$field] = $old;
 			} else {
@@ -413,12 +413,12 @@
 			}
 		}
 		
-		public function valid($fields = null) {
-			if(!is_array($fields)) {
+		public function valid ($fields = null) {
+			if (!is_array($fields)) {
 				$fields = array($fields);
 			}
-			foreach($fields as $field) {
-				if(isset($this->errors[$field]) && count($this->errors[$field]) > 0) {
+			foreach ($fields as $field) {
+				if (isset($this->errors[$field]) && count($this->errors[$field]) > 0) {
 					return false;
 				}
 			}
@@ -428,25 +428,25 @@
 		/**
 		 * Calls a hook (callback) on this model
 		 */
-		public function callHook($method, $args = array()) {
+		public function callHook ($method, $args = array()) {
 			return call_user_func_array(array($this, $method), $args);
 		}
 		
-		public function propertyExists($property) {
+		public function propertyExists ($property) {
 			return array_key_exists($property, $this->schema);
 		}
 		
-		public function relate($alias) {
-			if(isset($this->relations[$alias])) {
+		public function relate ($alias) {
+			if (isset($this->relations[$alias])) {
 				return $this->relations[$alias];
-			} elseif(isset($this->related[$alias])) {
+			} elseif (isset($this->related[$alias])) {
 				// create the relation object
 				$related = $this->related[$alias];
-				if(is_string($related)) {
+				if (is_string($related)) {
 					$related = array('type' => $related);
 				}
 				$related['objectAlias'] = $alias;
-				if(!isset($related['model'])) {
+				if (!isset($related['model'])) {
 					$related['model'] = $alias;
 				}
 				$related['subject'] = $this;
@@ -458,26 +458,26 @@
 			}
 		}
 		
-		public function factory($model) {
+		public function factory ($model) {
 			return $this->Mapper->factory($model);
 		}
 		
 		/**
 		 * Hooks
 		 */
-		public function beforeFind($params) {
+		public function beforeFind ($params) {
 			return $params;
 		}
 		
-		public function beforeSave() {
+		public function beforeSave () {
 			return true;
 		}
 		
-		public function beforeValidate() {
+		public function beforeValidate () {
 			return true;
 		}
 		
-		public function afterSave() {
+		public function afterSave () {
 			
 		}
 		
@@ -485,9 +485,9 @@
 		 * Determines whether or not the modle has been saved. If a field is specified,
 		 * will instead return the saved value of that field.
 		 */
-		public function saved($field = null) {
-			if(!is_null($field)) {
-				if($this->propertyExists($field)) {
+		public function saved ($field = null) {
+			if (!is_null($field)) {
+				if ($this->propertyExists($field)) {
 					return $this->properties[$field];
 				} else {
 					//@todo exception
@@ -498,20 +498,20 @@
 			return $this->saved;
 		}
 		
-		public function uniqueId() {
+		public function uniqueId () {
 			return $this->uniqueId;
 		}
 		
-		public function primaryKey() {
+		public function primaryKey () {
 			return $this->properties[$this->primaryKeyField];
 		}
 		
-		public static function dataSource() {
-			if(isset($this)) {
+		public static function dataSource () {
+			if (isset($this)) {
 				return $this->dataSource;
 			} else {
 				$c = get_called_class();
-				if(!isset(self::$dataSources[$c])) {
+				if (!isset(self::$dataSources[$c])) {
 					$v = get_class_vars($c);
 					self::$dataSources[$c] = $v['dataSource'];
 				}
@@ -519,12 +519,12 @@
 			}
 		}
 		
-		public static function modelName() {
-			if(isset($this)) {
+		public static function modelName () {
+			if (isset($this)) {
 				return $this->modelName;
 			} else {
 				$c = get_called_class();
-				if(!isset(self::$modelNames[$c])) {
+				if (!isset(self::$modelNames[$c])) {
 					$cParts = explode('\\', $c);
 					self::$modelNames[$c] = array_pop($cParts);
 				}
@@ -532,12 +532,12 @@
 			}
 		}
 		
-		public static function tableName() {
-			if(isset($this)) {
+		public static function tableName () {
+			if (isset($this)) {
 				return $this->tableName;
 			} else {
 				$c = get_called_class();
-				if(!isset(self::$tableNames[$c])) {
+				if (!isset(self::$tableNames[$c])) {
 					$v = get_class_vars($c);
 					self::$tableNames[$c] = isset($v['tableName'])
 						? $v['tableName']
@@ -547,12 +547,12 @@
 			}
 		}
 		
-		public static function primaryKeyField() {
-			if(isset($this)) {
+		public static function primaryKeyField () {
+			if (isset($this)) {
 				return $this->primaryKeyField;
 			} else {
 				$c = get_called_class();
-				if(!isset(self::$primaryKeyFields[$c])) {
+				if (!isset(self::$primaryKeyFields[$c])) {
 					$v = get_class_vars($c);
 					self::$primaryKeyFields[$c] = $v['primaryKeyField'];
 				}
@@ -560,12 +560,12 @@
 			}
 		}
 		
-		public static function displayField() {
-			if(isset($this)) {
+		public static function displayField () {
+			if (isset($this)) {
 				return $this->displayField;
 			} else {
 				$c = get_called_class();
-				if(!isset(self::$displayFields[$c])) {
+				if (!isset(self::$displayFields[$c])) {
 					$v = get_class_vars($c);
 					self::$displayFields[$c] = $v['displayField'];
 				}

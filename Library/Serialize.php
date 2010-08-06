@@ -11,7 +11,7 @@
 		 * @param string $serial The serialized entity
 		 * @return string The type or class name the entity would unserialize to
 		 */
-		public static function getSerialClass($serial) {
+		public static function getSerialClass ($serial) {
 			$types = array('s' => 'string', 'a' => 'array', 'b' => 'bool', 'i' => 'int', 'd' => 'float', 'N;' => 'null');
 			
 			$parts = explode(':', $serial, 4);

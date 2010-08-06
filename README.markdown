@@ -25,6 +25,6 @@ If you somehow managed to find this project, despite the non-existence of a webs
 
 Eventually there will be a link to a website and perhaps some tutorials here; seeing as though I'm working and school is starting soon, I'm not sure when that will be.
 
-Daniel Tomasiewicz
-dtomasiewicz@gmail.com
+Daniel Tomasiewicz  
+dtomasiewicz@gmail.com  
 http://www.fourstaples.com

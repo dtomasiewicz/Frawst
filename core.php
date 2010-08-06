@@ -32,11 +32,11 @@
 		use \Frawst\Loader,
 			\Frawst\Exception;
 		
-		function __autoload($class) {
+		function __autoload ($class) {
 			Loader::import($class);
 		}
 		
-		function error_handler($code, $message, $file, $line) {
+		function error_handler ($code, $message, $file, $line) {
 			throw new Exception\Language($message, 0, $code, $file, $line);
 		}
 		set_error_handler('error_handler');
@@ -56,7 +56,7 @@
 		/**
 		 * App-specific bootstrapping
 		 */
-		if(file_exists($file = APP_ROOT.DIRECTORY_SEPARATOR.'bootstrap.php')) {
+		if (file_exists($file = APP_ROOT.DIRECTORY_SEPARATOR.'bootstrap.php')) {
 			require($file);
 		}
 		
@@ -64,9 +64,9 @@
 		setlocale(LC_ALL, Config::read('general.locale'));
 		
 		$method = $_SERVER['REQUEST_METHOD'];
-		if($method == 'GET') {
+		if ($method == 'GET') {
 			$requestData = $_GET;
-		} elseif($method == 'POST') {
+		} elseif ($method == 'POST') {
 			$requestData = $_POST;
 		} else {
 			$requestData = array();
@@ -75,7 +75,7 @@
 		
 		// REST hack for browsers that don't support all methods. only works if the
 		// originating script passes this magic parameter, of course
-		if(isset($requestData['___METHOD'])) {
+		if (isset($requestData['___METHOD'])) {
 			$method = $requestData['___METHOD'];
 			unset($requestData['___METHOD']);
 		}
@@ -83,8 +83,8 @@
 		/**
 		 * I HATE YOU MAGIC QUOTES
 		 */
-		if(function_exists('get_magic_quotes_gpc') && get_magic_quotes_gpc()) {
-		 	function stripslashes_deep($value) {
+		if (function_exists('get_magic_quotes_gpc') && get_magic_quotes_gpc()) {
+		 	function stripslashes_deep ($value) {
 				$value = (is_array($value)) ?
 					array_map('stripslashes_deep', $value) :
 					stripslashes($value);
@@ -111,11 +111,11 @@
 			: '';
 			
 		$headers = array();
-		if(substr($route, -strlen(AJAX_SUFFIX)) == AJAX_SUFFIX) {
+		if (substr($route, -strlen(AJAX_SUFFIX)) == AJAX_SUFFIX) {
 			// hack to get redirected ajax requests working in Firefox
 			$headers['X-Requested-With'] = 'XMLHttpRequest';
 			$route = substr($route, 0, -strlen(AJAX_SUFFIX));
-		} elseif(isset($_SERVER['HTTP_X_REQUESTED_WITH'])) {
+		} elseif (isset($_SERVER['HTTP_X_REQUESTED_WITH'])) {
 			$headers['X-Requested-With'] = $_SERVER['HTTP_X_REQUESTED_WITH'];
 		}
 		
@@ -126,15 +126,15 @@
 		$data = null;
 		$mapper = null;
 		$cache = null;
-		if($cacheConfig = Config::read('cache')) {
+		if ($cacheConfig = Config::read('cache')) {
 			$c = $cacheConfig['controller'];
 			$cache = new $c($cacheConfig);
 		}
-		if($dataConfig = Config::read('data')) {
+		if ($dataConfig = Config::read('data')) {
 			$c = $dataConfig['controller'];
 			$data = new $c($dataConfig, $cache);
 		}
-		if($ormConfig = Config::read('orm')) {
+		if ($ormConfig = Config::read('orm')) {
 			$c = $ormConfig['mapper'];
 			$mapper = new $c($ormConfig, $data, $cache);
 		}

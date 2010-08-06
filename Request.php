@@ -104,9 +104,9 @@
 		 * @param object $cacheController
 		 * @param array $persist
 		 */
-		public function __construct($route, $data = array(), $method = 'GET', $headers = array(),
+		public function __construct ($route, $data = array(), $method = 'GET', $headers = array(),
 		  $dataController = null, $dataMapper = null, $cacheController = null, $persist = array()) {
-		  	if(isset($data['___FORMNAME'])) {
+		  	if (isset($data['___FORMNAME'])) {
 		  		$formName = $data['___FORMNAME'];
 		  		unset($data['___FORMNAME']);
 		  		$this->_data = $data;
@@ -123,7 +123,6 @@
 			$this->_CacheController = $cacheController;
 			
 			$this->_dispatch($route);
-			$this->_Response = new Response($this);
 			
 			$this->_persist = $persist;
 		}
@@ -133,8 +132,8 @@
 		 * @param string $name
 		 * @return object A read-only property
 		 */
-		public function __get($name) {
-			switch($name) {
+		public function __get ($name) {
+			switch ($name) {
 				case 'Response':
 					return $this->_Response;
 				case 'Data':
@@ -151,7 +150,7 @@
 		/**
 		 * @return array Associative array of request headers
 		 */
-		public function headers() {
+		public function headers () {
 			return $this->_headers;
 		}
 		
@@ -160,7 +159,7 @@
 		 * @param string $name
 		 * @return string The value of the request header, or null if not set
 		 */
-		public function header($name) {
+		public function header ($name) {
 			return isset($this->_headers[$name])
 				? $this->_headers[$name]
 				: null;
@@ -170,7 +169,7 @@
 		 * Whether or not this request will be rendered as AJAX (layoutless)
 		 * @return bool
 		 */
-		public function isAjax() {
+		public function isAjax () {
 			return (bool) (isset($this->_headers['X-Requested-With']) &&
 				strtolower($this->_headers['X-Requested-With']) == 'xmlhttprequest'); 
 		}
@@ -180,8 +179,8 @@
 		 * @param string $route If null, will use the current route
 		 * @return string The path relative to the web root
 		 */
-		public function path($route = null) {
-			if(is_null($route)) {
+		public function path ($route = null) {
+			if (is_null($route)) {
 				$route = $this->route(true);
 			}
 			return rtrim(WEB_ROOT.'/'.$route, '/');
@@ -192,10 +191,10 @@
 		 * @param bool $params If true, request parameters will also be appended
 		 * @return string The resolved route
 		 */
-		public function route($params = false) {
+		public function route ($params = false) {
 			$route = implode('/', $this->_route);
 			
-			if($params) {
+			if ($params) {
 				$route .= '/'.implode($this->_params);
 			}
 			
@@ -209,7 +208,7 @@
 		 * @param array $headers
 		 * @return Frawst\Request The sub-request object
 		 */
-		public function subRequest($route, $data = array(), $method = 'GET', $headers = array()) {
+		public function subRequest ($route, $data = array(), $method = 'GET', $headers = array()) {
 			return new Request($route, $data, $method, $headers, $this->Data, $this->Mapper, $this->Cache, $this->_persist);
 		}
 		
@@ -218,30 +217,33 @@
 		 * on the given route. Also instantiates the controller.
 		 * @param string $route
 		 */
-		protected function _dispatch($route) {
+		protected function _dispatch ($route) {
 			$route = explode('/', trim($route, '/'));
-			if($route[0] == '') {
+			if ($route[0] == '') {
 				unset($route[0]);
 			}
 			
 			// get top-level (root) controller
 			$name = 'Root';
-			if(isset($route[0])) {
+			if (isset($route[0])) {
 				$name = ucfirst(strtolower($route[0]));
-				if(class_exists('\\Frawst\\Controller\\'.$name)) {
+				if (class_exists('\\Frawst\\Controller\\'.$name)) {
 					array_shift($route);
 				} else {
 					$name = 'Root';
 				}
 			}
-			$class = '\\Frawst\\Controller\\'.$name;
-			$this->_route[] = $name;
+			if (class_exists($class = '\\Frawst\\Controller\\'.$name)) {
+				$this->_route[] = $name;
+			} else {
+				exit(404);
+			}
 			
 			// check for sub-controllers
 			$exists = true;
-			while(count($route) && $exists) {
+			while (count($route) && $exists) {
 				$subname = ucfirst(strtolower($route[0]));
-				if(class_exists($c = $class.'\\'.$subname)) {
+				if (class_exists($c = $class.'\\'.$subname)) {
 					$this->_route[] = $subname;
 					$class = $c;
 					array_shift($route);
@@ -252,7 +254,7 @@
 			
 			// if the class is abstract, use the /Main subcontroller
 			$rClass = new \ReflectionClass($class);
-			if($rClass->isAbstract()) {
+			if ($rClass->isAbstract()) {
 				$this->_route[] = 'Main';
 				$class .= '\\Main';
 			}
@@ -260,14 +262,14 @@
 			$this->_Controller = new $class($this);
 			
 			// determine action
-			if(isset($route[0]) && $this->_Controller->hasAction($action = strtolower(ltrim($route[0], '_')))) {
+			if (isset($route[0]) && $this->_Controller->hasAction($action = strtolower(ltrim($route[0], '_')))) {
 				$this->_action = $action;
 				array_shift($route);
-			} elseif($this->_Controller->hasAction('index')) {
+			} elseif ($this->_Controller->hasAction('index')) {
 				$this->_action = 'index';
 			} else {
 				//@todo better 404 handling
-				exit('404');
+				exit(404);
 			}
 			
 			$this->_route[] = $this->_action;
@@ -283,7 +285,8 @@
 		 * @todo move $method and $data to constructor, attempt to construct form in constructor
 		 *       (get rid of ___FORMNAME early)
 		 */
-		public function execute() {
+		public function execute () {
+			$this->_Response = new Response($this);
 			$this->_Response->data($this->_Controller->execute($this->_action, $this->_params));
 			return $this->_Response;
 		}
@@ -291,14 +294,14 @@
 		/**
 		 * @return string The name of the request action
 		 */
-		public function action() {
+		public function action () {
 			return $this->_action;
 		}
 		
 		/**
 		 * @return string The request method (POST, GET, etc.)
 		 */
-		public function method() {
+		public function method () {
 			return $this->_method;
 		}
 		
@@ -308,7 +311,7 @@
 		 * @param string $default
 		 * @return array
 		 */
-		public function getData($key = null, $default = null) {
+		public function getData ($key = null, $default = null) {
 			return $this->_method == 'GET'
 				? $this->data($key, $default)
 				: null;
@@ -320,7 +323,7 @@
 		 * @param string $default
 		 * @return array
 		 */
-		public function postData($key = null, $default = null) {
+		public function postData ($key = null, $default = null) {
 			return $this->_method == 'POST'
 				? $this->data($key, $default)
 				: null;
@@ -332,7 +335,7 @@
 		 * @param string $default
 		 * @return array
 		 */
-		public function putData($key = null, $default = null) {
+		public function putData ($key = null, $default = null) {
 			return $this->_method == 'PUT'
 				? $this->data($key, $default)
 				: null;
@@ -344,7 +347,7 @@
 		 * @param string $default
 		 * @return array
 		 */
-		public function deleteData($key = null, $default = null) {
+		public function deleteData ($key = null, $default = null) {
 			return $this->_method == 'DELETE'
 				? $this->data($key, $default)
 				: null;
@@ -357,8 +360,8 @@
 		 *                        not found
 		 * @return mixed
 		 */
-		public function data($key = null, $default = null) {
-			if(Matrix::pathExists($this->_data, $key)) {
+		public function data ($key = null, $default = null) {
+			if (Matrix::pathExists($this->_data, $key)) {
 				return Matrix::pathGet($this->_data, $key);
 			} else {
 				return $default;
@@ -371,14 +374,14 @@
 		 *                         ___FORMNAME key in the request data.
 		 * @return Frawst\Form
 		 */
-		public function form($formName = null) {
-			if(isset($this->_Form)) {
+		public function form ($formName = null) {
+			if (isset($this->_Form)) {
 				return is_null($formName) || $this->_Form->name() == $formName
 					? $this->_Form
 					: null;
-			} elseif(empty($this->_data) || is_null($formName)) {
+			} elseif (empty($this->_data) || is_null($formName)) {
 				return null;
-			} elseif(class_exists($class = 'Frawst\\Form\\'.$formName) && $class::compatible($this->_data)) {
+			} elseif (class_exists($class = 'Frawst\\Form\\'.$formName) && $class::compatible($this->_data)) {
 				return new $class($this->_data);
 			} else {
 				return null;
@@ -391,8 +394,8 @@
 		 * @param mixed $value The value being persisted
 		 * @return mixed The value stored under the persisted value
 		 */
-		public function persist($key, $value = null) {
-			if(!is_null($value)) {
+		public function persist ($key, $value = null) {
+			if (!is_null($value)) {
 				$this->_persist[$key] = $value;
 			}
 			

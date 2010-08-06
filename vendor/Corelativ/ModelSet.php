@@ -17,17 +17,17 @@
 		public $totalPages;
 		private $modelType;
 		
-		public function __construct($type, $items = array()) {
+		public function __construct ($type, $items = array()) {
 			$this->modelType = $type;
 			parent::__construct('\\Corelativ\\Model\\'.$type, $items);
 		}
 		
-		public function indexByPrimaryKey() {
+		public function indexByPrimaryKey () {
 			$class = $this->type();
 			parent::indexBy($class::primaryKeyField());
 		}
 		
-		public function getModelType() {
+		public function getModelType () {
 			return $this->modelType;
 		}
 	}

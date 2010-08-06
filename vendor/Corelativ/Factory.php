@@ -8,7 +8,7 @@
 		protected $Cache;
 		protected $Object;
 		
-		public function __construct($config, $mapper) {
+		public function __construct ($config, $mapper) {
 			$this->Mapper = $mapper;
 			$this->Data = $mapper->getDataController();
 			$this->Cache = $mapper->getCacheController();
@@ -17,25 +17,25 @@
 			$this->Object = new $modelClass($this, $this->Mapper);
 		}
 		
-		public function find($params = array()) {
+		public function find ($params = array()) {
 			$params = $this->normalizeParams($params);
 			$params->limit = 1;
 			
-			if(($result = $this->findAll($params)) && count($result) > 0) {
+			if (($result = $this->findAll($params)) && count($result) > 0) {
 				return $result[0];
 			} else {
 				return false;
 			}
 		}
 		
-		public function findAll($params = array()) {
+		public function findAll ($params = array()) {
 			$params = $this->normalizeParams($params);
 			
-			if($params = $this->beforeFind($params)) {
-				if($results = $params->exec($this->Object->dataSource())) {
+			if ($params = $this->beforeFind($params)) {
+				if ($results = $params->exec($this->Object->dataSource())) {
 					$return = new ModelSet($this->Object->modelName());
 					
-					if($params->paginated()) {
+					if ($params->paginated()) {
 						$return->page = $params->page;
 						$params->type = 'count';
 						$return->totalRecords = $params->exec($this->Object->dataSource());
@@ -43,7 +43,7 @@
 					}
 					
 					$class = get_class($this->Object);
-					foreach($results as $result) {
+					foreach ($results as $result) {
 						$return[] = new $class($result, $this->Mapper);
 					}
 					
@@ -55,14 +55,14 @@
 			}
 		}
 		
-		public function delete($params = array()) {
+		public function delete ($params = array()) {
 			$params = $this->normalizeParams($params, 'delete');
 			$params->limit = 1;
 			
 			return $params->exec($this->Object->dataSource());
 		}
 		
-		public function deleteAll($params = array()) {
+		public function deleteAll ($params = array()) {
 			$params = $this->normalizeParams($params, 'delete');
 			
 			return $params->exec($this->Object->dataSource());
@@ -71,9 +71,9 @@
 		/**
 		 * Normalizes find parameters to a ModelQuery object
 		 */
-		protected function normalizeParams($params, $type = 'select') {
-			if(!($params instanceof DataPane\Query)) {
-				if($params instanceof DataPane\ConditionSet) {
+		protected function normalizeParams ($params, $type = 'select') {
+			if (!($params instanceof DataPane\Query)) {
+				if ($params instanceof DataPane\ConditionSet) {
 					$params = array('where' => $params);
 				}
 				$params = new ModelQuery($type, $this->Object->tableName(), $params, $this->Data);
@@ -81,7 +81,7 @@
 			return $params;
 		}
 		
-		public function create($data = array()) {
+		public function create ($data = array()) {
 			$class = get_class($this->Object);
 			$model = new $class(array(), $this->Mapper);
 			$model->set($data);
@@ -92,24 +92,24 @@
 		 * Magic methods to allow this factory to behave transparently
 		 * as an empty instance of the model it creates.
 		 */
-		public function __call($method, $args) {
-			if(method_exists($this->Object, $method)) {
+		public function __call ($method, $args) {
+			if (method_exists($this->Object, $method)) {
 				return call_user_func_array(array($this->Object, $method), $args);
 			} else {
-				if(substr($method, 0, 6) == 'findBy') {
+				if (substr($method, 0, 6) == 'findBy') {
 					$mode = 'findBy';
-				} elseif(substr($method, 0, 9) == 'findAllBy') {
+				} elseif (substr($method, 0, 9) == 'findAllBy') {
 					$mode = 'findAllBy';
-				} elseif(substr($method, 0, 8) == 'deleteBy') {
+				} elseif (substr($method, 0, 8) == 'deleteBy') {
 					$mode = 'deleteBy';
-				} elseif(substr($method, 0, 11) == 'deleteAllBy') {
+				} elseif (substr($method, 0, 11) == 'deleteAllBy') {
 					$mode = 'deleteAllBy';
 				}
 				
-				if(isset($mode)) {
+				if (isset($mode)) {
 					$field = lcfirst(substr($method, strlen($mode)));
 					$value = array_shift($args);
-					if(!isset($args[0])) {
+					if (!isset($args[0])) {
 						$args[0] = array();
 					}
 					$args[0] = $this->normalizeParams($args[0]);
@@ -121,10 +121,10 @@
 				}
 			}
 		}
-		public function __get($name) {
+		public function __get ($name) {
 			return $this->Object->$name;
 		}
-		public function __set($name, $value) {
+		public function __set ($name, $value) {
 			$this->Object->$name = $value;
 		}
 	}

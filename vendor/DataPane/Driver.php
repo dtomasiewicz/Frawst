@@ -4,7 +4,7 @@
 	abstract class Driver {
 		protected $config;
 		
-		public function __construct($config = array()) {
+		public function __construct ($config = array()) {
 			$this->config = $config;
 		}
 	}

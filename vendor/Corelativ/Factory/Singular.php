@@ -8,19 +8,19 @@
 		protected $related = false;
 		protected $changed = false;
 		
-		protected function uniqueCondition() {
+		protected function uniqueCondition () {
 			return new ConditionSet($this->uniqueProperty());
 		}
 		
-		public function set($id = null) {
-			if($id instanceof Model) {
+		public function set ($id = null) {
+			if ($id instanceof Model) {
 				$this->related = $id;
-			} elseif(is_null($id) || $id == 0) {
+			} elseif (is_null($id) || $id == 0) {
 				$this->related = null;
 			} else {
 				// allow them to change properties on the fly
 				$properties = array();
-				if(is_array($id)) {
+				if (is_array($id)) {
 					$properties = $id;
 					$id = $properties[$this->Object->primaryKeyField()];
 				}
@@ -30,7 +30,7 @@
 					$this->Object->primaryKeyField() => $id
 				)));
 				
-				if($this->related) {
+				if ($this->related) {
 					$this->related->set($properties);
 				}
 			}
@@ -38,13 +38,13 @@
 			$this->changed = true;
 		}
 		
-		public function validate() {
-			if($this->related instanceof Model) {
+		public function validate () {
+			if ($this->related instanceof Model) {
 				return $this->related->validate() ? true : $this->related->errors();
 			} else {
 				return true;
 			}
 		}
 		
-		abstract protected function uniqueProperty();
+		abstract protected function uniqueProperty ();
 	}
