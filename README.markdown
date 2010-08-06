@@ -19,11 +19,13 @@ There are a few aspects that sets Frawst apart from the other options. Here are 
 
 **Sounds good, where do I start?**
 
-At the moment, there is zero to no documentation available, so I don't really expect anyone else to be using this but myself. Does that mean I'm talking to myself? Oh well.
+I'm working on writing documentation and tutorials at the moment, but they're still in the early stages. They can be found at:
 
-If you somehow managed to find this project, despite the non-existence of a website or any substantial documentation, then feel free to try it out and modify it at your own risk. Remember that it's still in initial development, so don't use it for anything important.
+http://fourstaples.com/frawst/wiki
 
-Eventually there will be a link to a website and perhaps some tutorials here; seeing as though I'm working and school is starting soon, I'm not sure when that will be.
+If you somehow managed to find this project, despite the non-existence of a website, then feel free to try it out and modify it at your own risk. Remember that it's still in initial development, so don't use it for anything important.
+
+Eventually there will be a link to a website here; seeing as though I'm working and school is starting soon, I'm not sure when that will be.
 
 Daniel Tomasiewicz  
 dtomasiewicz@gmail.com  
