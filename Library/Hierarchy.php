@@ -18,10 +18,10 @@
 		 * If a ModelSet is passed as the first parameter, the type will be
 		 * automatically pulled from the ModelSet.
 		 */
-		public function __construct ($type, $roots = array()) {
+		public function __construct($type, $roots = array()) {
 			if ($type instanceof ModelSet) {
 				$roots = $type;
-				$type = $roots->getModelType();
+				$type = $roots->modelType();
 			}
 			parent::__construct($type);
 			
@@ -35,7 +35,7 @@
 		/**
 		 * Recursively indexes the hierarchy when it is created.
 		 */
-		private function computeStructure ($parents, $base = '') {
+		private function computeStructure($parents, $base = '') {
 			$parents->indexByPrimaryKey();
 			
 			foreach ($parents as $id => $parent) {
@@ -51,14 +51,14 @@
 		 * Gets the children of the specified model. If $deep is true,
 		 * will get a recursive list of children.
 		 */
-		public function childrenOf ($id, $deep = false) {
+		public function childrenOf($id, $deep = false) {
 			if ($id instanceof Model) {
 				$id = $id->primaryKey();
 			}
 			
 			$lookup = $id == 0 ? null : $this->_lookup[$id];
 			$children = array_keys(Matrix::pathGet($this->_structure, $lookup));
-			$set = new ModelSet($this->getModelType());
+			$set = new ModelSet($this->modelType());
 			
 			foreach ($children as $id) {
 				$set[$id] = $this[$id];
@@ -72,7 +72,7 @@
 		/**
 		 * Returns the parent of the specified model.
 		 */
-		public function parentOf ($id) {
+		public function parentOf($id) {
 			if ($id instanceof Model) {
 				$id = $id->primaryKey();
 			}
@@ -88,7 +88,7 @@
 		/**
 		 * Returns the path to the specified model.
 		 */
-		public function pathTo ($id, $includeThis = true) {
+		public function pathTo($id, $includeThis = true) {
 			if ($id instanceof Model) {
 				$id = $id->primaryKey();
 			}
@@ -96,7 +96,7 @@
 			if (!$includeThis) {
 				array_pop($lookup);
 			}
-			$set = new ModelSet($this->getModelType());
+			$set = new ModelSet($this->modelType());
 			foreach ($lookup as $path) {
 				$set[] = $this[$path];
 			}

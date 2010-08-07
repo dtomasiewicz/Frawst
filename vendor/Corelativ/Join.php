@@ -8,15 +8,21 @@
 	 * different types of joins will have different tables.
 	 */
 	class Join {
-		public $data;
+		protected $_data;
 		
-		public function __construct ($data = array()) {
-			$this->data = $data;
+		public function __construct($data = array()) {
+			$this->_data = $data;
 		}
-		public function __get ($name) {
-			return $this->data[$name];
+		public function __isset($name) {
+			return array_key_exists($name, $this->_data);
 		}
-		public function __set ($name, $value) {
-			$this->data[$name] = $value;
+		public function __unset($name) {
+			unset($this->_data[$name]);
+		}
+		public function __get($name) {
+			return $this->_data[$name];
+		}
+		public function __set($name, $value) {
+			$this->_data[$name] = $value;
 		}
 	}

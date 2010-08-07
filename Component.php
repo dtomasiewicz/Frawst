@@ -4,12 +4,12 @@
 	abstract class Component {
 		protected $_Controller;
 		
-		public function __construct ($controller) {
+		public function __construct($controller) {
 			$this->_Controller = $controller;
 			$this->_init();
 		}
 		
-		public function __get ($name) {
+		public function __get($name) {
 			if ($name == 'Controller') {
 				return $this->_Controller;
 			} else {
@@ -17,7 +17,7 @@
 			}
 		}
 		
-		protected function _init () {
+		protected function _init() {
 			
 		}
 	}

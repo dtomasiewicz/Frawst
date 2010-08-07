@@ -6,7 +6,7 @@
 		protected $_Engine;
 		protected $_config;
 		
-		public function __construct ($config = array()) {
+		public function __construct($config = array()) {
 			// defaults
 			$this->_config = $config + array(
 				'engine' => 'File',
@@ -20,7 +20,7 @@
 			}
 		}
 		
-		public function get ($name) {
+		public function get($name) {
 			if ($this->enabled() && $this->cacheable($name)) {
 				return $this->_Engine->get($name);
 			} else {
@@ -28,23 +28,23 @@
 			}
 		}
 		
-		public function set ($name, $value, $life = 0) {
+		public function set($name, $value, $life = 0) {
 			if ($this->enabled() && $this->cacheable($name)) {
 				$this->_Engine->set($name, $value, $life);
 			}
 		}
 		
-		public function expire ($name) {
+		public function expire($name) {
 			if ($this->enabled() && $this->cacheable($name)) {
 				$this->_Engine->expire($name);
 			}
 		}
 		
-		public function enabled () {
+		public function enabled() {
 			return $this->_config['enable'];
 		}
 		
-		public function cacheable ($name) {
+		public function cacheable($name) {
 			$parts = explode('.', $name);
 			$path = array();
 			while (count($parts) > 0) {

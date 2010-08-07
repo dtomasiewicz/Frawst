@@ -8,11 +8,11 @@
 		const cookieName = 'Session';
 		protected $_id;
 		
-		protected function _init () {
+		protected function _init() {
 			$this->start();
 		}
 		
-		public function start () {
+		public function start() {
 			$cookie = new CookieLib(self::cookieName.'.SESSID');
 			if (isset($cookie->value)) {
 				$id = $cookie->value;
@@ -27,38 +27,38 @@
 			$this->_id = Security::hash($_SERVER['REMOTE_ADDR'].$id);
 		}
 		
-		public function offsetSet ($offset, $value) {
+		public function offsetSet($offset, $value) {
 			$cookie = new CookieLib(self::cookieName.'.'.$offset, $value);
 			$cookie->save();
 		}
-		public function offsetGet ($offset) {
+		public function offsetGet($offset) {
 			$cookie = new CookieLib(self::cookieName.'.'.$offset);
 			return $cookie->value;
 		}
-		public function offsetExists ($offset) {
+		public function offsetExists($offset) {
 			return CookieLib::exists(self::cookieName.'.'.$offset);
 		}
-		public function offsetUnset ($offset) {
+		public function offsetUnset($offset) {
 			$cookie = new CookieLib(self::cookieName.'.'.$offset);
 			$cookie->delete();
 		}
 		
-		public function id () {
+		public function id() {
 			return $this->_id;
 		}
 		
-		public function destroy () {
+		public function destroy() {
 			unset($this['SESSID']);
 			$this->start();
 		}
 		
-		public function addFeedback ($message, $status = 0) {
+		public function addFeedback($message, $status = 0) {
 			$feedback = isset($this['FEEDBACK']) ? unserialize($this['FEEDBACK']) : array();
 			$feedback[] = array('message' => $message, 'status' => $status);
 			$this['FEEDBACK'] = serialize($feedback);
 		}
 		
-		public function feedback () {
+		public function feedback() {
 			if (isset($this['FEEDBACK'])) {
 				$feedback = unserialize($this['FEEDBACK']);
 				unset($this['FEEDBACK']);

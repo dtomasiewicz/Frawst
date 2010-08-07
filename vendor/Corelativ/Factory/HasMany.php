@@ -5,25 +5,25 @@
 	
 	class HasMany extends Multiple {
 		//@todo add support for relating non-saved models?
-		protected function uniqueCondition () {
+		protected function _uniqueCondition() {
 			// make sure it's not flagged for removal
 			//@todo make this return entries in additions as well?
-			$condition = new DataPane\ConditionSet($this->uniqueProperty() + array(
-				$this->Object->primaryKeyField().' NOT IN' => array_keys($this->removals)
+			$condition = new DataPane\ConditionSet($this->_uniqueProperty() + array(
+				$this->_Object->primaryKeyField().' NOT IN' => array_keys($this->_removals)
 			));
 			return $condition;
 		}
 		
-		private function uniqueProperty () {
-			return array($this->subjectKeyField => $this->Subject->primaryKey());
+		protected function _uniqueProperty() {
+			return array($this->_subjectKeyField => $this->_Subject->primaryKey());
 		}
 		
-		public function add ($object, $properties = array()) {
+		public function add($object, $properties = array()) {
 			if ($object instanceof Iterator || is_array($object)) {
 				// adding multiple objects-- add each individually
 				foreach ($object as $obj) {
 					if (is_array($obj)) {
-						$this->add($obj[$this->objectPrimaryKeyField], $obj);
+						$this->add($obj[$this->_objectPrimaryKeyField], $obj);
 					} else {
 						$this->add($obj);
 					}
@@ -32,21 +32,21 @@
 				if (!($object instanceof Model)) {
 					// the actual adding
 					$object = parent::find(new DataPane\ConditionSet(array(
-						$this->objectPrimaryKeyField => $object
+						$this->_objectPrimaryKeyField => $object
 					)));
 				}
 				
 				if ($object instanceof Model) {
-					$this->additions[$object->primaryKey()] = $object;
+					$this->_additions[$object->primaryKey()] = $object;
 					$object->set($properties);
-					if (isset($this->removals[$object])) {
-						unset($this->removals[$object]);
+					if (isset($this->_removals[$object])) {
+						unset($this->_removals[$object]);
 					}
 				}
 			}
 		}
 		
-		public function remove ($object) {
+		public function remove($object) {
 			if ($object instanceof \Iterator || is_array($object)) {
 				// removing multiple objects-- remove each individually
 				foreach ($object as $obj) {
@@ -58,21 +58,21 @@
 				}
 				
 				if ($object) {
-					$this->removals[$object] = $object;
-					if (isset($this->additions[$object])) {
-						unset($this->additions[$object]);
+					$this->_removals[$object] = $object;
+					if (isset($this->_additions[$object])) {
+						unset($this->_additions[$object]);
 					}
 				}
 			}
 		}
 		
-		public function create ($data = array()) {
-			return parent::create($this->uniqueProperty() + $data);
+		public function create($data = array()) {
+			return parent::create($this->_uniqueProperty() + $data);
 		}
 		
-		public function validate () {
+		public function validate() {
 			$errors = array();
-			foreach ($this->additions as $addition) {
+			foreach ($this->_additions as $addition) {
 				$validate = $addition->validate();
 				if (is_array($validate)) {
 					$errors[$addition->primaryKey()] = $validate;
@@ -81,43 +81,43 @@
 			return (count($errors) == 0) ? true : $errors;
 		}
 		
-		public function save () {
+		public function save() {
 			// if this represents ALL of the associated objects, de-associate any objects that aren't in additions
-			if ($this->allInclusive) {
-				$delink = new DataPane\Query('update', $this->objectTableName);
+			if ($this->_allInclusive) {
+				$delink = new DataPane\Query('update', $this->_objectTableName);
 				$delink->values = array(
-					$this->subjectKeyField => 0
+					$this->_subjectKeyField => 0
 				);
 				$delink->where = new DataPane\ConditionSet(array(
-					$this->subjectKeyField => $this->subject->primaryKey()
+					$this->_subjectKeyField => $this->_Subject->primaryKey()
 				));
-				$this->Data->query($delink, $this->Object->dataSource());
+				$this->_Data->query($delink, $this->_Object->dataSource());
 			}
 			
 			// remove defuct associations
-			if (count($this->removals)) {
+			if (count($this->_removals)) {
 				$remove = new DataPane\Query('update', $objectTable);
 				$remove->values = array(
-					$this->subjectKeyField => 0
+					$this->_subjectKeyField => 0
 				);
 				$remove->where = new DataPane\ConditionSet(array(
-					$this->objectPrimaryKeyField => array_keys($this->removals)
+					$this->_objectPrimaryKeyField => array_keys($this->_removals)
 				));
-				$this->Data->query($remove, $this->Object->dataSource());
+				$this->_Data->query($remove, $this->_Object->dataSource());
 			}
 			
 			// add new associations
-			foreach ($this->additions as $addition) {
-				$addition->{$this->subjectKeyField} = $this->subject->primaryKey();
+			foreach ($this->_additions as $addition) {
+				$addition->{$this->_subjectKeyField} = $this->_Subject->primaryKey();
 				$addition->save();
 			}
 			
-			$this->allInclusive = false;
-			$this->resetLists();
+			$this->_allInclusive = false;
+			$this->_resetLists();
 		}
 		
-		protected function resetLists () {
-			$this->additions = array();
-			$this->removals = array();
+		protected function _resetLists() {
+			$this->_additions = array();
+			$this->_removals = array();
 		}
 	}

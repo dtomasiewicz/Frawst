@@ -3,22 +3,37 @@
 	use \DataPane;
 	
 	class Factory {
-		protected $Mapper;
-		protected $Data;
-		protected $Cache;
-		protected $Object;
+		protected $_Mapper;
+		protected $_Data;
+		protected $_Cache;
+		protected $_Object;
 		
-		public function __construct ($config, $mapper) {
-			$this->Mapper = $mapper;
-			$this->Data = $mapper->getDataController();
-			$this->Cache = $mapper->getCacheController();
-			$modelName = $config['model'];
-			$modelClass = '\\Corelativ\\Model\\'.$modelName;
-			$this->Object = new $modelClass($this, $this->Mapper);
+		public function __construct($config, $mapper) {
+			$this->_Mapper = $mapper;
+			$this->_Data = $mapper->Data;
+			$this->_Cache = $mapper->Cache;
+			
+			$class = '\\Corelativ\\Model\\'.$config['model'];
+			$this->_Object = new $class($this, $this->_Mapper);
 		}
 		
-		public function find ($params = array()) {
-			$params = $this->normalizeParams($params);
+		public function __get($name) {
+			switch($name) {
+				case 'Mapper':
+					return $this->_Mapper;
+				case 'Data':
+					return $this->_Data;
+				case 'Cache':
+					return $this->_Cache;
+				case 'Object':
+					return $this->_Object;
+				default:
+					return $this->_Object->$name;
+			}
+		}
+		
+		public function find($params = array()) {
+			$params = $this->_normalizeParams($params);
 			$params->limit = 1;
 			
 			if (($result = $this->findAll($params)) && count($result) > 0) {
@@ -28,62 +43,62 @@
 			}
 		}
 		
-		public function findAll ($params = array()) {
-			$params = $this->normalizeParams($params);
+		public function findAll($params = array()) {
+			$params = $this->_normalizeParams($params);
 			
 			if ($params = $this->beforeFind($params)) {
-				if ($results = $params->exec($this->Object->dataSource())) {
-					$return = new ModelSet($this->Object->modelName());
+				if ($results = $params->exec($this->_Object->dataSource())) {
+					$return = new ModelSet($this->_Object->modelName());
 					
 					if ($params->paginated()) {
 						$return->page = $params->page;
 						$params->type = 'count';
-						$return->totalRecords = $params->exec($this->Object->dataSource());
+						$return->totalRecords = $params->exec($this->_Object->dataSource());
 						$return->totalPages = ceil($return->totalRecords / $params->limit);
 					}
 					
-					$class = get_class($this->Object);
+					$class = get_class($this->_Object);
 					foreach ($results as $result) {
-						$return[] = new $class($result, $this->Mapper);
+						$return[] = new $class($result, $this->_Mapper);
 					}
 					
 					return $return;
 				} else {
 					//@todo exception
-					exit('Error in find operation: '.$this->Data->error($this->Object->dataSource()));
+					exit('Error in find operation: '.$this->_Data->error($this->_Object->dataSource()));
 				}
 			}
 		}
 		
-		public function delete ($params = array()) {
-			$params = $this->normalizeParams($params, 'delete');
+		public function delete($params = array()) {
+			$params = $this->_normalizeParams($params, 'delete');
 			$params->limit = 1;
 			
-			return $params->exec($this->Object->dataSource());
+			return $params->exec($this->_Object->dataSource());
 		}
 		
-		public function deleteAll ($params = array()) {
-			$params = $this->normalizeParams($params, 'delete');
+		public function deleteAll($params = array()) {
+			$params = $this->_normalizeParams($params, 'delete');
 			
-			return $params->exec($this->Object->dataSource());
+			return $params->exec($this->_Object->dataSource());
 		}
 		
 		/**
 		 * Normalizes find parameters to a ModelQuery object
 		 */
-		protected function normalizeParams ($params, $type = 'select') {
+		protected function _normalizeParams($params, $type = 'select') {
 			if (!($params instanceof DataPane\Query)) {
 				if ($params instanceof DataPane\ConditionSet) {
 					$params = array('where' => $params);
 				}
-				$params = new ModelQuery($type, $this->Object->tableName(), $params, $this->Data);
+				$params = new ModelQuery($type, $this->_Object->tableName(), $params, $this->_Data);
 			}
 			return $params;
 		}
 		
-		public function create ($data = array()) {
-			$class = get_class($this->Object);
-			$model = new $class(array(), $this->Mapper);
+		public function create($data = array()) {
+			$class = get_class($this->_Object);
+			$model = new $class(array(), $this->_Mapper);
 			$model->set($data);
 			return $model;
 		}
@@ -92,9 +107,9 @@
 		 * Magic methods to allow this factory to behave transparently
 		 * as an empty instance of the model it creates.
 		 */
-		public function __call ($method, $args) {
-			if (method_exists($this->Object, $method)) {
-				return call_user_func_array(array($this->Object, $method), $args);
+		public function __call($method, $args) {
+			if (method_exists($this->_Object, $method)) {
+				return call_user_func_array(array($this->_Object, $method), $args);
 			} else {
 				if (substr($method, 0, 6) == 'findBy') {
 					$mode = 'findBy';
@@ -112,7 +127,7 @@
 					if (!isset($args[0])) {
 						$args[0] = array();
 					}
-					$args[0] = $this->normalizeParams($args[0]);
+					$args[0] = $this->_normalizeParams($args[0]);
 					$args[0]->where = new DataPane\ConditionSet(array($field => $value, $args[0]->where));
 					return call_user_func_array(array($this, substr($mode, 0, -2)), $args);
 				} else {
@@ -120,11 +135,5 @@
 					exit('invalid model/factory method: '.$method);
 				}
 			}
-		}
-		public function __get ($name) {
-			return $this->Object->$name;
-		}
-		public function __set ($name, $value) {
-			$this->Object->$name = $value;
 		}
 	}

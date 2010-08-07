@@ -23,7 +23,7 @@
 		 * @param string $pathType The namespace covered by the path, * = global namespace
 		 * @param string $scope The loading priority of the path.
 		 */
-		public static function addPath ($path, $pathType = '*', $scope = 'priority') {
+		public static function addPath($path, $pathType = '*', $scope = 'priority') {
 			if (!isset(self::$_paths[$scope][$pathType])) {
 				self::$_paths[$scope][$pathType] = array();
 			}
@@ -49,7 +49,7 @@
 		 * @param scope The scope to check. If null, all scopes will be checked.
 		 * @return The path to the requested library if it is found, or null.
 		 */
-		public static function importPath ($class, $scope = null) {
+		public static function importPath($class, $scope = null) {
 			if (is_null($scope)) {
 				// scope not set, try all of them
 				foreach (array_keys(self::$_paths) as $scope) {
@@ -92,7 +92,7 @@
 		 * @param string $scope The scope to look in. If null, all scopes will be checked.
 		 * @return True if the library exists and is loaded, false otherwise.
 		 */
-		public static function import ($class, $scope = null) {
+		public static function import($class, $scope = null) {
 			if (null !== $path = self::importPath($class, $scope)) {
 				require $path;
 				return true;

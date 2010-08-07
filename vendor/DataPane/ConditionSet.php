@@ -5,12 +5,12 @@
 		public $operand;
 		private $conditions = array();
 		
-		public function __construct ($conditions = array(), $operand = 'AND') {
+		public function __construct($conditions = array(), $operand = 'AND') {
 			$this->operand = $operand;
 			$this->add($conditions);
 		}
 		
-		public function add ($field, $value = null) {
+		public function add($field, $value = null) {
 			if (is_array($field)) {
 				foreach ($field as $f => $v) {
 					$this->add($f, $v);
@@ -67,27 +67,27 @@
 			}
 		}
 		
-		public function count () {
+		public function count() {
 			return count($this->conditions);
 		}
 		
-		public function current () {
+		public function current() {
 			return current($this->conditions);
 		}
 		
-		public function key () {
+		public function key() {
 			return key($this->conditions);
 		}
 		
-		public function next () {
+		public function next() {
 			return next($this->conditions);
 		}
 		
-		public function rewind () {
+		public function rewind() {
 			return reset($this->conditions);
 		}
 		
-		public function valid () {
+		public function valid() {
 			return key($this->conditions) !== null;
 		}
 	}

@@ -7,12 +7,12 @@
 		protected $_Request;
 		protected $_Cache;
 		
-		public function __construct ($request) {
+		public function __construct($request) {
 			$this->_Request = $request;
 			$this->_Cache = $request->Cache;
 		}
 		
-		public function __get ($name) {
+		public function __get($name) {
 			if ($name == 'Request') {
 				return $this->_Request;
 			} elseif ($name == 'Response') {
@@ -28,7 +28,7 @@
 			}
 		}
 		
-		protected function _component ($name) {
+		protected function _component($name) {
 			if (!isset($this->_components[$name])) {
 				$this->_components[$name] = class_exists($class = '\\Frawst\\Component\\'.$name)
 					? new $class($this)
@@ -37,11 +37,11 @@
 			return $this->_components[$name];
 		}
 		
-		protected function _model ($name) {
+		protected function _model($name) {
 			return $this->_Request->Mapper->factory($name);
 		}
 		
-		public function hasAction ($action) {
+		public function hasAction($action) {
 			if ($action[0] == '_') {
 				return false;
 			} else {
@@ -49,7 +49,7 @@
 			}
 		}
 		
-		public function execute ($action, $params) {
+		public function execute($action, $params) {
 			$this->_persist = array();
 			
 			if ($this->_beforeAction() !== false) {
@@ -62,24 +62,24 @@
 			return $actionData;
 		}
 		
-		protected function _beforeAction () {
+		protected function _beforeAction() {
 			
 		}
 		
-		protected function _afterAction () {
+		protected function _afterAction() {
 			
 		}
 		
-		public function offsetExists ($offset) {
+		public function offsetExists($offset) {
 			return array_key_exists($offset, $this->_data);
 		}
-		public function offsetGet ($offset) {
+		public function offsetGet($offset) {
 			return $this->_data[$offset];
 		}
-		public function offsetSet ($offset, $value) {
+		public function offsetSet($offset, $value) {
 			$this->_data[$offset] = $value;
 		}
-		public function offsetUnset ($offset) {
+		public function offsetUnset($offset) {
 			unset($this->_data[$offset]);
 		}
 	}

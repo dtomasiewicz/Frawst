@@ -12,22 +12,22 @@
 	class Mysqli extends Driver {
 		private $link;
 		
-		public function connect () {
+		public function connect() {
 			$this->link = new \mysqli($this->config['host'], $this->config['user'], $this->config['password'], $this->config['database']);
 		}
 		
-		public function close () {
+		public function close() {
 			return $this->link->close();
 		}
 		
-		public function query ($q) {
+		public function query($q) {
 			if ($q instanceof Query) {
 				// query object
 				$sql = $this->parseQuery($q);
 			} else {
 				$sql = $q;
 			}
-			//echo $sql.'<br>';
+			echo $sql.'<br>';
 			$results = $this->link->query($sql);
 			
 			if ($results instanceof \MySQLi_Result) {
@@ -44,7 +44,7 @@
 		/**
 		 * Parses a Query object into MySQL syntax
 		 */
-		private function parseQuery (Query $query) {
+		private function parseQuery(Query $query) {
 			if ($query->type == 'select') {
 				$sql = 'SELECT '.$this->parseFields($query->fields).' FROM '.
 					$this->parseTables($query->tables);
@@ -114,7 +114,7 @@
 			return $sql;
 		}
 		
-		private function parseFields ($fields) {
+		private function parseFields($fields) {
 			if (is_array($fields) && count($fields)) {
 				$sql = '';
 				foreach ($fields as $key => $value) {
@@ -131,7 +131,7 @@
 			else return '*';
 		}
 		
-		private function parseTables ($tables) {
+		private function parseTables($tables) {
 			$sql = '';
 			
 			foreach ($tables as $alias => $table) {
@@ -152,7 +152,7 @@
 		/**
 		 * Parses a ConditionSet object into SQL
 		 */
-		private function parseConditions (ConditionSet $conditions) {
+		private function parseConditions(ConditionSet $conditions) {
 			$sql = '';
 			
 			foreach ($conditions as $condition) {
@@ -165,7 +165,7 @@
 			return substr($sql, 0, -2-strlen($conditions->operand));
 		}
 		
-		private function parseCondition (Condition $condition) {
+		private function parseCondition(Condition $condition) {
 			if (!is_null($condition->sql)) {
 				return $condition->sql;
 			}
@@ -193,7 +193,7 @@
 			return $field.' '.$operator.' '.$value;
 		}
 		
-		private function parseValue ($value, $quote = true) {
+		private function parseValue($value, $quote = true) {
 			if ($value instanceof Query) {
 				return '('.$this->parseQuery($value).')';
 			} elseif (is_array($value)) {
@@ -203,7 +203,7 @@
 			}
 		}
 		
-		private function quote ($value) {
+		private function quote($value) {
 			if (is_string($value)) {
 				return '"'.$this->escape($value).'"';
 			} else {
@@ -211,14 +211,14 @@
 			}
 		}
 	
-		private function parseGroup ($group) {
+		private function parseGroup($group) {
 			return implode(',', $group);
 		}
 		
 		/**
 		 * Parses order instructions
 		 */
-		private function parseOrder ($order) {
+		private function parseOrder($order) {
 			$sql = '';
 			foreach ($order as $field => $direction) {
 				if (!is_string($field)) {
@@ -233,7 +233,7 @@
 		/**
 		 * Parses limiting instructions
 		 */
-		private function parseLimit ($limit, $offset = null) {
+		private function parseLimit($limit, $offset = null) {
 			$sql = $limit;
 			if ($offset != 0) {
 				$sql = $offset.','.$sql;
@@ -244,7 +244,7 @@
 		/**
 		 * Description of fields
 		 */
-		public function schema ($table) {
+		public function schema($table) {
 			$schema = array();
 			if ($fields = $this->query('DESCRIBE '.$table)) {
 				foreach ($fields as $field) {
@@ -260,7 +260,7 @@
 		 * Determines the default value for a field, given a
 		 * field description.
 		 */
-		public function defaultValue ($desc) {
+		public function defaultValue($desc) {
 			if (!is_null($desc['Default'])) {
 				return $desc['Default'];
 			} elseif ($desc['Null'] != 'NO') {
@@ -286,15 +286,15 @@
 		/**
 		 * Escapes data for safe injection into SQL
 		 */
-		public function escape ($string) {
+		public function escape($string) {
 			return $this->link->real_escape_string($string);
 		}
 		
-		public function error () {
+		public function error() {
 			return $this->link->error;
 		}
 		
-		public function insertId () {
+		public function insertId() {
 			return $this->link->insert_id;
 		}
 	}
@@ -302,12 +302,12 @@
 	class MysqliDebug extends Debug {
 		private $executionTime;
 		
-		public function __construct ($message, $executionTime) {
+		public function __construct($message, $executionTime) {
 			parent::__construct('MySQLi', $message);
 			$this->executionTime = round($executionTime, 6);
 		}
 		
-		public function __toString () {
+		public function __toString() {
 			return parent::__toString().' [execution time: '.$this->executionTime.']';
 		}
 	}*/

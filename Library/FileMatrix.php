@@ -5,12 +5,12 @@
 	class FileMatrix extends Matrix {
 		protected $_directory;
 		
-		public function __construct ($directory, $data = array()) {
+		public function __construct($directory, $data = array()) {
 			parent::__construct($data);
 			$this->_directory = $directory;
 		}
 		
-		public function offsetExists ($offset) {
+		public function offsetExists($offset) {
 			if (parent::offsetExists($offset)) {
 				return true;
 			} else {
@@ -19,7 +19,7 @@
 			}
 		}
 		
-		public function offsetGet ($offset) {
+		public function offsetGet($offset) {
 			if (parent::offsetExists($offset)) {
 				return parent::offsetGet($offset);
 			}
@@ -36,7 +36,7 @@
 			return $data;
 		}
 		
-		public function offsetSet ($offset, $value) {
+		public function offsetSet($offset, $value) {
 			$path = $this->_directory.DIRECTORY_SEPARATOR.str_replace('.', DIRECTORY_SEPARATOR, $offset);
 			
 			if (!file_exists(dirname($path))) {
@@ -51,7 +51,7 @@
 			parent::offsetSet($offset, $value);
 		}
 		
-		public function offsetUnset ($offset) {
+		public function offsetUnset($offset) {
 			$path = $this->_directory.DIRECTORY_SEPARATOR.str_replace('.', DIRECTORY_SEPARATOR, $offset);
 			
 			if (file_exists($path)) {
@@ -68,7 +68,7 @@
 			}
 		}
 		
-		private function read ($path) {
+		private function read($path) {
 			if (is_dir($path)) {
 				$data = array();
 				$handle = opendir($path);

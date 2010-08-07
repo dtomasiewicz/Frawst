@@ -9,20 +9,20 @@
 	class Collection extends ArrayList {
 		protected $_type;
 		
-		public function __construct ($type, $data = null) {
+		public function __construct($type, $data = null) {
 			$this->_type = $type;
 			parent::__construct($data);
 		}
 		
-		public function set ($index, $value) {
+		public function set($index, $value) {
 			if ($this->welcomes($value)) {
 				parent::set($index, $value);
 			} else {
-				$this->__notWelcome($item);
+				$this->__notWelcome($value);
 			}
 		}
 		
-		public function unshift ($item) {
+		public function unshift($item) {
 			if ($this->welcomes($item)) {
 				return parent::unshift($item);
 			} else {
@@ -30,7 +30,7 @@
 			}
 		}
 		
-		public function push ($item) {
+		public function push($item) {
 			if ($this->welcomes($item)) {
 				return parent::push($item);
 			} else {
@@ -38,16 +38,16 @@
 			}
 		}
 		
-		private function __notWelcome ($item) {
+		private function __notWelcome($item) {
 			$type = is_object($item) ? get_class($item) : gettype($item);
 			throw new Exception\Frawst('Variable of type '.$type.' is not welcome in a Collection of type '.$this->type().'.');
 		}
 		
-		public function welcomes ($item) {
+		public function welcomes($item) {
 			return $item instanceof $this->_type;
 		}
 		
-		public function type () {
+		public function type() {
 			return $this->_type;
 		}
 		
@@ -55,7 +55,7 @@
 		 * Getting a value from the collection will return an array of that
 		 * value from each collection item.
 		 */
-		public function __get ($name) {
+		public function __get($name) {
 			$values = array();
 			foreach ($this->get() as $key => $item) {
 				$values[$key] = $item->$name;
@@ -67,7 +67,7 @@
 		 * Setting a value to the collection will attempt to set that value
 		 * in all collection items.
 		 */
-		public function __set ($name, $value) {
+		public function __set($name, $value) {
 			foreach ($this->get() as $item) {
 				$item->$name = $value;
 			}
@@ -77,7 +77,7 @@
 		 * Calling a method will return an array of the result of that method
 		 * being called on all items in the collection.
 		 */
-		public function __call ($method, $args) {
+		public function __call($method, $args) {
 			$results = array();
 			foreach ($this->get() as $key => $item) {
 				$results[$key] = call_user_func_array(array($item, $method), $args);
@@ -89,7 +89,7 @@
 		 * Indexes the objects by the specified property.
 		 * @todo this could probably be done with only one loop
 		 */
-		public function indexBy ($property) {
+		public function indexBy($property) {
 			$indexed = array();
 			foreach ($this->get() as $key => $item) {
 				$indexed[$item->$property] = $item;
@@ -103,7 +103,7 @@
 		/**
 		 * Sorts objects in the collection by the specified property.
 		 */
-		public function sortBy ($property, $direction = ASC) {
+		public function sortBy($property, $direction = ASC) {
 			parent::usort(function($a, $b) {
 				global $property, $direction;
 				

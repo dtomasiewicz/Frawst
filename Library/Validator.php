@@ -9,7 +9,7 @@
 		/**
 		 * Validates an object, returning an array of errors
 		 */
-		public static function checkObject ($object, $rules) {
+		public static function checkObject($object, $rules) {
 			$errors = array();
 			
 			foreach ($rules as $field => $fieldRules) {
@@ -29,7 +29,7 @@
 		 * @param array $rules
 		 * @param object $object An object containing rule callbacks
 		 */
-		public static function check ($value, $rules, $object = null) {
+		public static function check($value, $rules, $object = null) {
 			$errors = array();
 				
 			if (!is_array($rules) || isset($rules['rule'])) {
@@ -75,19 +75,19 @@
 			return $errors;
 		}
 		
-		public static function validInteger ($value, $params = array()) {
+		public static function validInteger($value, $params = array()) {
 			$message = isset($params['message']) ? $params['message'] : 'Must be a valid integer.';
 			return preg_match(self::VALID_INTEGER, $value) ? true : $message;
 		}
-		public static function validRequired ($value, $params = array()) {
+		public static function validRequired($value, $params = array()) {
 			$message = isset($params['message']) ? $params['message'] : 'Required.';
 			return preg_match(self::BLANK, $value) ? $message : true;
 		}
-		public static function validMaxLength ($value, $params = array()) {
+		public static function validMaxLength($value, $params = array()) {
 			$message = isset($params['message']) ? $params['message'] : 'Maximum length of '.$params['maxLength'].' characters.';
 			return strlen($value) <= $params['maxLength'] ? true : $message;
 		}
-		public static function validMinLength ($value, $params = array()) {
+		public static function validMinLength($value, $params = array()) {
 			$message = isset($params['message']) ? $params['message'] : 'Minimum length of '.$params['minLength'].' characters.';
 			return strlen($value) >= $params['minLength'] ? true : $message;
 		}

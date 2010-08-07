@@ -8,40 +8,44 @@
 	 * @todo make a new type of exception for this
 	 */
 	class Mapper {
-		protected $Data;
-		protected $Cache;
-		protected $config;
-		private $factories = array();
+		protected $_Data;
+		protected $_Cache;
+		protected $_config;
+		protected $_factories = array();
 		
-		public function __construct ($config = array(), DataPane\Controller $data = null, $cache = null) {
-			$this->Data = $data;
-			$this->Cache = $cache;
-			$this->config = $config;
+		public function __construct($config = array(), DataPane\Controller $data = null, $cache = null) {
+			$this->_Data = $data;
+			$this->_Cache = $cache;
+			$this->_config = $config;
 			
 			Model::$defaultMapper = $this;
 		}
 		
-		public function factory ($modelName) {
-			if (!isset($this->factories[$modelName])) {
+		public function factory($modelName) {
+			if (!isset($this->_factories[$modelName])) {
 				if (class_exists('\\Corelativ\\Model\\'.$modelName)) {
-					$this->factories[$modelName] = new Factory(array('model' => $modelName), $this);
+					$this->_factories[$modelName] = new Factory(array('model' => $modelName), $this);
 				} else {
-					return false;
+					$this->_factories[$modelName] = false;
 				}
 			}
 			
-			return $this->factories[$modelName];
+			return $this->_factories[$modelName];
 		}
 		
-		public function __get ($model) {
-			return $this->factory($model);
-		}
-		
-		public function getDataController () {
-			return $this->Data;
-		}
-		
-		public function getCacheController () {
-			return $this->Cache;
+		public function __get($name) {
+			switch($name) {
+				case 'Data':
+					return $this->_Data;
+				case 'Cache':
+					return $this->_Cache;
+				default:
+					if($factory = $this->factory($name)) {
+						return $factory;
+					} else {
+						//@todo exception
+						exit('Invalid ORM property: '.$name);
+					}
+			}
 		}
 	}

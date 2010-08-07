@@ -8,7 +8,7 @@
 		protected static $_camelBack = array();
 		protected static $_underscore = array();
 		
-		public static function upperFirst ($str) {
+		public static function upperFirst($str) {
 			$str = substr($str, 0, 1);
 			return (strtolower($str) !== $str);
 		}
@@ -19,7 +19,7 @@
 		 * @param	string $str String to be CamelCased.
 		 * @return string			The CamelCased string.
 		 */
-		public static function camelCase ($str) {
+		public static function camelCase($str) {
 			return ucfirst(self::camelBack($str));
 		}
 		
@@ -30,7 +30,7 @@
 		 * @param	string $str String to be converted to underscore.
 		 * @return string			The underscore formatted string.
 		 */
-		public static function underscore ($string) {
+		public static function underscore($string) {
 			if (isset(self::$_underscore[$string])) {
 				return self::$_underscore[$string];
 			}
@@ -57,7 +57,7 @@
 		 * @param	string $str The underscore string to be formatted.
 		 * @return string			The formatted string.
 		 */
-		public static function camelBack ($str) {
+		public static function camelBack($str) {
 			if (isset(self::$_camelBack[$str])) {
 				return self::$_camelBack[$str];
 			}
@@ -70,15 +70,15 @@
 			return self::$_camelBack[$str] = $str;
 		}
 		
-		public static function isUpper ($str) {
+		public static function isUpper($str) {
 			return (strtolower($str) !== $str);
 		}
 		
-		public static function isLower ($str) {
+		public static function isLower($str) {
 			return (strtoupper($str) !== $str);
 		}
 		
-		public static function slug ($str) {
+		public static function slug($str) {
 			return urlencode($str);
 		}
 	}

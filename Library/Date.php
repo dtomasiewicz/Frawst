@@ -13,7 +13,7 @@
 		 * Returns Today if the specified time falls during the current day,
 		 * otherwise formats as specified.
 		 */
-		public static function nice ($date, $format = 'F j, Y') {
+		public static function nice($date, $format = 'F j, Y') {
 			$today = mktime(0, 0, 0);
 			$tomorrow = $today+86400;
 			return ($date >= $today && $date < $tomorrow) ? 'Today' : date($format, $date);
@@ -27,7 +27,7 @@
 		 * @param	cutoff		If the span is >= this, only a single unit will be represented
 		 * @param	formats		Formattings of each part
 		 */
-		public static function niceSpan ($seconds, $precision = self::SECOND, $cutoff = self::DAY, $formats = array(), $glue = ' ') {
+		public static function niceSpan($seconds, $precision = self::SECOND, $cutoff = self::DAY, $formats = array(), $glue = ' ') {
 			$formats += array(
 				'year' => array('%d year', '%d years'),
 				'month' => array('%d month', '%d months'),

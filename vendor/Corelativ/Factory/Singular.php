@@ -5,46 +5,46 @@
 		\DataPane\Query;
 	
 	abstract class Singular extends Relation {
-		protected $related = false;
-		protected $changed = false;
+		protected $_related = false;
+		protected $_changed = false;
 		
-		protected function uniqueCondition () {
-			return new ConditionSet($this->uniqueProperty());
+		protected function _uniqueCondition() {
+			return new ConditionSet($this->_uniqueProperty());
 		}
 		
-		public function set ($id = null) {
+		public function set($id = null) {
 			if ($id instanceof Model) {
-				$this->related = $id;
+				$this->_related = $id;
 			} elseif (is_null($id) || $id == 0) {
-				$this->related = null;
+				$this->_related = null;
 			} else {
 				// allow them to change properties on the fly
 				$properties = array();
 				if (is_array($id)) {
 					$properties = $id;
-					$id = $properties[$this->Object->primaryKeyField()];
+					$id = $properties[$this->_Object->primaryKeyField()];
 				}
 				
 				// want to find WITHOUT restrictions
-				$this->related = parent::find(new ConditionSet(array(
-					$this->Object->primaryKeyField() => $id
+				$this->_related = parent::find(new ConditionSet(array(
+					$this->_Object->primaryKeyField() => $id
 				)));
 				
-				if ($this->related) {
-					$this->related->set($properties);
+				if ($this->_related) {
+					$this->_related->set($properties);
 				}
 			}
 			
-			$this->changed = true;
+			$this->_changed = true;
 		}
 		
-		public function validate () {
-			if ($this->related instanceof Model) {
-				return $this->related->validate() ? true : $this->related->errors();
+		public function validate() {
+			if ($this->_related instanceof Model) {
+				return $this->_related->validate() ? true : $this->related->errors();
 			} else {
 				return true;
 			}
 		}
 		
-		abstract protected function uniqueProperty ();
+		abstract protected function _uniqueProperty();
 	}

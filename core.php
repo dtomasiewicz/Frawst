@@ -32,11 +32,11 @@
 		use \Frawst\Loader,
 			\Frawst\Exception;
 		
-		function __autoload ($class) {
+		function __autoload($class) {
 			Loader::import($class);
 		}
 		
-		function error_handler ($code, $message, $file, $line) {
+		function error_handler($code, $message, $file, $line) {
 			throw new Exception\Language($message, 0, $code, $file, $line);
 		}
 		set_error_handler('error_handler');
@@ -84,7 +84,7 @@
 		 * I HATE YOU MAGIC QUOTES
 		 */
 		if (function_exists('get_magic_quotes_gpc') && get_magic_quotes_gpc()) {
-		 	function stripslashes_deep ($value) {
+		 	function stripslashes_deep($value) {
 				$value = (is_array($value)) ?
 					array_map('stripslashes_deep', $value) :
 					stripslashes($value);

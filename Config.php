@@ -12,7 +12,7 @@
 	abstract class Config {
 		protected static $_data = array();
 		
-		public static function read ($dotPath) {
+		public static function read($dotPath) {
 			$segs = explode('.', $dotPath);
 			if (!array_key_exists($segs[0], self::$_data)) {
 				if ($path = Loader::importPath('Frawst\\config\\'.$segs[0])) {
