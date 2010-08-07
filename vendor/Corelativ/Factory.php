@@ -65,7 +65,7 @@
 					return $return;
 				} else {
 					//@todo exception
-					exit('Error in find operation: '.$this->_Data->error($this->_Object->dataSource()));
+					exit('Error in find operation: '.$this->_Data[$this->_Object->dataSource()]->error());
 				}
 			}
 		}

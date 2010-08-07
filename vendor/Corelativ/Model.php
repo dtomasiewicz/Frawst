@@ -332,7 +332,7 @@
 				return $success;
 			} else {
 				//@todo exception
-				exit('Could not save model: '.$this->_Data->error());
+				exit('Could not save model: '.$this->_Data[$this->_dataSource]->error());
 			}
 		}
 		

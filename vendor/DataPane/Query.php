@@ -111,7 +111,7 @@
 		
 		public function exec($source = null) {
 			$source = is_null($source) ? $this->source : $source;
-			return $this->_Data->query($this, $source);
+			return $this->_Data[$source]->query($this);
 		}
 		
 		public function __get($name) {

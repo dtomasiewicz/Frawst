@@ -91,7 +91,7 @@
 				$delink->where = new DataPane\ConditionSet(array(
 					$this->_subjectKeyField => $this->_Subject->primaryKey()
 				));
-				$this->_Data->query($delink, $this->_Object->dataSource());
+				$this->_Data[$this->_Object->dataSource()]->query($delink);
 			}
 			
 			// remove defuct associations
@@ -103,7 +103,7 @@
 				$remove->where = new DataPane\ConditionSet(array(
 					$this->_objectPrimaryKeyField => array_keys($this->_removals)
 				));
-				$this->_Data->query($remove, $this->_Object->dataSource());
+				$this->_Data[$this->_Object->dataSource()]->query($remove);
 			}
 			
 			// add new associations
