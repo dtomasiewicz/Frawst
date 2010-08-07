@@ -27,7 +27,7 @@
 			} else {
 				$sql = $q;
 			}
-			echo $sql.'<br>';
+			//echo $sql.'<br>';
 			$results = $this->link->query($sql);
 			
 			if ($results instanceof \MySQLi_Result) {
