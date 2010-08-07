@@ -257,33 +257,6 @@
 		}
 		
 		/**
-		 * Determines the default value for a field, given a
-		 * field description.
-		 */
-		public function defaultValue($desc) {
-			if (!is_null($desc['Default'])) {
-				return $desc['Default'];
-			} elseif ($desc['Null'] != 'NO') {
-				return null;
-			} else {
-				$type = $desc['Type'];
-				if (false !== $pos = strpos($type, '(')) {
-					$type = substr($type, 0, $pos);
-				}
-				switch ($type) {
-					case 'int':
-						return 0;
-					case 'datetime':
-						return '0000-00-00 00:00:00';
-					case 'date':
-						return '0000-00-00';
-					default:
-						return '';
-				}
-			}
-		}
-		
-		/**
 		 * Escapes data for safe injection into SQL
 		 */
 		public function escape($string) {

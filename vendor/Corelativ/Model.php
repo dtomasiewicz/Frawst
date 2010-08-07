@@ -9,7 +9,7 @@
 		const INDEX_INDEX = 'INDEX';
 		const INDEX_FULLTEXT = 'FULLTEXT';
 		
-		const FIELD_INTEGER = 'INTEGER';
+		const FIELD_INT = 'INTEGER';
 		const FIELD_VARCHAR = 'VARCHAR';
 		const FIELD_TEXT = 'TEXT';
 		const FIELD_BOOL = 'BOOL';
@@ -142,11 +142,11 @@
 						if ($this->_saved) {
 							$this->_stored[$prop] = $properties[$prop];
 						} else {
-							$this->_stored[$prop] = $this->_Data[$this->_dataSource]->defaultValue($cfg['type']);
+							$this->_stored[$prop] = $this->defaultValue($prop);
 							$this->_changes[$prop] = $properties[$prop];
 						}
 					} else {
-						$this->_stored[$prop] = $this->_Data[$this->_dataSource]->defaultValue($cfg['type']);
+						$this->_stored[$prop] = $this->defaultValue($prop);
 					}
 				}
 			}
@@ -381,7 +381,7 @@
 			if ($result = $this->_Data[$this->_dataSource]->query($q)) {
 				//@TODO delete relations?
 				$pkField = $this->primaryKeyField();
-				$this->_stored[$pkField] = $this->_Data[$this->_dataSource]->defaultValue($this->_properties[$pkField]['type']);
+				$this->_stored[$pkField] = $this->defaultValue($pkField);
 				$this->_saved = false;
 				return $result;
 			} else {
@@ -549,5 +549,21 @@
 			
 			//@todo exception
 			exit('no primary key defined for model: '.$c);
+		}
+		
+		public static function defaultValue($prop) {
+			$props = static::properties();
+			if(isset($props[$prop]['default'])) {
+				return $props[$prop]['default'];
+			} else {
+				switch($props[$prop]['type']) {
+					case self::FIELD_INT:
+						return 0;
+					case self::FIELD_BOOL:
+						return 0;
+					default:
+						return '';
+				}
+			}
 		}
 	}
