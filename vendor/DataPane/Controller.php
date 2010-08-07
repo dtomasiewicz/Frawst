@@ -3,14 +3,13 @@
 	use \DataPane\Query;
 	
 	class Controller implements \ArrayAccess {
-		private $sources = array();
-		protected $config;
-		protected $Cache;
-		protected $activeSource;
+		protected $_sources = array();
+		protected $_config;
+		protected $_Cache;
 		
 		public function __construct($config, $cache = null) {
-			$this->config = $config;
-			$this->Cache = $cache;
+			$this->_config = $config;
+			$this->_Cache = $cache;
 		}
 		
 		public function offsetGet($offset) {
@@ -23,27 +22,27 @@
 		}
 		
 		public function offsetUnset($offset) {
-			$this->sources[$offset]->close();
+			$this->_sources[$offset]->close();
 		}
 		
 		public function offsetExists($offset) {
-			return array_key_exists($offset, $this->sources);
+			return array_key_exists($offset, $this->_sources);
 		}
 		
 		public function source($source = 'default') {
-			if (!isset($this->sources[$source])) {
-				if (isset($this->config[$source])) {
+			if (!isset($this->_sources[$source])) {
+				if (isset($this->_config[$source])) {
 					// attempt to open the datasource
-					$class = '\\DataPane\\Driver\\'.$this->config[$source]['driver'];
-						$this->sources[$source] = new $class($this->config[$source]);
-					$this->sources[$source]->connect();
+					$class = '\\DataPane\\Driver\\'.$this->_config[$source]['driver'];
+						$this->_sources[$source] = new $class($this->_config[$source]);
+					$this->_sources[$source]->connect();
 				} else {
 					//@todo exception
 					exit('Invalid data source: '.$source);
 				}
 			}
 			
-			return $this->sources[$source];
+			return $this->_sources[$source];
 		}
 		
 		/**

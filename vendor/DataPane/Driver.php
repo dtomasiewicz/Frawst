@@ -2,9 +2,9 @@
 	namespace DataPane;
 	
 	abstract class Driver {
-		protected $config;
+		protected $_config;
 		
 		public function __construct($config = array()) {
-			$this->config = $config;
+			$this->_config = $config;
 		}
 	}

@@ -10,14 +10,14 @@
 	 * MySQLi Datasource implementation
 	 */
 	class Mysqli extends Driver {
-		private $link;
+		protected $_link;
 		
 		public function connect() {
-			$this->link = new \mysqli($this->config['host'], $this->config['user'], $this->config['password'], $this->config['database']);
+			$this->_link = new \mysqli($this->_config['host'], $this->_config['user'], $this->_config['password'], $this->_config['database']);
 		}
 		
 		public function close() {
-			return $this->link->close();
+			return $this->_link->close();
 		}
 		
 		public function query($q) {
@@ -28,7 +28,7 @@
 				$sql = $q;
 			}
 			//echo $sql.'<br>';
-			$results = $this->link->query($sql);
+			$results = $this->_link->query($sql);
 			
 			if ($results instanceof \MySQLi_Result) {
 				$results = new Result\Mysqli($results);
@@ -287,27 +287,14 @@
 		 * Escapes data for safe injection into SQL
 		 */
 		public function escape($string) {
-			return $this->link->real_escape_string($string);
+			return $this->_link->real_escape_string($string);
 		}
 		
 		public function error() {
-			return $this->link->error;
+			return $this->_link->error;
 		}
 		
 		public function insertId() {
-			return $this->link->insert_id;
+			return $this->_link->insert_id;
 		}
 	}
-	/*
-	class MysqliDebug extends Debug {
-		private $executionTime;
-		
-		public function __construct($message, $executionTime) {
-			parent::__construct('MySQLi', $message);
-			$this->executionTime = round($executionTime, 6);
-		}
-		
-		public function __toString() {
-			return parent::__toString().' [execution time: '.$this->executionTime.']';
-		}
-	}*/

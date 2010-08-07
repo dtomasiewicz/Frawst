@@ -3,7 +3,7 @@
 	
 	class ConditionSet implements \Iterator, \Countable {
 		public $operand;
-		private $conditions = array();
+		protected $_conditions = array();
 		
 		public function __construct($conditions = array(), $operand = 'AND') {
 			$this->operand = $operand;
@@ -16,9 +16,9 @@
 					$this->add($f, $v);
 				}
 			} elseif ($field instanceof ConditionSet) {
-				$this->conditions[] = $field;
+				$this->_conditions[] = $field;
 			} elseif ($value instanceof ConditionSet) {
-				$this->conditions[] = $value;
+				$this->_conditions[] = $value;
 			} else {
 				$condition = new Condition();
 				
@@ -63,31 +63,31 @@
 					$condition->quote = false;
 				}
 				
-				$this->conditions[] = $condition;
+				$this->_conditions[] = $condition;
 			}
 		}
 		
 		public function count() {
-			return count($this->conditions);
+			return count($this->_conditions);
 		}
 		
 		public function current() {
-			return current($this->conditions);
+			return current($this->_conditions);
 		}
 		
 		public function key() {
-			return key($this->conditions);
+			return key($this->_conditions);
 		}
 		
 		public function next() {
-			return next($this->conditions);
+			return next($this->_conditions);
 		}
 		
 		public function rewind() {
-			return reset($this->conditions);
+			return reset($this->_conditions);
 		}
 		
 		public function valid() {
-			return key($this->conditions) !== null;
+			return key($this->_conditions) !== null;
 		}
 	}
