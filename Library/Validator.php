@@ -13,13 +13,21 @@
 			$errors = array();
 			
 			foreach ($rules as $field => $fieldRules) {
-				$errors[$field] = static::check($object->$field, $fieldRules, $object);
-				
-				if (count($errors[$field]) == 0) {
-					unset($errors[$field]);
+				if(count($fieldErrors = static::check($object->$field, $fieldRules, $object))) {
+					$errors[$field] = $fieldErrors;
 				}
 			}
 			
+			return $errors;
+		}
+		
+		public static function checkMultiple($values, $rules, $object = null) {
+			$errors = array();
+			foreach($rules as $field => $fieldRules) {
+				if(count($fieldErrors = static::check($values[$field], $fieldRules))) {
+					$errors[$field] = $fieldErrors;
+				}
+			}
 			return $errors;
 		}
 		

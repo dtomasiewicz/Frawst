@@ -118,9 +118,9 @@
 		 * of the model.
 		 */
 		public function __construct($properties = array(), $mapper = null) {
-			$this->_Mapper = $mapper;
-			$this->_Data = $mapper->Data;
-			$this->_Cache = $mapper->Cache;
+			$this->_Mapper = is_null($mapper) ? self::$defaultMapper : $mapper;
+			$this->_Data = $this->_Mapper->Data;
+			$this->_Cache = $this->_Mapper->Cache;
 			
 			$this->_modelName = static::modelName();
 			$this->_dataSource = static::dataSource();
@@ -366,7 +366,7 @@
 				}
 			}
 			
-			return (count($this->errors()) == 0) ? true : $this->errors();
+			return (bool) !(count($this->_errors));
 		}
 				
 		/**
