@@ -135,7 +135,7 @@
 				$this->_stored = array();
 				$this->_changes = array();
 				
-				$this->_saved = isset($properties[$this->primaryKeyField()]);
+				$this->_saved = isset($properties[$this->_primaryKeyField]);
 				
 				foreach ($this->_properties as $prop => $cfg) {
 					if ($this->_saved) {
