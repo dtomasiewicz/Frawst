@@ -28,7 +28,7 @@
 				self::$_paths[$scope][$pathType] = array();
 			}
 			
-			self::$_paths[$scope][$pathType][] = $path;
+			self::$_paths[$scope][$pathType][] = rtrim($path, '/\\');;
 		}
 		
 		/**
@@ -58,8 +58,6 @@
 					}
 				}
 			} else {
-				$s = microtime(true);
-				
 				$parts = explode('\\', trim($class, '\\'));
 				$base = array();
 				
@@ -99,5 +97,51 @@
 			} else {
 				return false;
 			}
+		}
+		
+		/**
+		 * Generates an array of paths that will be checked for the given namespace, in order
+		 * of their priority.
+		 * @param string $name The namespace to check
+		 * @param string $scope The scope to check, defaults to all scopes
+		 * @return array Array of loader paths for the given namespace, in the order they will
+		 *               be checked
+		 */
+		public static function getPaths($name, $scope = null) {
+			$paths = array();
+			
+			if(is_null($scope)) {
+				foreach(self::$_paths as $s => $p) {
+					$paths = array_merge($paths, self::getPaths($name, $s));
+				}
+			} else {
+				$prefix = explode('\\', trim($name, '\\'));
+				$suffix = array();
+				
+				$finished = false;
+				while(!$finished) {
+					$subDir = count($suffix)
+						? DIRECTORY_SEPARATOR.implode(DIRECTORY_SEPARATOR, $suffix)
+						: '';
+					
+					if(count($prefix)) {
+						$type = implode('\\', $prefix);
+						array_unshift($suffix, array_pop($prefix));
+					} else {
+						$type = '*';
+						$finished = true;
+					}
+					
+					if(isset(self::$_paths[$scope][$type])) {
+						foreach(self::$_paths[$scope][$type] as $path) {
+							if(file_exists($full = $path.$subDir)) {
+								$paths[] = $full;
+							}
+						}
+					}
+				}
+			}
+			
+			return $paths;
 		}
 	}

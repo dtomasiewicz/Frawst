@@ -9,7 +9,7 @@
 		const INDEX_INDEX = 'INDEX';
 		const INDEX_FULLTEXT = 'FULLTEXT';
 		
-		const FIELD_INT = 'INTEGER';
+		const FIELD_INT = 'INT';
 		const FIELD_VARCHAR = 'VARCHAR';
 		const FIELD_TEXT = 'TEXT';
 		const FIELD_BOOL = 'BOOL';
@@ -138,18 +138,23 @@
 				$this->_saved = isset($properties[$this->primaryKeyField()]);
 				
 				foreach ($this->_properties as $prop => $cfg) {
-					if (isset($properties[$prop])) {
-						if ($this->_saved) {
-							$this->_stored[$prop] = $properties[$prop];
-						} else {
-							$this->_stored[$prop] = $this->defaultValue($prop);
-							$this->_changes[$prop] = $properties[$prop];
-						}
+					if ($this->_saved) {
+						$this->_stored[$prop] = isset($properties[$prop])
+							? $properties[$prop]
+							: $this->defaultValue($prop);
 					} else {
-						$this->_stored[$prop] = $this->defaultValue($prop);
+						$this->_changes[$prop] = $this->defaultValue($prop);
 					}
 				}
+				
+				if(!$this->_saved) {
+					$this->create($properties);
+				}
 			}
+		}
+		
+		public function create($data = array()) {
+			$this->set($data);
 		}
 		
 		public function __get($property) {
