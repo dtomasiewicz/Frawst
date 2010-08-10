@@ -183,7 +183,8 @@
 			if (is_null($route)) {
 				$route = $this->route(true);
 			}
-			return rtrim(WEB_ROOT.'/'.$route, '/');
+			$root = URL_REWRITE ? WEB_ROOT : WEB_ROOT.'/index.php';
+			return rtrim($root.'/'.$route, '/');
 		}
 		
 		/**

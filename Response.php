@@ -131,7 +131,8 @@
 				if ($this->_Request->isAjax()) {
 					$to .= AJAX_SUFFIX;
 				}
-				$to = WEB_ROOT.'/'.$to;
+				$root = URL_REWRITE ? WEB_ROOT : WEB_ROOT.'/index.php';
+				$to = $root.'/'.$to;
 			}
 			
 			$this->header('Location', $to);

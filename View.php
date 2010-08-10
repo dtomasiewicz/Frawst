@@ -64,6 +64,10 @@
 			return $this->_Response->Request->path($route);
 		}
 		
+		public function root($resource = '') {
+			return rtrim(WEB_ROOT.'/'.$resource, '/');
+		}
+		
 		public function modGet($changes = array()) {
 			$qs = '?';
 			foreach ($changes + $this->_Response->Request->getData() as $key => $value) {

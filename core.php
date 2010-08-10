@@ -27,6 +27,14 @@
 		defined('Frawst\\AJAX_SUFFIX')
 			or define('Frawst\\AJAX_SUFFIX', '___AJAX___');
 		
+		if(!defined('Frawst\\URL_REWRITE')) {
+			if(function_exists('apache_get_modules') && in_array('mod_rewrite', apache_get_modules())) {
+				define('Frawst\\URL_REWRITE', true);
+			} else {
+				define('Frawst\\URL_REWRITE', false);
+			}
+		}
+			
 		require('Loader.php');
 		
 		use \Frawst\Loader,

@@ -11,7 +11,7 @@
 		);
 		
 		public function image($path, $attrs = array()) {
-			return sprintf($this->_tags['image'], $this->_View->path('public/images/'.$path), $this->parseAttributes($attrs));
+			return sprintf($this->_tags['image'], $this->_View->root('public/images/'.$path), $this->parseAttributes($attrs));
 		}
 		
 		public function link($uri, $content, $attrs = array()) {
