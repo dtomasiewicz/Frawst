@@ -107,7 +107,7 @@
 		 * @return array Array of loader paths for the given namespace, in the order they will
 		 *               be checked
 		 */
-		public static function getPaths($name, $scope = null) {
+		public static function getPaths($name = '*', $scope = null) {
 			$paths = array();
 			
 			if(is_null($scope)) {
@@ -115,22 +115,16 @@
 					$paths = array_merge($paths, self::getPaths($name, $s));
 				}
 			} else {
-				$prefix = explode('\\', trim($name, '\\'));
-				$suffix = array();
+				$prefix = $name == '*'
+					? array()
+					: explode('\\', trim($name, '\\'));
+				$subDir = '';
 				
 				$finished = false;
 				while(!$finished) {
-					$subDir = count($suffix)
-						? DIRECTORY_SEPARATOR.implode(DIRECTORY_SEPARATOR, $suffix)
-						: '';
-					
-					if(count($prefix)) {
-						$type = implode('\\', $prefix);
-						array_unshift($suffix, array_pop($prefix));
-					} else {
-						$type = '*';
-						$finished = true;
-					}
+					$type = count($prefix)
+						? implode('\\', $prefix)
+						: '*';
 					
 					if(isset(self::$_paths[$scope][$type])) {
 						foreach(self::$_paths[$scope][$type] as $path) {
@@ -138,6 +132,12 @@
 								$paths[] = $full;
 							}
 						}
+					}
+					
+					if(count($prefix)) {
+						$subDir = DIRECTORY_SEPARATOR.array_pop($prefix).$subDir;
+					} else {
+						$finished = true;
 					}
 				}
 			}
