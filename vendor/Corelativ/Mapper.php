@@ -1,51 +1,28 @@
 <?php
 	namespace Corelativ;
-	use \Corelativ\Factory,
-		\DataPane;
+	use \Corelativ\Factory;
 	
 	/**
 	 * The main Corelativ ORM wrapper.
 	 * @todo make a new type of exception for this
 	 */
-	class Mapper {
-		protected $_Data;
-		protected $_Cache;
-		protected $_config;
-		protected $_factories = array();
+	abstract class Mapper {
+		protected static $_config;
+		protected static $_factories = array();
 		
-		public function __construct($config = array(), DataPane\Controller $data = null, $cache = null) {
-			$this->_Data = $data;
-			$this->_Cache = $cache;
-			$this->_config = $config;
-			
-			Model::$defaultMapper = $this;
+		public static function init($config = array()) {
+			self::$_config = $config;
 		}
 		
-		public function factory($modelName) {
-			if (!isset($this->_factories[$modelName])) {
+		public static function factory($modelName) {
+			if (!isset(self::$_factories[$modelName])) {
 				if (class_exists('\\Corelativ\\Model\\'.$modelName)) {
-					$this->_factories[$modelName] = new Factory(array('model' => $modelName), $this);
+					self::$_factories[$modelName] = new Factory(array('model' => $modelName));
 				} else {
-					$this->_factories[$modelName] = false;
+					self::$_factories[$modelName] = false;
 				}
 			}
 			
-			return $this->_factories[$modelName];
-		}
-		
-		public function __get($name) {
-			switch($name) {
-				case 'Data':
-					return $this->_Data;
-				case 'Cache':
-					return $this->_Cache;
-				default:
-					if($factory = $this->factory($name)) {
-						return $factory;
-					} else {
-						//@todo exception
-						exit('Invalid ORM property: '.$name);
-					}
-			}
+			return self::$_factories[$modelName];
 		}
 	}

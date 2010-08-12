@@ -1,13 +1,13 @@
 <?php
 	namespace Corelativ\Factory;
-		
+	
 	abstract class Multiple extends Relation {
 		protected $_additions;
 		protected $_removals;
 		protected $_allInclusive;
 		
-		public function __construct($config, $mapper) {
-			parent::__construct($config, $mapper);
+		public function __construct($config) {
+			parent::__construct($config);
 			$this->_allInclusive = false;
 			$this->_resetLists();
 		}

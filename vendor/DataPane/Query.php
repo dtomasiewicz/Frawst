@@ -17,10 +17,9 @@
 		protected $_offset;
 		protected $_values;
 		
-		protected $_Data;
 		protected $_source;
 		
-		public function __construct($type, $tables, $params = array(), $data = null) {
+		public function __construct($type, $tables, $params = array()) {
 			$this->_type = $type;
 			$this->_tables = (array) $tables;
 			
@@ -45,8 +44,6 @@
 			foreach($params as $key => $value) {
 				$this->$key = $value;
 			}
-			
-			$this->_Data = $data;
 		}
 		
 		public function where($field, $value = null) {
@@ -110,8 +107,8 @@
 		}
 		
 		public function exec($source = null) {
-			$source = is_null($source) ? $this->source : $source;
-			return $this->_Data[$source]->query($this);
+			$source = is_null($source) ? $this->_source : $source;
+			return Data::source($source)->query($this);
 		}
 		
 		public function __get($name) {

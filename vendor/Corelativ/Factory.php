@@ -1,30 +1,18 @@
 <?php
 	namespace Corelativ;
-	use \DataPane;
+	use \DataPane,
+	    \DataPane\Data;
 	
 	class Factory {
-		protected $_Mapper;
-		protected $_Data;
-		protected $_Cache;
 		protected $_Object;
 		
-		public function __construct($config, $mapper) {
-			$this->_Mapper = $mapper;
-			$this->_Data = $mapper->Data;
-			$this->_Cache = $mapper->Cache;
-			
+		public function __construct($config) {
 			$class = '\\Corelativ\\Model\\'.$config['model'];
-			$this->_Object = new $class($this, $this->_Mapper);
+			$this->_Object = new $class($this);
 		}
 		
 		public function __get($name) {
 			switch($name) {
-				case 'Mapper':
-					return $this->_Mapper;
-				case 'Data':
-					return $this->_Data;
-				case 'Cache':
-					return $this->_Cache;
 				case 'Object':
 					return $this->_Object;
 				default:
@@ -59,13 +47,13 @@
 					
 					$class = get_class($this->_Object);
 					foreach ($results as $result) {
-						$return[] = new $class($result, $this->_Mapper);
+						$return[] = new $class($result);
 					}
 					
 					return $return;
 				} else {
 					//@todo exception
-					exit('Error in find operation: '.$this->_Data[$this->_Object->dataSource()]->error());
+					exit('Error in find operation: '.Data::source($this->_Object->dataSource())->error());
 				}
 			}
 		}
@@ -91,15 +79,14 @@
 				if ($params instanceof DataPane\ConditionSet) {
 					$params = array('where' => $params);
 				}
-				$params = new ModelQuery($type, $this->_Object->tableName(), $params, $this->_Data);
+				$params = new ModelQuery($type, $this->_Object->tableName(), $params);
 			}
 			return $params;
 		}
 		
 		public function create($data = array()) {
 			$class = get_class($this->_Object);
-			$model = new $class(array(), $this->_Mapper);
-			$model->set($data);
+			$model = new $class($data);
 			return $model;
 		}
 		

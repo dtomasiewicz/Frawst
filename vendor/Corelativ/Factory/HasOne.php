@@ -13,7 +13,7 @@
 				$objectTable = $this->_Object->tableName();
 			
 				// unlink old relation if exists
-				$delink = new DataPane\Query('update', $objectTable, array(), $this->_Data);
+				$delink = new DataPane\Query('update', $objectTable, array());
 				$delink->values = array(
 					$this->_subjectKeyField => 0
 				);

@@ -5,11 +5,9 @@
 		protected $_components;
 		protected $_data;
 		protected $_Request;
-		protected $_Cache;
 		
 		public function __construct($request) {
 			$this->_Request = $request;
-			$this->_Cache = $request->Cache;
 		}
 		
 		public function __get($name) {
@@ -17,8 +15,6 @@
 				return $this->_Request;
 			} elseif ($name == 'Response') {
 				return $this->_Request->Response;
-			} elseif ($name == 'Cache') {
-				return $this->_Cache;
 			} elseif ($c = $this->_component($name)) {
 				return $c;
 			} elseif ($m = $this->_model($name)) {
@@ -38,7 +34,8 @@
 		}
 		
 		protected function _model($name) {
-			return $this->_Request->Mapper->factory($name);
+			//@todo this should probably be decoupled
+			return \Corelativ\Mapper::factory($name);
 		}
 		
 		public function hasAction($action) {

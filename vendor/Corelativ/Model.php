@@ -2,7 +2,8 @@
 	namespace Corelativ;
 	use \Corelativ\Factory,
 		\Frawst\Library\Validator,
-		\DataPane;
+		\DataPane,
+		\DataPane\Data;
 	
 	abstract class Model implements \Serializable {
 		const INDEX_PRIMARY = 'PRIMARY';
@@ -16,16 +17,6 @@
 		
 		protected static $_nextUniqueId = 1;
 		protected $_uniqueId;
-		public static $defaultMapper = null;
-		
-		/**
-		 * The datasource to use for database operations by this model. Set
-		 * in constructor.
-		 * @var mixed
-		 */
-		protected $_Mapper;
-		protected $_Data;
-		protected $_Cache;
 		
 		/**
 		 * The datasource where this model is stored.
@@ -117,11 +108,7 @@
 		 * Constructor. This is the only place a primary key can be set from outside
 		 * of the model.
 		 */
-		public function __construct($properties = array(), $mapper = null) {
-			$this->_Mapper = is_null($mapper) ? self::$defaultMapper : $mapper;
-			$this->_Data = $this->_Mapper->Data;
-			$this->_Cache = $this->_Mapper->Cache;
-			
+		public function __construct($properties = array()) {
 			$this->_modelName = static::modelName();
 			$this->_dataSource = static::dataSource();
 			$this->_tableName = static::tableName();
@@ -161,12 +148,6 @@
 			switch($property) {
 				case 'Factory':
 					return $this->_Factory;
-				case 'Data':
-					return $this->_Data;
-				case 'Cache':
-					return $this->_Cache;
-				case 'Mapper':
-					return $this->_Mapper;
 				default:
 					return $this->get($property);
 			}
@@ -181,7 +162,7 @@
 		}
 		
 		public function unserialize($properties) {
-			$this->__construct(unserialize($properties), self::$defaultMapper);
+			$this->__construct(unserialize($properties));
 		}
 		
 		/**
@@ -316,12 +297,12 @@
 					$q = new DataPane\Query('insert', $this->tableName(), array('values' => $this->_changes));
 				}
 				
-				if ($success = $this->_Data[$this->_dataSource]->query($q)) {
+				if ($success = Data::source($this->_dataSource)->query($q)) {
 					$this->_stored = $this->_changes + $this->_stored;
 					$this->_changes = array();
 							
 					if ($q->type == 'insert') {
-						$this->_stored[$this->primaryKeyField()] = $this->_Data[$this->_dataSource]->insertId();
+						$this->_stored[$this->primaryKeyField()] = Data::source($this->_dataSource)->insertId();
 					}
 					
 					$this->_saved = true;
@@ -337,7 +318,7 @@
 				return $success;
 			} else {
 				//@todo exception
-				exit('Could not save model: '.$this->_Data[$this->_dataSource]->error());
+				exit('Could not save model: '.Data::source($this->_dataSource)->error());
 			}
 		}
 		
@@ -383,14 +364,14 @@
 				'where' => new DataPane\ConditionSet(array($this->primaryKeyField() => $this->primaryKey()))
 			));
 			
-			if ($result = $this->_Data[$this->_dataSource]->query($q)) {
+			if ($result = Data::source($this->_dataSource)->query($q)) {
 				//@TODO delete relations?
 				$pkField = $this->primaryKeyField();
 				$this->_stored[$pkField] = $this->defaultValue($pkField);
 				$this->_saved = false;
 				return $result;
 			} else {
-				throw new Exception\Model('Could not delete model: '.$this->_Data[$this->_dataSource]->error());
+				throw new Exception\Model('Could not delete model: '.Data::source($this->_dataSource)->error());
 			}
 		}
 		
@@ -452,14 +433,14 @@
 				$related['subject'] = $this;
 				
 				$class = '\\Corelativ\\Factory\\'.$related['type'];
-				return $this->_relations[$alias] = new $class($related, $this->_Mapper);
+				return $this->_relations[$alias] = new $class($related);
 			} else {
 				return false;
 			}
 		}
 		
 		public function factory($model) {
-			return $this->_Mapper->factory($model);
+			return Mapper::factory($model);
 		}
 		
 		/**

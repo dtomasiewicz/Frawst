@@ -1,7 +1,8 @@
 <?php
 	namespace Corelativ\Factory;
 	use \Corelativ\Model,
-		\DataPane;
+		\DataPane,
+		\DataPane\Data;
 	
 	class HasMany extends Multiple {
 		//@todo add support for relating non-saved models?
@@ -91,7 +92,7 @@
 				$delink->where = new DataPane\ConditionSet(array(
 					$this->_subjectKeyField => $this->_Subject->primaryKey()
 				));
-				$this->_Data[$this->_Object->dataSource()]->query($delink);
+				Data::source($this->_Object->dataSource())->query($delink);
 			}
 			
 			// remove defuct associations
@@ -103,7 +104,7 @@
 				$remove->where = new DataPane\ConditionSet(array(
 					$this->_objectPrimaryKeyField => array_keys($this->_removals)
 				));
-				$this->_Data[$this->_Object->dataSource()]->query($remove);
+				Data::source($this->_Object->dataSource())->query($remove);
 			}
 			
 			// add new associations

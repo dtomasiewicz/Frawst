@@ -5,8 +5,8 @@
 	class ModelQuery extends DataPane\Query {
 		protected $_page;
 		
-		public function __construct($type, $tables, $params = array(), $data = null) {
-			parent::__construct($type, $tables, $params, $data);
+		public function __construct($type, $tables, $params = array()) {
+			parent::__construct($type, $tables, $params);
 			
 			$this->page = isset($params['page']) ? $params['page'] : null;
 		}

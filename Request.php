@@ -8,26 +8,6 @@
 	 * optionally, a single View.
 	 */
 	class Request {
-		/**
-		 * The data controller to be used by this request
-		 * @access public-read
-		 * @var object
-		 */
-		protected $_DataController;
-		
-		/**
-		 * The data mapper to be used by this request
-		 * @access public-read
-		 * @var object
-		 */
-		protected $_DataMapper;
-		
-		/**
-		 * The cache controller to be used by this request
-		 * @access public-read
-		 * @var object
-		 */
-		protected $_CacheController;
 		
 		/**
 		 * The request controller
@@ -100,12 +80,9 @@
 		 * @param string $method
 		 * @param array $headers
 		 * @param object $dataController
-		 * @param object $dataMapper
-		 * @param object $cacheController
 		 * @param array $persist
 		 */
-		public function __construct($route, $data = array(), $method = 'GET', $headers = array(),
-		  $dataController = null, $dataMapper = null, $cacheController = null, $persist = array()) {
+		public function __construct($route, $data = array(), $method = 'GET', $headers = array(), $persist = array()) {
 		  	if (isset($data['___FORMNAME'])) {
 		  		$formName = $data['___FORMNAME'];
 		  		unset($data['___FORMNAME']);
@@ -117,10 +94,6 @@
 		  	
 		  	$this->_method = $method;
 		  	$this->_headers = $headers;
-		  	
-			$this->_DataController = $dataController;
-			$this->_DataMapper = $dataMapper;
-			$this->_CacheController = $cacheController;
 			
 			$this->_dispatch($route);
 			
@@ -136,12 +109,6 @@
 			switch ($name) {
 				case 'Response':
 					return $this->_Response;
-				case 'Data':
-					return $this->_DataController;
-				case 'Mapper':
-					return $this->_DataMapper;
-				case 'Cache':
-					return $this->_CacheController;
 				default:
 					throw new Exception\Frawst('Trying to access undeclared property Request::$'.$name);
 			}
@@ -203,14 +170,13 @@
 		}
 		
 		/**
-		 * Creates a sub-request with the same DataController, DataMapper, and
-		 * CacheController as this one.
+		 * Creates a sub-request with the same persistent data as this one.
 		 * @param string $route
 		 * @param array $headers
 		 * @return Frawst\Request The sub-request object
 		 */
 		public function subRequest($route, $data = array(), $method = 'GET', $headers = array()) {
-			return new Request($route, $data, $method, $headers, $this->Data, $this->Mapper, $this->Cache, $this->_persist);
+			return new Request($route, $data, $method, $headers, $this->_persist);
 		}
 		
 		/**

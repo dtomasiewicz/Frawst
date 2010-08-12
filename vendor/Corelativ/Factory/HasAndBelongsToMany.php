@@ -11,13 +11,13 @@
 		protected $_dataSource;
 		protected $_Through;
 		
-		public function __construct($config, $mapper) {
-			parent::__construct($config, $mapper);
+		public function __construct($config) {
+			parent::__construct($config);
 			
 			if (isset($config['through'])) {
 				$class = '\\Corelativ\\Model\\'.$config['through'];
-				$hasMany = new HasMany(array('model' => $config['through'], 'subject' => $this->_Subject), $mapper);
-				$this->_Through = new $class($hasMany, $mapper);
+				$hasMany = new HasMany(array('model' => $config['through'], 'subject' => $this->_Subject));
+				$this->_Through = new $class($hasMany);
 				$this->_tableName = $this->_Through->tableName();
 				$this->_dataSource = $this->_Through->dataSource();
 			} else {
@@ -160,7 +160,7 @@
 			if (is_null($this->_Through)) {
 				// delete joins flagged for removal
 				if ($this->_allInclusive || count($this->_removals)) {
-					$delete = new Query('delete', $this->_tableName, array(), $this->_Data);
+					$delete = new Query('delete', $this->_tableName, array());
 					$delete->where->add($this->_objectKeyField.' IN', array_keys($this->_removals));
 					
 					if ($this->_allInclusive) {
@@ -182,7 +182,7 @@
 				// now insert the additions
 				//@TODO make this use a multiple-insert query instead of multiple queries
 				foreach ($this->_additions as $objectKey => $join) {
-					$add = new Query('insert', $this->_tableName, array(), $this->_Data);
+					$add = new Query('insert', $this->_tableName, array());
 					$add->options = array('IGNORE');
 					$add->values = $join->data;
 					$add->exec($this->_dataSource);

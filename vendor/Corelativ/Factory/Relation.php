@@ -14,8 +14,8 @@
 		protected $_objectKeyField;
 		protected $_Subject;
 		
-		public function __construct($config, $mapper) {
-			parent::__construct($config, $mapper);
+		public function __construct($config) {
+			parent::__construct($config);
 			$this->_Subject = $config['subject'];
 			
 			$this->_subjectAlias = isset($config['subjectAlias'])

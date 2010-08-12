@@ -1,2 +1,1 @@
-<?php
-	$cfg['mapper'] = '\\Corelativ\\Mapper';
+<?php 

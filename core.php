@@ -73,19 +73,19 @@
 		
 		$method = $_SERVER['REQUEST_METHOD'];
 		if ($method == 'GET') {
-			$requestData = $_GET;
+			$data = $_GET;
 		} elseif ($method == 'POST') {
-			$requestData = $_POST;
+			$data = $_POST;
 		} else {
-			$requestData = array();
-			parse_str(file_get_contents('php://input'), $requestData);
+			$data = array();
+			parse_str(file_get_contents('php://input'), $data);
 		}
 		
 		// REST hack for browsers that don't support all methods. only works if the
 		// originating script passes this magic parameter, of course
-		if (isset($requestData['___METHOD'])) {
-			$method = $requestData['___METHOD'];
-			unset($requestData['___METHOD']);
+		if (isset($data['___METHOD'])) {
+			$method = $data['___METHOD'];
+			unset($data['___METHOD']);
 		}
 		
 		/**
@@ -99,7 +99,7 @@
 				return $value;
 			}
 			
-			$requestData = stripslashes_deep($requestData);
+			$requestData = stripslashes_deep($data);
 			$_COOKIE = stripslashes_deep($_COOKIE);
 			// the following two lines could be taken out... if they are, accessing
 			// form data with $_GET and $_POST will be inconsistent, but it's
@@ -127,30 +127,13 @@
 			$headers['X-Requested-With'] = $_SERVER['HTTP_X_REQUESTED_WITH'];
 		}
 		
-		/**
-		 * Data, ORM, and Cache initialization
-		 */
-		
-		$data = null;
-		$mapper = null;
-		$cache = null;
-		if ($cacheConfig = Config::read('cache')) {
-			$c = $cacheConfig['controller'];
-			$cache = new $c($cacheConfig);
-		}
-		if ($dataConfig = Config::read('data')) {
-			$c = $dataConfig['controller'];
-			$data = new $c($dataConfig, $cache);
-		}
-		if ($ormConfig = Config::read('orm')) {
-			$c = $ormConfig['mapper'];
-			$mapper = new $c($ormConfig, $data, $cache);
-		}
+		\DataPane\Data::init(Config::read('data'));
+		\SimpleCache\Cache::init(Config::read('cache'));
+		\Corelativ\Mapper::init(Config::read('orm'));
 		
 		/**
 		 * And finally, the request itself.
 		 */
-		
-		$request = new Request($route, $requestData, $method, $headers, $data, $mapper, $cache);
+		$request = new Request($route, $data, $method, $headers);
 		$request->execute()->send();
 	}
