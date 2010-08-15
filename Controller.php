@@ -38,7 +38,7 @@
 			return \Corelativ\Mapper::factory($name);
 		}
 		
-		public function hasAction($action) {
+		public function _hasAction($action) {
 			if ($action[0] == '_') {
 				return false;
 			} else {
@@ -46,7 +46,7 @@
 			}
 		}
 		
-		public function execute($action, $params) {
+		public function _execute($action, $params) {
 			$this->_persist = array();
 			
 			if ($this->_beforeAction() !== false) {
