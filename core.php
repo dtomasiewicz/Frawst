@@ -117,8 +117,10 @@
 			}
 		}
 		
+		// hack to get redirected AJAX requests working in Firefox
+		// and other browsers that don't re-send non-standard headers
+		// when redirected
 		if (substr($route, -strlen(AJAX_SUFFIX)) == AJAX_SUFFIX) {
-			// hack to get redirected ajax requests working in Firefox
 			$headers['X-Requested-With'] = 'XMLHttpRequest';
 			$route = substr($route, 0, -strlen(AJAX_SUFFIX));
 		}
