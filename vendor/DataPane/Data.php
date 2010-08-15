@@ -1,5 +1,6 @@
 <?php
 	namespace DataPane;
+	use \Frawst\Exception;
 	
 	abstract class Data {
 		protected static $_sources;
@@ -20,8 +21,7 @@
 						self::$_sources[$source] = new $class(self::$_config['source'][$source]);
 					self::$_sources[$source]->connect();
 				} else {
-					//@todo exception
-					exit('Invalid data source: '.$source);
+					throw new Exception\Data('Invalid data source: '.$source);
 				}
 			}
 			

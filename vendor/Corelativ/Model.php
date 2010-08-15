@@ -2,6 +2,7 @@
 	namespace Corelativ;
 	use \Corelativ\Factory,
 		\Frawst\Library\Validator,
+		\Frawst\Exception,
 		\DataPane,
 		\DataPane\Data;
 	
@@ -185,8 +186,7 @@
 					return $rel;
 				}
 			} else {
-				//@todo throw exception
-				exit('unfound property: '.$property);
+				throw new Exception\Model('Unrecognized property: '.$property);
 			}
 		}
 		
@@ -226,14 +226,12 @@
 					if ($property != $this->primaryKeyField()) {
 						$this->_changes[$property] = $value;
 					} elseif ($value != $this->primaryKey()) {
-						//@todo exception
-						exit('trying to set a primary key different from the saved primary key.');
+						throw new Exception\Model('Trying to set a primary key different from the saved primary key.');
 					}
 				} elseif ($autoRelate && ($rel = $this->relate($property))) {
 					$rel->set($value);
 				} else {
-					//@todo exception
-					exit('trying to set invalid model property or relation: '.$property);
+					throw new Exception\Model('trying to set invalid model property or relation: '.$property);
 				}
 			}
 		}
@@ -317,8 +315,7 @@
 				$this->afterSave();
 				return $success;
 			} else {
-				//@todo exception
-				exit('Could not save model: '.Data::source($this->_dataSource)->error());
+				throw new Exception\Model('Could not save model: '.Data::source($this->_dataSource)->error());
 			}
 		}
 		
@@ -365,7 +362,6 @@
 			));
 			
 			if ($result = Data::source($this->_dataSource)->query($q)) {
-				//@TODO delete relations?
 				$pkField = $this->primaryKeyField();
 				$this->_stored[$pkField] = $this->defaultValue($pkField);
 				$this->_saved = false;
@@ -471,8 +467,7 @@
 				if ($this->propertyExists($field)) {
 					return $this->_stored[$field];
 				} else {
-					//@todo exception
-					exit('Attempting to access saved value of invalid property: '.$field);
+					throw new Exception\Model('Attempting to access saved value of invalid property: '.$field);
 				}
 			}
 			
@@ -533,8 +528,7 @@
 				return self::$_primaryKeyFields[$c];
 			}
 			
-			//@todo exception
-			exit('no primary key defined for model: '.$c);
+			throw new Exception\Model('No primary key defined for model: '.$c);
 		}
 		
 		public static function defaultValue($prop) {

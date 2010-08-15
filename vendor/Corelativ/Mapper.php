@@ -4,7 +4,6 @@
 	
 	/**
 	 * The main Corelativ ORM wrapper.
-	 * @todo make a new type of exception for this
 	 */
 	abstract class Mapper {
 		protected static $_config;

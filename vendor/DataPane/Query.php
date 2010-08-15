@@ -1,5 +1,6 @@
 <?php
 	namespace DataPane;
+	use \Frawst\Exception;
 	
 	/**
 	 * Query building object
@@ -115,8 +116,7 @@
 			if (property_exists($this, $prop = '_'.$name)) {
 				return $this->$prop;
 			} else {
-				//@todo exception
-				exit('getting invalid query property: '.$name);
+				throw new Exception\Data('Getting invalid query property: '.$name);
 			}
 		}
 		
@@ -124,8 +124,7 @@
 			if (property_exists($this, $prop = '_'.$name)) {
 				$this->$prop = $value;
 			} else {
-				//@todo exception
-				exit('setting invalid query property: '.$name);
+				throw new Exception\Data('Setting invalid query property: '.$name);
 			}
 		}
 	}

@@ -52,8 +52,7 @@
 					
 					return $return;
 				} else {
-					//@todo exception
-					exit('Error in find operation: '.Data::source($this->_Object->dataSource())->error());
+					throw new Exception\Model('Error in find operation: '.Data::source($this->_Object->dataSource())->error());
 				}
 			}
 		}
@@ -118,8 +117,7 @@
 					$args[0]->where = new DataPane\ConditionSet(array($field => $value, $args[0]->where));
 					return call_user_func_array(array($this, substr($mode, 0, -2)), $args);
 				} else {
-					//@todo exception
-					exit('invalid model/factory method: '.$method);
+					throw new Exception\Model('Invalid model/factory method: '.$method);
 				}
 			}
 		}
