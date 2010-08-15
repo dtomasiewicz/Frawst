@@ -12,4 +12,4 @@
 	$cfg['locale'] = 'English_Canada.1252';
 
 	// Just set this to a series of random characters. Used for encryption.
-	$cfg['salt'] = 'jFJESK:fjek%9%(j%t#(mvmsa#$(sflcglk%U%#i%jselktg';
+	$cfg['salt'] = 'fkZyYXdzdCBGcmFtZXdvcmsgMC4xZH4=';
