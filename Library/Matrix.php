@@ -89,10 +89,10 @@
 		 * @return string The dot-separated path
 		 */
 		public static function bracketToDot($bracketPath) {
-			$segs = explode($bracketPath, '][');
+			$segs = explode('][', $bracketPath);
 			// first component may or may not be bracketed
-			foreach ($subSegs = explode('[', array_shift($segs), 1) as $subSeg) {
-				array_unshift($segs, $subSeg);
+			foreach ($subSegs = array_reverse(explode('[', array_shift($segs), 2)) as $subSeg) {
+				array_unshift($segs, rtrim($subSeg, ']'));
 			}
 			return implode('.', $segs);
 		}
