@@ -64,21 +64,20 @@
 			return $this->_Response->Request->path($route);
 		}
 		
-		public function root($resource = '') {
+		public function webroot($resource = '') {
 			return rtrim(WEB_ROOT.'/'.$resource, '/');
 		}
 		
 		public function modGet($changes = array()) {
 			$qs = '?';
-			foreach ($changes + $this->_Response->Request->getData() as $key => $value) {
+			foreach ($changes + $this->_Response->Request->get() as $key => $value) {
 				$qs .= $key.'='.$value.'&';
 			}
 			return rtrim($this->_Response->Request->route(true).$qs, '?&');
 		}
 
-		public function ajax($route, $data = array(), $method = 'GET', $headers = array()) {
-			$headers['X-Requested-With'] = 'XMLHttpRequest';
-			$request = $this->_Response->Request->subRequest($route, $data, $method, $headers);
+		public function ajax($route, $data = array(), $method = 'GET') {
+			$request = $this->_Response->Request->subRequest($route, $data, $method);
 			return $request->execute()->render();
 		}
  		

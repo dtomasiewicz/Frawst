@@ -4,8 +4,10 @@
 		\Frawst\Exception;
 	
 	/**
-	 * Request object. Each request consists of a single controller and,
-	 * optionally, a single View.
+	 * Frawst Request Handler
+	 * 
+	 * A Request object simulates an HTTP request to a particular route in your
+	 * application.
 	 */
 	class Request {
 		
@@ -79,7 +81,6 @@
 		 * @param array $data
 		 * @param string $method
 		 * @param array $headers
-		 * @param object $dataController
 		 * @param array $persist
 		 */
 		public function __construct($route, $data = array(), $method = 'GET', $headers = array(), $persist = array()) {
@@ -92,12 +93,11 @@
 		  		$this->_data = $data;
 		  	}
 		  	
-		  	$this->_method = $method;
+		  	$this->_method = strtoupper($method);
 		  	$this->_headers = $headers;
+			$this->_persist = $persist;
 			
 			$this->_dispatch($route);
-			
-			$this->_persist = $persist;
 		}
 		
 		/**
@@ -143,7 +143,7 @@
 		
 		/**
 		 * Returns the full path from the web root to the given route
-		 * @param string $route If null, will use the current route
+		 * @param string $route If null, will use the current route with parameters
 		 * @return string The path relative to the web root
 		 */
 		public function path($route = null) {
@@ -170,12 +170,14 @@
 		}
 		
 		/**
-		 * Creates a sub-request with the same persistent data as this one.
+		 * Creates a sub-request with the same persistent data and headers as this request,
+		 * in AJAX mode.
 		 * @param string $route
-		 * @param array $headers
 		 * @return Frawst\Request The sub-request object
 		 */
-		public function subRequest($route, $data = array(), $method = 'GET', $headers = array()) {
+		public function subRequest($route, $data = array(), $method = 'GET') {
+			$headers = $this->_headers;
+			$headers['X-Requested-With'] = 'XMLHttpRequest';
 			return new Request($route, $data, $method, $headers, $this->_persist);
 		}
 		
@@ -191,17 +193,15 @@
 			}
 			
 			// get top-level (root) controller
-			$name = 'Root';
-			if (isset($route[0])) {
-				$name = ucfirst(strtolower($route[0]));
-				if (class_exists('\\Frawst\\Controller\\'.$name)) {
-					array_shift($route);
-				} else {
-					$name = 'Root';
-				}
-			}
-			if (class_exists($class = '\\Frawst\\Controller\\'.$name)) {
+			$name = count($route)
+				? ucfirst(strtolower($route[0]))
+				: null;
+			
+			if(!is_null($name) && class_exists($class = 'Frawst\\Controller\\'.$name)) {
 				$this->_route[] = $name;
+				array_shift($route);
+			} elseif(class_exists($class = 'Frawst\\Controller\\Root')) {
+				$this->_route[] = 'Root';
 			} else {
 				exit(404);
 			}
@@ -209,11 +209,11 @@
 			// check for sub-controllers
 			$exists = true;
 			while (count($route) && $exists) {
-				$subname = ucfirst(strtolower($route[0]));
-				if (class_exists($c = $class.'\\'.$subname)) {
-					$this->_route[] = $subname;
-					$class = $c;
+				$name = ucfirst(strtolower($route[0]));
+				if (class_exists($c = $class.'\\'.$name)) {
+					$this->_route[] = $name;
 					array_shift($route);
+					$class = $c;
 				} else {
 					$exists = false;
 				}
@@ -222,20 +222,22 @@
 			// if the class is abstract, use the /Main subcontroller
 			$rClass = new \ReflectionClass($class);
 			if ($rClass->isAbstract()) {
-				$this->_route[] = 'Main';
-				$class .= '\\Main';
+				if(class_exists($class .= '\\Main')) {
+					$this->_route[] = 'Main';
+				} else {
+					exit(404);
+				}
 			}
 			
 			$this->_Controller = new $class($this);
 			
 			// determine action
-			if (isset($route[0]) && $this->_Controller->hasAction($action = strtolower(ltrim($route[0], '_')))) {
+			if (count($route) && $this->_Controller->_hasAction($action = strtolower(ltrim($route[0], '_')))) {
 				$this->_action = $action;
 				array_shift($route);
-			} elseif ($this->_Controller->hasAction('index')) {
+			} elseif ($this->_Controller->_hasAction('index')) {
 				$this->_action = 'index';
 			} else {
-				//@todo better 404 handling
 				exit(404);
 			}
 			
@@ -246,15 +248,11 @@
 		/**
 		 * Executes the controller action and sets the return data to this
 		 * Request's response object.
-		 * @param string $method Request method (POST, GET, etc)
-		 * @param array $data Request data
 		 * @return mixed The response object for this Request
-		 * @todo move $method and $data to constructor, attempt to construct form in constructor
-		 *       (get rid of ___FORMNAME early)
 		 */
 		public function execute() {
 			$this->_Response = new Response($this);
-			$this->_Response->data($this->_Controller->execute($this->_action, $this->_params));
+			$this->_Response->data($this->_Controller->_execute($this->_action, $this->_params));
 			return $this->_Response;
 		}
 		
@@ -278,7 +276,7 @@
 		 * @param string $default
 		 * @return array
 		 */
-		public function getData($key = null, $default = null) {
+		public function get($key = null, $default = null) {
 			return $this->_method == 'GET'
 				? $this->data($key, $default)
 				: null;
@@ -290,7 +288,7 @@
 		 * @param string $default
 		 * @return array
 		 */
-		public function postData($key = null, $default = null) {
+		public function post($key = null, $default = null) {
 			return $this->_method == 'POST'
 				? $this->data($key, $default)
 				: null;
@@ -302,7 +300,7 @@
 		 * @param string $default
 		 * @return array
 		 */
-		public function putData($key = null, $default = null) {
+		public function put($key = null, $default = null) {
 			return $this->_method == 'PUT'
 				? $this->data($key, $default)
 				: null;
@@ -314,7 +312,7 @@
 		 * @param string $default
 		 * @return array
 		 */
-		public function deleteData($key = null, $default = null) {
+		public function delete($key = null, $default = null) {
 			return $this->_method == 'DELETE'
 				? $this->data($key, $default)
 				: null;

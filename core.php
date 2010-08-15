@@ -7,12 +7,15 @@
 	 */
 	
 	namespace {
+		use \Frawst\Loader,
+			\Frawst\Exception;
+			
 		error_reporting(E_ALL);
 		define('Frawst\\VERSION', '0.1dev');
 		define('Frawst\\SCRIPT_START', microtime(true));
 		
 		/**
-		 * Required definitions
+		 * Environment constants
 		 */
 		defined('Frawst\\APP_NAME')
 			or define('Frawst\\APP_NAME', basename(dirname($_SERVER['SCRIPT_NAME'])));
@@ -34,11 +37,8 @@
 				define('Frawst\\URL_REWRITE', false);
 			}
 		}
-			
-		require('Loader.php');
 		
-		use \Frawst\Loader,
-			\Frawst\Exception;
+		require 'Loader.php';
 		
 		function __autoload($class) {
 			Loader::import($class);
@@ -58,18 +58,14 @@
 		Loader::addPath(ROOT.DIRECTORY_SEPARATOR.'vendor', '*', 'core');
 		Loader::addPath(APP_ROOT, 'Frawst', 'app');
 		Loader::addPath(APP_ROOT.DIRECTORY_SEPARATOR.'vendor', '*', 'app');
-		//@todo this probably should be in an app-specific bootstrap since it's specific to Corelativ
-		Loader::addPath(APP_ROOT.DIRECTORY_SEPARATOR.'Model', 'Corelativ\Model', 'app');
 		
 		/**
 		 * App-specific bootstrapping
 		 */
-		if (file_exists($file = APP_ROOT.DIRECTORY_SEPARATOR.'bootstrap.php')) {
-			require($file);
-		}
+		Loader::import('Frawst\bootstrap');
 		
-		date_default_timezone_set(Config::read('general.timezone'));
-		setlocale(LC_ALL, Config::read('general.locale'));
+		date_default_timezone_set(Config::read('Frawst.timezone'));
+		setlocale(LC_ALL, Config::read('Frawst.locale'));
 		
 		$method = $_SERVER['REQUEST_METHOD'];
 		if ($method == 'GET') {
@@ -77,14 +73,13 @@
 		} elseif ($method == 'POST') {
 			$data = $_POST;
 		} else {
-			$data = array();
-			parse_str(file_get_contents('php://input'), $data);
+			parse_str(file_get_contents('php://input'), $data = array());
 		}
 		
 		// REST hack for browsers that don't support all methods. only works if the
 		// originating script passes this magic parameter, of course
-		if (isset($data['___METHOD'])) {
-			$method = $data['___METHOD'];
+		if (isset($data['___METHOD']) && in_array($m = strtoupper($data['___METHOD']), array('GET', 'POST', 'PUT', 'DELETE'))) {
+			$method = $m;
 			unset($data['___METHOD']);
 		}
 		
@@ -101,11 +96,6 @@
 			
 			$requestData = stripslashes_deep($data);
 			$_COOKIE = stripslashes_deep($_COOKIE);
-			// the following two lines could be taken out... if they are, accessing
-			// form data with $_GET and $_POST will be inconsistent, but it's
-			// also unneccessary. but really, if you're the type of person who
-			// has magic quotes turned on at all, saving a few microseconds isn't
-			// going to help you, i'm afraid.
 			$_GET = stripslashes_deep($_GET);
 			$_POST = stripslashes_deep($_POST);
 		}
@@ -113,27 +103,26 @@
 		/**
 		 * Pull request route, method, and variables from $_SERVER
 		 */
-		
+		$headers = array();
 		$route = isset($_SERVER['PATH_INFO'])
 			? $_SERVER['PATH_INFO']
 			: '';
-			
-		$headers = array();
+		
+		/**
+		 * Extract HTTP headers from the ugly $_SERVER array
+		 */
+		foreach($_SERVER as $key => $value) {
+			if(strpos($key, 'HTTP_') === 0) {
+				$headers[str_replace(' ', '-', ucwords(str_replace('_', ' ', strtolower(substr($key, 5)))))] = $value;
+			}
+		}
+		
 		if (substr($route, -strlen(AJAX_SUFFIX)) == AJAX_SUFFIX) {
 			// hack to get redirected ajax requests working in Firefox
 			$headers['X-Requested-With'] = 'XMLHttpRequest';
 			$route = substr($route, 0, -strlen(AJAX_SUFFIX));
-		} elseif (isset($_SERVER['HTTP_X_REQUESTED_WITH'])) {
-			$headers['X-Requested-With'] = $_SERVER['HTTP_X_REQUESTED_WITH'];
 		}
 		
-		\DataPane\Data::init(Config::read('data'));
-		\SimpleCache\Cache::init(Config::read('cache'));
-		\Corelativ\Mapper::init(Config::read('orm'));
-		
-		/**
-		 * And finally, the request itself.
-		 */
 		$request = new Request($route, $data, $method, $headers);
 		$request->execute()->send();
 	}

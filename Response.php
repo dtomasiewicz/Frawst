@@ -146,7 +146,7 @@
 		 */
 		public function render() {
 			if (isset($this->_redirect)) {
-				return $this->_Request->subRequest($this->_redirect, array(), 'GET', $this->_Request->headers())->execute()->render();
+				return $this->_Request->subRequest($this->_redirect, array(), 'GET')->execute()->render();
 			} elseif ($this->header('Location')) {
 				throw new Exception\Frawst('Cannot render a request pending an external redirection.');
 			} else {
