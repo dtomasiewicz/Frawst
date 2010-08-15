@@ -87,17 +87,13 @@
 		
 		/**
 		 * Indexes the objects by the specified property.
-		 * @todo this could probably be done with only one loop
 		 */
 		public function indexBy($property) {
 			$indexed = array();
-			foreach ($this->get() as $key => $item) {
+			foreach ($this->_data as $key => $item) {
 				$indexed[$item->$property] = $item;
-				unset($this[$key]);
 			}
-			foreach ($indexed as $key => $item) {
-				$this[$key] = $item;
-			}
+			$this->_data = $indexed;
 		}
 		
 		/**
