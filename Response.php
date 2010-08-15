@@ -144,13 +144,13 @@
 		 * Renders the view. If internally redirected, will render a sub-request.
 		 * @return string The rendered view
 		 */
-		public function render() {
+		public function render($viewClass = 'Frawst\\View\\AppView') {
 			if (isset($this->_redirect)) {
 				return $this->_Request->subRequest($this->_redirect, array(), 'GET')->execute()->render();
 			} elseif ($this->header('Location')) {
 				throw new Exception\Frawst('Cannot render a request pending an external redirection.');
 			} else {
-				$this->_View = new AppView($this);
+				$this->_View = new $viewClass($this);
 				return $this->_View->render(str_replace('/', DIRECTORY_SEPARATOR, $this->_Request->route()), $this->_data);
 			}
 		}
@@ -163,13 +163,13 @@
 		 * the Location (redirect) header, which will be sent first since rendering a
 		 * redirected request would be a waste of time.
 		 */
-		public function send() {
+		public function send($viewClass = 'Frawst\\View\\AppView') {
 			if ($redirect = $this->header('Location')) {
 				header('Location: '.$redirect);
 				exit;
 			}
 			
-			$out = $this->render();
+			$out = $this->render($viewClass);
 			
 			foreach ($this->_headers as $key => $value) {
 				header($key.': '.$value);
