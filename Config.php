@@ -20,7 +20,7 @@
 					require($path);
 					self::$_data[$segs[0]] = $cfg;
 				} else {
-					throw new Exception\Frawst('Could not load configuration file: '.$segs[0]);
+					return self::$_data[$segs[0]] = null;
 				}
 			}
 			
