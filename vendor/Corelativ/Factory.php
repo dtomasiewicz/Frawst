@@ -1,6 +1,7 @@
 <?php
 	namespace Corelativ;
-	use \DataPane,
+	use \Frawst\Exception,
+	    \DataPane,
 	    \DataPane\Data;
 	
 	class Factory {
