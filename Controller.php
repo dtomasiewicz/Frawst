@@ -46,11 +46,14 @@
 			}
 		}
 		
-		public function _execute($action, $params) {
+		public function _execute($action, $method, $params) {
 			$this->_persist = array();
 			
 			if ($this->_beforeAction() !== false) {
-				$actionData = call_user_func_array(array($this, $action), $params);
+				if(!method_exists($this, $call = $action.'_'.$method)) {
+					$call = $action;
+				} 
+				$actionData = call_user_func_array(array($this, $call), $params);
 				$this->_afterAction();
 			} else {
 				return false;

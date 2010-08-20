@@ -1,5 +1,6 @@
 <?php
 	namespace DataPane;
+	use \DataPane\Query;
 	
 	abstract class Driver {
 		protected $_config;

@@ -1,0 +1,5 @@
+switch DataPane over to PDO-style interface
+ - replace Query with Statement
+ - switch to primarily a chaining style:
+ DataPane\Statement::select('table', array(fields))
+                         ->where('name = ?', 'Daniel', 'AND')

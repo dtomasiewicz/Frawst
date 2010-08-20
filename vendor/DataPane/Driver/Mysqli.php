@@ -12,7 +12,8 @@
 	class Mysqli extends Driver {
 		protected $_link;
 		
-		public function connect() {
+		public function __construct($config) {
+			parent::__construct($config);
 			$this->_link = new \mysqli($this->_config['host'], $this->_config['user'], $this->_config['password'], $this->_config['database']);
 		}
 		

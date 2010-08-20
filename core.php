@@ -39,10 +39,7 @@
 		}
 		
 		require 'Loader.php';
-		
-		function __autoload($class) {
-			Loader::import($class);
-		}
+		spl_autoload_register('Frawst\\Loader::import');
 		
 		function error_handler($code, $message, $file, $line) {
 			throw new Exception\Language($message, 0, $code, $file, $line);

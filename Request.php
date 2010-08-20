@@ -232,7 +232,7 @@
 			$this->_Controller = new $class($this);
 			
 			// determine action
-			if (count($route) && $this->_Controller->_hasAction($action = strtolower(ltrim($route[0], '_')))) {
+			if (count($route) && $this->_Controller->_hasAction($action = strtolower(str_replace('_', '', $route[0])))) {
 				$this->_action = $action;
 				array_shift($route);
 			} elseif ($this->_Controller->_hasAction('index')) {
@@ -252,7 +252,7 @@
 		 */
 		public function execute() {
 			$this->_Response = new Response($this);
-			$this->_Response->data($this->_Controller->_execute($this->_action, $this->_params));
+			$this->_Response->data($this->_Controller->_execute($this->_action, $this->_method, $this->_params));
 			return $this->_Response;
 		}
 		

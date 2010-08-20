@@ -16,10 +16,17 @@
 		public static function source($source = 'default') {
 			if (!isset(self::$_sources[$source])) {
 				if (isset(self::$_config['source'][$source])) {
-					// attempt to open the datasource
-					$class = '\\DataPane\\Driver\\'.self::$_config['source'][$source]['driver'];
-						self::$_sources[$source] = new $class(self::$_config['source'][$source]);
-					self::$_sources[$source]->connect();
+					// separate the driver from the driver's driver
+					$config = self::$_config['source'][$source];
+					$driver = explode('/', $config['driver']);
+					if(isset($driver[1])) {
+						$config['driver'] = $driver[1];
+					} else {
+						unset($config['driver']);
+					}
+					
+					$class = '\\DataPane\\Driver\\'.$driver[0];
+					self::$_sources[$source] = new $class($config);
 				} else {
 					throw new Exception\Data('Invalid data source: '.$source);
 				}
