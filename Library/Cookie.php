@@ -15,7 +15,7 @@
 				? Matrix::pathGet($_COOKIE, $this->_name)
 				: $value;
 			$this->expires = $expires;
-			$this->path = is_null($path) ? \Frawst\WEB_ROOT : $path;
+			$this->path = is_null($path) ? \Frawst\WEB_ROOT.'/' : $path;
 			$this->domain = is_null($domain) ? \Frawst\DOMAIN : $domain;
 		}
 		

@@ -26,7 +26,7 @@
 		defined('Frawst\\APP_ROOT')
 			or define('Frawst\\APP_ROOT', dirname(Frawst\ROOT).DIRECTORY_SEPARATOR.Frawst\APP_NAME);
 		defined('Frawst\\WEB_ROOT')
-			or define('Frawst\\WEB_ROOT', dirname($_SERVER['SCRIPT_NAME']));
+			or define('Frawst\\WEB_ROOT', rtrim(dirname($_SERVER['SCRIPT_NAME']), '/'));
 		defined('Frawst\\AJAX_SUFFIX')
 			or define('Frawst\\AJAX_SUFFIX', '___AJAX___');
 		
@@ -86,7 +86,7 @@
 		if (function_exists('get_magic_quotes_gpc') && get_magic_quotes_gpc()) {
 		 	function stripslashes_deep($value) {
 				$value = (is_array($value)) ?
-					array_map('stripslashes_deep', $value) :
+					array_map('Frawst\\stripslashes_deep', $value) :
 					stripslashes($value);
 				return $value;
 			}

@@ -151,7 +151,7 @@
 				$route = $this->route(true);
 			}
 			$root = URL_REWRITE ? WEB_ROOT : WEB_ROOT.'/index.php';
-			return rtrim($root.'/'.$route, '/');
+			return $root.'/'.$route;
 		}
 		
 		/**
