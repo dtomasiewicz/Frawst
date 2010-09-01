@@ -18,24 +18,9 @@
 		protected $_Controller;
 		
 		/**
-		 * An array of request route segments (controllers and an action)
-		 * @var array
+		 * @var Frawst\Root Request route
 		 */
-		protected $_route;
-		
-		/**
-		 * The name of the request action, should be the name of a
-		 * public method of $Controller
-		 * @var string
-		 */
-		protected $_action;
-		
-		/**
-		 * An array of (unnamed) request parameters, not to be confused
-		 * with GET data
-		 * @var array
-		 */
-		protected $_params;
+		protected $_Route;
 		
 		/**
 		 * Associative array of headers sent to this request
@@ -77,14 +62,14 @@
 	
 		/**
 		 * Constructor
-		 * @param string $route
+		 * @param mixed $route
 		 * @param array $data
 		 * @param string $method
 		 * @param array $headers
 		 * @param array $persist
 		 */
 		public function __construct($route, $data = array(), $method = 'GET', $headers = array(), $persist = array()) {
-		  	if (isset($data['___FORMNAME'])) {
+			if (isset($data['___FORMNAME'])) {
 		  		$formName = $data['___FORMNAME'];
 		  		unset($data['___FORMNAME']);
 		  		$this->_data = $data;
@@ -97,7 +82,12 @@
 		  	$this->_headers = $headers;
 			$this->_persist = $persist;
 			
-			$this->_dispatch($route);
+			$this->_Route = $route instanceof Route
+				? $route
+				: new Route($route);
+			
+			$controllerClass = $this->_Route->controllerClass();
+			$this->_Controller = new $controllerClass($this);
 		}
 		
 		/**
@@ -109,6 +99,8 @@
 			switch ($name) {
 				case 'Response':
 					return $this->_Response;
+				case 'Route':
+					return $this->_Route;
 				default:
 					throw new Exception\Frawst('Trying to access undeclared property Request::$'.$name);
 			}
@@ -148,7 +140,7 @@
 		 */
 		public function path($route = null) {
 			if (is_null($route)) {
-				$route = $this->route(true);
+				$route = $this->_Route->reconstruct();
 			}
 			$root = URL_REWRITE ? WEB_ROOT : WEB_ROOT.'/index.php';
 			return $root.'/'.$route;
@@ -160,13 +152,7 @@
 		 * @return string The resolved route
 		 */
 		public function route($params = false) {
-			$route = implode('/', $this->_route);
-			
-			if ($params) {
-				$route .= '/'.implode($this->_params);
-			}
-			
-			return $route;
+			return $this->_Route->reconstruct($params);
 		}
 		
 		/**
@@ -182,85 +168,14 @@
 		}
 		
 		/**
-		 * Determines the controller, action, and request parameters based
-		 * on the given route. Also instantiates the controller.
-		 * @param string $route
-		 */
-		protected function _dispatch($route) {
-			$route = explode('/', trim($route, '/'));
-			if ($route[0] == '') {
-				unset($route[0]);
-			}
-			
-			// get top-level (root) controller
-			$name = count($route)
-				? ucfirst(strtolower($route[0]))
-				: null;
-			
-			if(!is_null($name) && class_exists($class = 'Frawst\\Controller\\'.$name)) {
-				$this->_route[] = $name;
-				array_shift($route);
-			} elseif(class_exists($class = 'Frawst\\Controller\\Root')) {
-				$this->_route[] = 'Root';
-			} else {
-				exit(404);
-			}
-			
-			// check for sub-controllers
-			$exists = true;
-			while (count($route) && $exists) {
-				$name = ucfirst(strtolower($route[0]));
-				if (class_exists($c = $class.'\\'.$name)) {
-					$this->_route[] = $name;
-					array_shift($route);
-					$class = $c;
-				} else {
-					$exists = false;
-				}
-			}
-			
-			// if the class is abstract, use the /Main subcontroller
-			$rClass = new \ReflectionClass($class);
-			if ($rClass->isAbstract()) {
-				if(class_exists($class .= '\\Main')) {
-					$this->_route[] = 'Main';
-				} else {
-					exit(404);
-				}
-			}
-			
-			$this->_Controller = new $class($this);
-			
-			// determine action
-			if (count($route) && $this->_Controller->_hasAction($action = strtolower(str_replace('_', '', $route[0])))) {
-				$this->_action = $action;
-				array_shift($route);
-			} elseif ($this->_Controller->_hasAction('index')) {
-				$this->_action = 'index';
-			} else {
-				exit(404);
-			}
-			
-			$this->_route[] = $this->_action;
-			$this->_params = $route;
-		}
-		
-		/**
 		 * Executes the controller action and sets the return data to this
 		 * Request's response object.
 		 * @return mixed The response object for this Request
 		 */
 		public function execute() {
 			$this->_Response = new Response($this);
-			$this->_Response->data($this->_Controller->_execute($this->_action, $this->_method, $this->_params));
+			$this->_Response->data($this->_Controller->_execute($this->_Route->action(), $this->_method, $this->_Route->params()));
 			return $this->_Response;
-		}
-		
-		/**
-		 * @return string The name of the request action
-		 */
-		public function action() {
-			return $this->_action;
 		}
 		
 		/**

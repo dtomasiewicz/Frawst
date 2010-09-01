@@ -101,9 +101,9 @@
 		 * Pull request route, method, and variables from $_SERVER
 		 */
 		$headers = array();
-		$route = isset($_SERVER['PATH_INFO'])
+		$route = ltrim(isset($_SERVER['PATH_INFO'])
 			? $_SERVER['PATH_INFO']
-			: '';
+			: '', '/');
 		
 		/**
 		 * Extract HTTP headers from the ugly $_SERVER array
@@ -122,6 +122,6 @@
 			$route = substr($route, 0, -strlen(AJAX_SUFFIX));
 		}
 		
-		$request = new Request($route, $data, $method, $headers);
+		$request = new Request(new Route($route, true), $data, $method, $headers);
 		$request->execute()->send();
 	}
