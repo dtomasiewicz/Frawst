@@ -1,6 +1,11 @@
 <?php
 	namespace Frawst;
 	
+	/**
+	 * Base Component class for the Frawst framework.
+	 * 
+	 * Components are modular extensions of controller (business) logic.
+	 */
 	abstract class Component {
 		protected $_Controller;
 		

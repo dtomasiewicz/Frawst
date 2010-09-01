@@ -1,6 +1,9 @@
 <?php
 	namespace Frawst;
 	
+	/**
+	 * Base Controller class for the Frawst framework.
+	 */
 	abstract class Controller implements \ArrayAccess {
 		protected $_components;
 		protected $_data;
@@ -17,10 +20,8 @@
 				return $this->_Request->Response;
 			} elseif ($c = $this->_component($name)) {
 				return $c;
-			} elseif ($m = $this->_model($name)) {
-				return $m;
 			} else {
-				throw new Exception\Controller('Invalid controller property: '.$namel);
+				throw new Exception\Controller('Invalid controller property: '.$name);
 			}
 		}
 		
@@ -33,16 +34,11 @@
 			return $this->_components[$name];
 		}
 		
-		protected function _model($name) {
-			//@todo this should probably be decoupled
-			return \Corelativ\Mapper::factory($name);
-		}
-		
-		public function _hasAction($action) {
+		public static function _hasAction($action) {
 			if ($action[0] == '_') {
 				return false;
 			} else {
-				return (bool) (method_exists($this, $action) && !method_exists(__CLASS__, $action));
+				return (bool) (method_exists(get_called_class(), $action) && !method_exists(__CLASS__, $action));
 			}
 		}
 		

@@ -1,7 +1,7 @@
 <?php
 	/**
 	 * This is the default Frawst application bootstrap. It initializes DataPane,
-	 * Corelativ, and SimpleCache with the configuration files.
+	 * Corelativ, and SimpleCache.
 	 * 
 	 * To overwrite this bootstrap (if, for example, you want to use another ORM)
 	 * simply place a new bootstrap.php in your application root. If you simply

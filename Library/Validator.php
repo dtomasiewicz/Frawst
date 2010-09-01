@@ -4,7 +4,8 @@
 	
 	abstract class Validator {
 		const BLANK = '/^\s*$/';
-		const VALID_INTEGER = '/^-?\d+$/';
+		const VALID_INTEGER = '/^[-+]?\d+$/';
+		const VALID_FLOAT = '/^[-+]?\d*\.?\d+$/';
 		const VALID_EMAIL = '/\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}\b/i';
 		
 		/**
@@ -91,6 +92,10 @@
 		public static function validInteger($value, $params = array()) {
 			$message = isset($params['message']) ? $params['message'] : 'Must be a valid integer.';
 			return preg_match(self::VALID_INTEGER, $value) ? true : $message;
+		}
+		public static function validFloat($value, $params = array()) {
+			$message = isset($params['message']) ? $params['message'] : 'Must be a valid floating point number.';
+			return preg_match(self::VALID_FLOAT, $value) ? true : $message;
 		}
 		public static function validRequired($value, $params = array()) {
 			$message = isset($params['message']) ? $params['message'] : 'Required.';
