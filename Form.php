@@ -4,11 +4,54 @@
 	    \Frawst\Library\Validator,
 	    \Frawst\Exception;
 	
+	/**
+	 * Base Frawst Form class
+	 * 
+	 * This class can be extended to rigidly define properties of your application's
+	 * FORMs. This allows separation of form validation from your controller logic, and
+	 * prevents duplication of form processing if you use the same form in multiple areas
+	 * of your site. It also helps protect against XSS by ensuring no additional fields
+	 * are passed in (as long as you check for compatibility before using the form) and all
+	 * required fields are present.
+	 * 
+	 * This class is NOT used to output form markup! For that, you can use the Form helper. Simply
+	 * pass the name of your Form class in the open() method, and the fields will be (re)populated
+	 * automatically.
+	 */
 	abstract class Form extends Matrix {
+		/**
+		 * An array of key/value pairs where the keys are all fields that may
+		 * be submitted with this form, and the values are their default values.
+		 * @var array
+		 */
 		protected static $_fields = array();
+		
+		/**
+		 * An array of key/value pairs where the keys are form fields in dot-path form
+		 * and the values are validation rules.
+		 * @var array
+		 */
 		protected static $_validate = array();
+		
+		/**
+		 * A list of fields that MUST exist for a set of data to be compatible
+		 * with this form. If set to true, ALL fields are required to be present.
+		 * Field names are in dot-path format.
+		 * @var mixed
+		 */
+		protected static $_requiredPresent = array();
+		
+		/**
+		 * Default data for repopulating form fields. Keys should be in expanded format.
+		 * @vara array
+		 */
 		protected $_defaults;
 		
+		/**
+		 * An associative array of errors for this form, where the keys are field names
+		 * in dot-path format and the values are arrays of error messages.
+		 * @var array
+		 */
 		protected $_errors = array();
 		
 		public function __construct($data = array()) {
@@ -53,14 +96,26 @@
 		}
 		
 		/**
-		 * Returns false if there are any entries in the $data array that
-		 * are not specified in this Form.
+		 * Determines whether or not the given data is compatible with this form.
 		 * @param array $data
 		 * @return bool
 		 */
-		public static function compatible($data) {
-			foreach (Matrix::flatten($data) as $field => $value) {
-				if (!Matrix::pathExists(static::$_fields, $field)) {
+		public static function compatible($data, $allowExtraFields = false) {
+			if(!$allowExtraFields) {
+				echo 'checking compatible';
+				foreach (Matrix::flatten($data) as $field => $value) {
+					if (!Matrix::pathExists(static::$_fields, $field)) {
+						return false;
+					}
+				}
+			}
+			
+			$requiredPresent = static::$_requiredPresent === true
+				? array_keys(static::$_fields)
+				: static::$_requiredPresent;
+			
+			foreach($requiredPresent as $field) {
+				if(!Matrix::pathExists($data, $field)) {
 					return false;
 				}
 			}

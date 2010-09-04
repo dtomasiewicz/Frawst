@@ -25,7 +25,6 @@
 			$attrs['method'] = $method;
 			
 			return '<form '.$this->parseAttributes($attrs).'>'.
-			       '<input type="hidden" name="___FORMNAME" value="'.$this->name().'">'.
 			       '<input type="hidden" name="___METHOD" value="'.$method.'">';
 		}
 		

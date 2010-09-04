@@ -69,15 +69,14 @@
 		 * @param array $persist
 		 */
 		public function __construct($route, $data = array(), $method = 'GET', $headers = array(), $persist = array()) {
+			/**
 			if (isset($data['___FORMNAME'])) {
 		  		$formName = $data['___FORMNAME'];
 		  		unset($data['___FORMNAME']);
-		  		$this->_data = $data;
 		  		$this->_Form = $this->form($formName);
-		  	} else {
-		  		$this->_data = $data;
-		  	}
+		  	}*/
 		  	
+			$this->_data = $data;
 		  	$this->_method = strtoupper($method);
 		  	$this->_headers = $headers;
 			$this->_persist = $persist;
@@ -262,7 +261,7 @@
 			} elseif (empty($this->_data) || is_null($formName)) {
 				return null;
 			} elseif (class_exists($class = 'Frawst\\Form\\'.$formName) && $class::compatible($this->_data)) {
-				return new $class($this->_data);
+				return $this->_Form = new $class($this->_data);
 			} else {
 				return null;
 			}
