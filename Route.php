@@ -67,7 +67,9 @@
 		 * @param string $route
 		 */
 		protected function _dispatch() {
-			$route = $this->_route == '' ? array() : explode('/', $this->_route);
+			$route = $this->_route == ''
+				? array()
+				: explode('/', trim($this->_route, '/'));
 			
 			// ignore blank route segments
 			foreach($route as $key => $segment) {
