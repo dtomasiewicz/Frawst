@@ -69,12 +69,20 @@
 		protected function _dispatch() {
 			$route = $this->_route == '' ? array() : explode('/', $this->_route);
 			
+			// ignore blank route segments
+			foreach($route as $key => $segment) {
+				if($segment === '') {
+					unset($route[$key]);
+					$route = array_values($route);
+				}
+			}
+			
 			// get top-level (root) controller
+			$this->_controllers = array();
 			$name = count($route)
 				? ucfirst(strtolower($route[0]))
 				: null;
 			
-			$this->_controllers = array();
 			if(!is_null($name) && class_exists($class = 'Frawst\\Controller\\'.$name)) {
 				$this->_controllers[] = $name;
 				array_shift($route);
