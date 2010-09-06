@@ -18,7 +18,7 @@
 		 * Environment constants
 		 */
 		defined('Frawst\\APP_NAME')
-			or define('Frawst\\APP_NAME', basename(dirname($_SERVER['SCRIPT_NAME'])));
+			or define('Frawst\\APP_NAME', basename(dirname(dirname($_SERVER['SCRIPT_NAME']))));
 		defined('Frawst\\DOMAIN')
 			or define('Frawst\\DOMAIN', $_SERVER['HTTP_HOST']);
 		defined('Frawst\\ROOT')
