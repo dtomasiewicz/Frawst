@@ -17,8 +17,7 @@
 		protected $_route;
 		
 		/**
-		 * This is the stack of controllers represented by the route.
-		 * @var array
+		 * @var array The stack of controller names represented by the route.
 		 */
 		protected $_controllers;
 		

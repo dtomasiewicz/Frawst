@@ -8,50 +8,49 @@
     * and rendering of a View if necessary.
     */
 	class Response {
+		
 		/**
 		 * The Request object to which this Response is responding to.
-		 * @access public-read
 		 * @var Request
 		 */
 		protected $_Request;
 		
 		/**
-		 * Response data, most likely the return value of the Request's
+		 * @var array Response data, most likely the return value of the Request's
 		 * controller's execute() method.
-		 * @var array
 		 */
 		protected $_data;
 		
 		/**
-		 * Associative array of response headers. Never sent if the response
+		 * @var array Associative array of response headers. Never sent if the response
 		 * is simply "rendered" (as a sub-request).
-		 * @var array
 		 */
 		protected $_headers = array();
 		
 		/**
-		 * For internal redirects only, used if trying to render a redirected
+		 * @var string For internal redirects only, used if trying to render a redirected
 		 * request
-		 * @var string
 		 */
 		protected $_redirect;
 		
 		/**
-		 * View object. Should be able to render() the response data into an
+		 * @var Frawst\View View object. Should be able to render() the response data into an
 		 * information string.
-		 * @access public-read
-		 * @var AppView
 		 */
 		protected $_View;
 		
+		/**
+		 * Constructor.
+		 * @param Frawst\Request Request that is being responded to
+		 */
 		public function __construct($request) {
 			$this->_Request = $request;
 		}
 		
 		/**
-		 * Faux readonly property simulation.
+		 * Read-only immitation.
 		 * @param string $name
-		 * @return mixed A readonly property
+		 * @return mixed
 		 */
 		public function __get($name) {
 			switch ($name) {
@@ -86,10 +85,10 @@
 		 * if provided.
 		 * @param string $name The name of the header
 		 * @param string $value The value to set the header to
-		 * @return The response header value
+		 * @return string The response header value or null if not set
 		 */
 		public function header($name, $value = null) {
-			if (!is_null($value)) {
+			if (null !== $value) {
 				$this->_headers[$name] = $value;
 			}
 			
@@ -151,7 +150,7 @@
 				throw new Exception\Frawst('Cannot render a request pending an external redirection.');
 			} else {
 				$this->_View = new $viewClass($this);
-				return $this->_View->render('controller/'.str_replace('/', DIRECTORY_SEPARATOR, $this->_Request->route()), $this->_data);
+				return $this->_View->render('controller'.DIRECTORY_SEPARATOR.str_replace('/', DIRECTORY_SEPARATOR, $this->_Request->route()), $this->_data);
 			}
 		}
 		
@@ -162,6 +161,8 @@
 		 * in case the headers are changed from within the view. The only exception is
 		 * the Location (redirect) header, which will be sent first since rendering a
 		 * redirected request would be a waste of time.
+		 * 
+		 * @param strint $viewClass The name of the class to use for rendering the view
 		 */
 		public function send($viewClass = 'Frawst\\View\\AppView') {
 			if ($redirect = $this->header('Location')) {

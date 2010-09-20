@@ -7,8 +7,13 @@
 		protected $_layoutData = array();
 		protected $_layout = 'default';
 		
-		public function __construct($request) {
-			$this->_Response = $request;
+		protected $_templateDir;
+		
+		public function __construct($response) {
+			$this->_Response = $response;
+			
+			$paths = Loader::getPaths('Frawst\\View');
+			$this->_templateDir = $paths[0];
 		}
 		
 		/**
@@ -17,6 +22,8 @@
 		public function __get($name) {
 			if ($name == 'Response') {
 				return $this->_Response;
+			} elseif($name == 'Request') {
+				return $this->_Response->Request;
 			} elseif ($helper = $this->_helper($name)) {
 				return $helper;
 			} else {
@@ -24,36 +31,41 @@
 			}
  		}
 		
-		public function render($file, $data = array()) {
-			if (($path = Loader::importPath('Frawst\\View\\'.$file)) !== null) {
-				if (!is_array($data)) {
-					$data = array('status' => $data);
-				}
-				$content = $this->_renderFile($path, $data);
-				if (!$this->isAjax() && is_string($this->_layout)
-				  && !is_null($layoutPath = Loader::importPath('Frawst\\View\\layout\\'.$this->_layout))) {
-					$render = $this->_renderFile(
-						$layoutPath,
-						array('content' => $content) + $this->_layoutData
-					);
-				} else {
-					$render = $content;
-				}
-				return $render;
+		public function render() {
+			$content = $this->_renderContent();
+			
+			if (!$this->isAjax() && is_string($this->_layout)) {
+				return $this->_renderFile(
+					'layout/'.$this->_layout,
+					array('content' => $content) + $this->_layoutData
+				);
 			} else {
-				throw new Exception\Frawst('Invalid view: '.$file);
+				return $content;
 			}
 		}
 		
+		protected function _renderContent() {
+			$data = $this->_Response->data();
+			if(!is_array($data)) {
+				$data = array('status' => $data);
+			}
+			
+			return $this->_renderFile('controller/'.$this->Request->route(), $data);
+		}
+		
 		protected function _renderFile($___file, $___data) {
-			extract($___data);
-			ob_start();
-			require($___file);
-			return ob_get_clean();
+			if(file_exists($___file = $this->_templateDir.DIRECTORY_SEPARATOR.str_replace('/', DIRECTORY_SEPARATOR, $___file).'.php')) {
+				extract($___data);
+				ob_start();
+				require($___file);
+				return ob_get_clean();
+			} else {
+				throw new Exception\Frawst('Non-existent view template: '.$___file);
+			}
 		}
 		
 		public function partial($partial, $data = array()) {
-			return $this->_renderFile(Loader::importPath('Frawst\\View\\partial\\'.$partial), $data);
+			return $this->_renderFile('partial/'.$partial, $data);
 		}
 
 		public function isAjax() {
