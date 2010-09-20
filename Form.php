@@ -102,7 +102,6 @@
 		 */
 		public static function compatible($data, $allowExtraFields = false) {
 			if(!$allowExtraFields) {
-				echo 'checking compatible';
 				foreach (Matrix::flatten($data) as $field => $value) {
 					if (!Matrix::pathExists(static::$_fields, $field)) {
 						return false;

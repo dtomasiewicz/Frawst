@@ -13,6 +13,10 @@
 			$this->_Request = $request;
 		}
 		
+		protected function _before() {
+			return true;
+		}
+		
 		public function __get($name) {
 			if ($name == 'Request') {
 				return $this->_Request;
@@ -34,36 +38,14 @@
 			return $this->_components[$name];
 		}
 		
-		public static function _hasAction($action) {
-			if ($action[0] == '_') {
-				return false;
-			} else {
-				return (bool) (method_exists(get_called_class(), $action) && !method_exists(__CLASS__, $action));
-			}
-		}
-		
-		public function _execute($action, $method, $params) {
-			$this->_persist = array();
-			
-			if ($this->_beforeAction() !== false) {
-				if(!method_exists($this, $call = $action.'_'.$method)) {
-					$call = $action;
-				} 
-				$actionData = call_user_func_array(array($this, $call), $params);
-				$this->_afterAction();
-			} else {
-				return false;
+		public function execute() {
+			if($this->_before()) {
+				if(method_exists($this, $method = strtolower($this->Request->method()))) {
+					return call_user_func_array(array($this, $method), $this->Request->params());
+				}
 			}
 			
-			return $actionData;
-		}
-		
-		protected function _beforeAction() {
-			
-		}
-		
-		protected function _afterAction() {
-			
+			return false;
 		}
 		
 		public function offsetExists($offset) {

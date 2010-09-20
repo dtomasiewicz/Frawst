@@ -110,8 +110,8 @@
 		/**
 		 * Queues the Response for redirection. Will NOT occur immediately, so
 		 * it is important to break or return in the calling context if further
-		 * execution is not desired. This is so that sub-requests to controller
-		 * actions do not result in an unexpected redirect.
+		 * execution is not desired. This is so that sub-requests do not
+		 * unexpectedly redirect the entire top-level request.
 		 * 
 		 * HTTP redirection occurs when send() is invoked, before rendering. If the
 		 * redirect is internal and render() is invoked instead of send(), a sub-
@@ -151,7 +151,7 @@
 				throw new Exception\Frawst('Cannot render a request pending an external redirection.');
 			} else {
 				$this->_View = new $viewClass($this);
-				return $this->_View->render(str_replace('/', DIRECTORY_SEPARATOR, $this->_Request->route()), $this->_data);
+				return $this->_View->render('controller/'.str_replace('/', DIRECTORY_SEPARATOR, $this->_Request->route()), $this->_data);
 			}
 		}
 		

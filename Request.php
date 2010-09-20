@@ -173,7 +173,7 @@
 		 */
 		public function execute() {
 			$this->_Response = new Response($this);
-			$this->_Response->data($this->_Controller->_execute($this->_Route->action(), $this->_method, $this->_Route->params()));
+			$this->_Response->data($this->_Controller->execute());
 			return $this->_Response;
 		}
 		
@@ -182,6 +182,10 @@
 		 */
 		public function method() {
 			return $this->_method;
+		}
+		
+		public function params() {
+			return $this->_Route->params();
 		}
 		
 		/**

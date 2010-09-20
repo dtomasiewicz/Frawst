@@ -17,9 +17,7 @@
 		protected $_route;
 		
 		/**
-		 * This is the stack of (sub-)controllers represented by the route. For
-		 * example, in a request to Root/Main/index where Root and Main are controllers,
-		 * this would hold array('Root', 'Main')
+		 * This is the stack of controllers represented by the route.
 		 * @var array
 		 */
 		protected $_controllers;
@@ -28,11 +26,6 @@
 		 * @var string The classname of the bottom-level controller in this route.
 		 */
 		protected $_controllerClass;
-		
-		/**
-		 * @var string The name of the action defined by this route.
-		 */
-		protected $_action;
 		
 		/**
 		 * @var array Array of parameters defined by this route.
@@ -62,8 +55,7 @@
 		}
 		
 		/**
-		 * Determines the controller, action, and parameters for this
-		 * route.
+		 * Determines the controller and parameters based on the route.
 		 * @param string $route
 		 */
 		protected function _dispatch() {
@@ -77,52 +69,27 @@
 				}
 			}
 			
-			// get top-level (root) controller
+			$class = 'Frawst\\Controller';
 			$this->_controllers = array();
-			$name = count($route)
-				? ucfirst(strtolower($route[0]))
-				: null;
-			
-			if(!is_null($name) && class_exists($class = 'Frawst\\Controller\\'.$name)) {
-				$this->_controllers[] = $name;
-				array_shift($route);
-			} elseif(class_exists($class = 'Frawst\\Controller\\Root')) {
-				$this->_controllers[] = 'Root';
-			} else {
-				exit(404);
-			}
-			
-			// check for sub-controllers
 			$exists = true;
-			while (count($route) && $exists) {
+			while($exists && count($route)) {
 				$name = ucfirst(strtolower($route[0]));
-				if (class_exists($c = $class.'\\'.$name)) {
+				if(class_exists($c = $class.'\\'.$name)) {
 					$this->_controllers[] = $name;
-					array_shift($route);
+					array_shift($route); 
 					$class = $c;
 				} else {
 					$exists = false;
 				}
 			}
 			
-			// if the class is abstract, use the /Main subcontroller
-			$rClass = new \ReflectionClass($class);
-			if ($rClass->isAbstract()) {
-				if(class_exists($class .= '\\Main')) {
-					$this->_controllers[] = 'Main';
-				} else {
-					exit(404);
-				}
-			}
+			$reflection = count($this->_controllers)
+				? new \ReflectionClass($class)
+				: false;
 			
-			// determine action
-			if (count($route) && $class::_hasAction($action = strtolower(str_replace('_', '', $route[0])))) {
-				$this->_action = $action;
-				array_shift($route);
-			} elseif ($class::_hasAction('index')) {
-				$this->_action = 'index';
-			} else {
-				exit(404);
+			if(!$reflection || $reflection->isAbstract()) {
+				$this->_controllers[] = 'Index';
+				$class .= '\\Index';
 			}
 			
 			$this->_controllerClass = $class;
@@ -137,13 +104,6 @@
 		}
 		
 		/**
-		 * @return string The action for this route
-		 */
-		public function action() {
-			return $this->_action;
-		}
-		
-		/**
 		 * @return array Parameters for this route
 		 */
 		public function params() {
@@ -151,14 +111,12 @@
 		}
 		
 		/**
-		 * Reconstructs the route with the full controller stack and action name, even
-		 * if defaults or overrides were used. For example, if a request to '/' resolves
-		 * to controllers Root, Main and action 'index', this would return 'Root/Main/index'.
+		 * Reconstructs the route with the full controller stack.
 		 * @param bool $params Whether or not to append the parameters to the route
 		 * @return string The reconstructed route
 		 */
 		public function reconstruct($params = true) {
-			$route = implode('/', $this->_controllers).'/'.$this->_action;
+			$route = implode('/', $this->_controllers);
 			if($params && count($this->_params)) {
 				$route .= '/'.implode('/', $this->_params);
 			}
