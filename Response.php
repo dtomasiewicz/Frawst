@@ -98,15 +98,6 @@
 		}
 		
 		/**
-		 * Convenience method for setting/getting the response Content-Type.
-		 * @param string $mime Mimetype to set
-		 * @return string The response Content-Type
-		 */
-		public function contentType($mime = null) {
-			return $this->header('Content-Type', $mime);
-		}
-		
-		/**
 		 * Queues the Response for redirection. Will NOT occur immediately, so
 		 * it is important to break or return in the calling context if further
 		 * execution is not desired. This is so that sub-requests do not

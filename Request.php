@@ -12,6 +12,11 @@
 	class Request {
 		
 		/**
+		 * @var float The time at which the request was first invoked.
+		 */
+		protected $_startTime;
+		
+		/**
 		 * The request controller
 		 * @var Frawst\Controller
 		 */
@@ -69,12 +74,7 @@
 		 * @param array $persist
 		 */
 		public function __construct($route, $data = array(), $method = 'GET', $headers = array(), $persist = array()) {
-			/**
-			if (isset($data['___FORMNAME'])) {
-		  		$formName = $data['___FORMNAME'];
-		  		unset($data['___FORMNAME']);
-		  		$this->_Form = $this->form($formName);
-		  	}*/
+			$this->_startTime = microtime(true);
 		  	
 			$this->_data = $data;
 		  	$this->_method = strtoupper($method);
@@ -172,9 +172,13 @@
 		 * @return mixed The response object for this Request
 		 */
 		public function execute() {
-			$this->_Response = new Response($this);
-			$this->_Response->data($this->_Controller->execute());
-			return $this->_Response;
+			if(!isset($this->_Response)) {
+				$this->_Response = new Response($this);
+				$this->_Response->data($this->_Controller->execute());
+				return $this->_Response;
+			} else {
+				throw new Exception\Frawst('Cannot execute request to '.$this->route().' more than once.');
+			}
 		}
 		
 		/**
@@ -285,5 +289,12 @@
 			return array_key_exists($key, $this->_persist)
 				? $this->_persist[$key]
 				: null;
+		}
+		
+		/**
+		 * @return float The runtime elapsed for this request.
+		 */
+		public function getRuntime() {
+			return microtime(true) - $this->_startTime;
 		}
 	}
