@@ -18,7 +18,7 @@
 		 * Environment constants
 		 */
 		defined('Frawst\\APP_NAME')
-			or define('Frawst\\APP_NAME', basename(dirname(dirname($_SERVER['SCRIPT_NAME']))));
+			or define('Frawst\\APP_NAME', basename(dirname(dirname($_SERVER['SCRIPT_FILENAME']))));
 		defined('Frawst\\DOMAIN')
 			or define('Frawst\\DOMAIN', $_SERVER['HTTP_HOST']);
 		defined('Frawst\\ROOT')
@@ -104,6 +104,7 @@
 		$route = ltrim(isset($_SERVER['PATH_INFO'])
 			? $_SERVER['PATH_INFO']
 			: '', '/');
+		
 		
 		/**
 		 * Extract HTTP headers from the ugly $_SERVER array
