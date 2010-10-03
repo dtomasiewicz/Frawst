@@ -44,17 +44,44 @@
 			}
 		}
 		
+		/**
+		 * Renders the content template with the data supplied from the controller. If
+		 * the template file does not exist, the response will be sent as JSON, without
+		 * a layout.
+		 * @return string
+		 */
 		protected function _renderContent() {
+			$template = 'controller/'.$this->Request->route();
 			$data = $this->_Response->data();
-			if(!is_array($data)) {
-				$data = array('status' => $data);
-			}
 			
-			return $this->_renderFile('controller/'.$this->Request->route(), $data);
+			if(null !== $this->_templatePath($template)) {
+				if(!is_array($data)) {
+					$data = array('status' => $data);
+				}
+				return $this->_renderFile($template, $data);
+			} else {
+				// if the template does not exist, send as JSON
+				$this->_layout = null;
+				$this->_Response->header('Content-Type', 'application/json');
+				return json_encode($data);
+			}
+		}
+		
+		/**
+		 * Returns the absolute path to the specified template file.
+		 * @param string $file
+		 * @return string the absolute path to the file, or null if it does not exist
+		 */
+		protected function _templatePath($file) {
+			if(file_exists($path = $this->_templateDir.DIRECTORY_SEPARATOR.str_replace('/', DIRECTORY_SEPARATOR, $file).'.php')) {
+				return $path;
+			} else {
+				return null;
+			}
 		}
 		
 		protected function _renderFile($___file, $___data) {
-			if(file_exists($___file = $this->_templateDir.DIRECTORY_SEPARATOR.str_replace('/', DIRECTORY_SEPARATOR, $___file).'.php')) {
+			if(null !== $___file = $this->_templatePath($___file)) {
 				extract($___data);
 				ob_start();
 				require($___file);

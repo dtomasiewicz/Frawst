@@ -141,7 +141,7 @@
 				throw new Exception\Frawst('Cannot render a request pending an external redirection.');
 			} else {
 				$this->_View = new $viewClass($this);
-				return $this->_View->render('controller'.DIRECTORY_SEPARATOR.str_replace('/', DIRECTORY_SEPARATOR, $this->_Request->route()), $this->_data);
+				return $this->_View->render();
 			}
 		}
 		

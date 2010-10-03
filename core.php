@@ -9,8 +9,9 @@
 	namespace {
 		use \Frawst\Loader,
 			\Frawst\Exception;
-			
-		error_reporting(E_ALL);
+		
+		ini_set('display_errors', '1');
+		error_reporting(E_ALL | E_STRICT);
 		define('Frawst\\VERSION', '0.1dev');
 		define('Frawst\\SCRIPT_START', microtime(true));
 		
