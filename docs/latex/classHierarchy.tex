@@ -1,0 +1,91 @@
+\hypertarget{classHierarchy}{
+\section{Hierarchy Class Reference}
+\label{classHierarchy}\index{Hierarchy@{Hierarchy}}
+}
+Inheritance diagram for Hierarchy:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=4.000000cm]{classHierarchy}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classHierarchy_a6bd1635911af5bd6472b060f177c841a}{\_\-\_\-construct} (\$type, \$roots=array())
+\item 
+\hyperlink{classHierarchy_a51c0b25ea641b1de5c72dca9a8a992c5}{childrenOf} (\$id, \$deep=false)
+\item 
+\hyperlink{classHierarchy_a7334e9be19629ef54f19e71ed3cf413b}{parentOf} (\$id)
+\item 
+\hyperlink{classHierarchy_ad54d88d65797331b1e6aebdd2a61c23b}{pathTo} (\$id, \$includeThis=true)
+\end{DoxyCompactItemize}
+\subsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classHierarchy_a8e4a8dea319d86aa81f82b0526be4bcc}{
+{\bfseries \$\_\-structure}}
+\label{classHierarchy_a8e4a8dea319d86aa81f82b0526be4bcc}
+
+\item 
+\hypertarget{classHierarchy_a92e8aa798f924f01a4cf4bd98dc56908}{
+{\bfseries \$\_\-lookup}}
+\label{classHierarchy_a92e8aa798f924f01a4cf4bd98dc56908}
+
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Hierarchy-\/based model collection class to allow for easy hierarchy management and caching (automatically pulls all children recursively). Assumes your model has a self-\/referencing hasMany relationship aliased \char`\"{}Children.\char`\"{} 
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{classHierarchy_a6bd1635911af5bd6472b060f177c841a}{
+\index{Hierarchy@{Hierarchy}!\_\-\_\-construct@{\_\-\_\-construct}}
+\index{\_\-\_\-construct@{\_\-\_\-construct}!Hierarchy@{Hierarchy}}
+\subsubsection[{\_\-\_\-construct}]{\setlength{\rightskip}{0pt plus 5cm}Hierarchy::\_\-\_\-construct (
+\begin{DoxyParamCaption}
+\item[{\$}]{ type, }
+\item[{\$}]{ roots = {\ttfamily array()}}
+\end{DoxyParamCaption}
+)}}
+\label{classHierarchy_a6bd1635911af5bd6472b060f177c841a}
+If a \hyperlink{classModelSet}{ModelSet} is passed as the first parameter, the type will be automatically pulled from the \hyperlink{classModelSet}{ModelSet}. 
+
+Reimplemented from \hyperlink{classModelSet}{ModelSet}.
+
+
+
+\subsection{Member Function Documentation}
+\hypertarget{classHierarchy_a51c0b25ea641b1de5c72dca9a8a992c5}{
+\index{Hierarchy@{Hierarchy}!childrenOf@{childrenOf}}
+\index{childrenOf@{childrenOf}!Hierarchy@{Hierarchy}}
+\subsubsection[{childrenOf}]{\setlength{\rightskip}{0pt plus 5cm}Hierarchy::childrenOf (
+\begin{DoxyParamCaption}
+\item[{\$}]{ id, }
+\item[{\$}]{ deep = {\ttfamily false}}
+\end{DoxyParamCaption}
+)}}
+\label{classHierarchy_a51c0b25ea641b1de5c72dca9a8a992c5}
+Gets the children of the specified model. If \$deep is true, will get a recursive list of children. \hypertarget{classHierarchy_a7334e9be19629ef54f19e71ed3cf413b}{
+\index{Hierarchy@{Hierarchy}!parentOf@{parentOf}}
+\index{parentOf@{parentOf}!Hierarchy@{Hierarchy}}
+\subsubsection[{parentOf}]{\setlength{\rightskip}{0pt plus 5cm}Hierarchy::parentOf (
+\begin{DoxyParamCaption}
+\item[{\$}]{ id}
+\end{DoxyParamCaption}
+)}}
+\label{classHierarchy_a7334e9be19629ef54f19e71ed3cf413b}
+Returns the parent of the specified model. \hypertarget{classHierarchy_ad54d88d65797331b1e6aebdd2a61c23b}{
+\index{Hierarchy@{Hierarchy}!pathTo@{pathTo}}
+\index{pathTo@{pathTo}!Hierarchy@{Hierarchy}}
+\subsubsection[{pathTo}]{\setlength{\rightskip}{0pt plus 5cm}Hierarchy::pathTo (
+\begin{DoxyParamCaption}
+\item[{\$}]{ id, }
+\item[{\$}]{ includeThis = {\ttfamily true}}
+\end{DoxyParamCaption}
+)}}
+\label{classHierarchy_ad54d88d65797331b1e6aebdd2a61c23b}
+Returns the path to the specified model. 
+
+The documentation for this class was generated from the following file:\begin{DoxyCompactItemize}
+\item 
+Library/Hierarchy.php\end{DoxyCompactItemize}

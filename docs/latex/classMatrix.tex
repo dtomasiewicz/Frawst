@@ -1,0 +1,232 @@
+\hypertarget{classMatrix}{
+\section{Matrix Class Reference}
+\label{classMatrix}\index{Matrix@{Matrix}}
+}
+Inheritance diagram for Matrix:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{classMatrix}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classMatrix_a637568c15f5a0bc394e1455ffd25e890}{
+{\bfseries \_\-\_\-construct} (\$data=array())}
+\label{classMatrix_a637568c15f5a0bc394e1455ffd25e890}
+
+\item 
+\hyperlink{classMatrix_a7d0cdba14c85aa64f8e58c7b355b471f}{offsetGet} (\$offset)
+\item 
+\hypertarget{classMatrix_ae93338a5117b65f2c061ea077319288c}{
+{\bfseries offsetSet} (\$offset, \$value)}
+\label{classMatrix_ae93338a5117b65f2c061ea077319288c}
+
+\item 
+\hypertarget{classMatrix_ae202c265c3a009502e5a4bdcec57770e}{
+{\bfseries offsetExists} (\$offset)}
+\label{classMatrix_ae202c265c3a009502e5a4bdcec57770e}
+
+\item 
+\hypertarget{classMatrix_a26657ae4c8383f450b526f4130f4c7fd}{
+{\bfseries offsetUnset} (\$offset)}
+\label{classMatrix_a26657ae4c8383f450b526f4130f4c7fd}
+
+\item 
+\hypertarget{classMatrix_aa089db69c0551ab73632aeebd21fdd6c}{
+{\bfseries get} (\$index=null)}
+\label{classMatrix_aa089db69c0551ab73632aeebd21fdd6c}
+
+\item 
+\hypertarget{classMatrix_ab455113ea3edb53f69640adc25f56339}{
+{\bfseries set} (\$index, \$value)}
+\label{classMatrix_ab455113ea3edb53f69640adc25f56339}
+
+\item 
+\hypertarget{classMatrix_af536864d271ee38364bc21f823ef47cf}{
+{\bfseries exists} (\$index)}
+\label{classMatrix_af536864d271ee38364bc21f823ef47cf}
+
+\item 
+\hypertarget{classMatrix_aa222cc0275be3792a02411ed914e71a9}{
+{\bfseries remove} (\$index)}
+\label{classMatrix_aa222cc0275be3792a02411ed914e71a9}
+
+\item 
+\hypertarget{classMatrix_a97ff70dca372b9477030830150bafb74}{
+{\bfseries push} (\$index, \$value)}
+\label{classMatrix_a97ff70dca372b9477030830150bafb74}
+
+\item 
+\hypertarget{classMatrix_a5dbb608acffa263203b35cf5c48af596}{
+{\bfseries merge} (\$index, \$array, \$recursive=false)}
+\label{classMatrix_a5dbb608acffa263203b35cf5c48af596}
+
+\end{DoxyCompactItemize}
+\subsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+static \hyperlink{classMatrix_adcb5796c89a9d7eefa4acddcf83d9f20}{flatten} (\$array, \$path=null)
+\item 
+static \hyperlink{classMatrix_a9c51d19338f9d1e97ace7ae995292535}{expand} (\$flat)
+\item 
+static \hyperlink{classMatrix_ad7595b6aea73dc25a90dd72b03b99e2f}{dotToBracket} (\$dotPath, \$bracketFirst=false)
+\item 
+static \hyperlink{classMatrix_abf6a9524c9bb05d70b1fa94616f1fc7d}{bracketToDot} (\$bracketPath)
+\item 
+static \hyperlink{classMatrix_aa305f72d6665a0d17b77dafede90f208}{pathExists} (\&\$array, \$path)
+\item 
+static \& \hyperlink{classMatrix_aefa3e899317cb70f2ce981476c50b7ab}{pathGet} (\&\$array, \$path)
+\item 
+static \hyperlink{classMatrix_ad35901e861ff1f6af31d1d8745b1fc06}{pathSet} (\&\$array, \$path, \$value)
+\item 
+static \hyperlink{classMatrix_a7896e5ce4f773288a183e6cfe80fab56}{pathUnset} (\&\$array, \$path)
+\item 
+\hypertarget{classMatrix_a64b21313015529a5e9b7b6bfc0ae2283}{
+static {\bfseries pathPush} (\&\$array, \$path, \$value)}
+\label{classMatrix_a64b21313015529a5e9b7b6bfc0ae2283}
+
+\item 
+\hypertarget{classMatrix_a16344696c4a96a1a77f1aebb46bdecf6}{
+static {\bfseries pathMerge} (\&\$array, \$path, \$merge, \$recursive=false)}
+\label{classMatrix_a16344696c4a96a1a77f1aebb46bdecf6}
+
+\end{DoxyCompactItemize}
+\subsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classMatrix_afe54914d1576a306f59167b42c78c48c}{
+{\bfseries \$\_\-data} = array()}
+\label{classMatrix_afe54914d1576a306f59167b42c78c48c}
+
+\end{DoxyCompactItemize}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{classMatrix_abf6a9524c9bb05d70b1fa94616f1fc7d}{
+\index{Matrix@{Matrix}!bracketToDot@{bracketToDot}}
+\index{bracketToDot@{bracketToDot}!Matrix@{Matrix}}
+\subsubsection[{bracketToDot}]{\setlength{\rightskip}{0pt plus 5cm}static Matrix::bracketToDot (
+\begin{DoxyParamCaption}
+\item[{\$}]{ bracketPath}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}static\mbox{]}}}}
+\label{classMatrix_abf6a9524c9bb05d70b1fa94616f1fc7d}
+Converts a bracket-\/separated path to a dot-\/separated path: 'User\mbox{[}name\mbox{]}\mbox{[}length\mbox{]}' -\/$>$ 'User.name.length' 
+\begin{DoxyParams}{Parameters}
+\item[{\em string}]\$bracketPath The bracket-\/separated path \end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+string The dot-\/separated path 
+\end{DoxyReturn}
+\hypertarget{classMatrix_ad7595b6aea73dc25a90dd72b03b99e2f}{
+\index{Matrix@{Matrix}!dotToBracket@{dotToBracket}}
+\index{dotToBracket@{dotToBracket}!Matrix@{Matrix}}
+\subsubsection[{dotToBracket}]{\setlength{\rightskip}{0pt plus 5cm}static Matrix::dotToBracket (
+\begin{DoxyParamCaption}
+\item[{\$}]{ dotPath, }
+\item[{\$}]{ bracketFirst = {\ttfamily false}}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}static\mbox{]}}}}
+\label{classMatrix_ad7595b6aea73dc25a90dd72b03b99e2f}
+Parses a dot-\/separated path to a bracket-\/separated (array-\/style) path: 'User.name.length' -\/$>$ 'User\mbox{[}name\mbox{]}\mbox{[}length\mbox{]}' 
+\begin{DoxyParams}{Parameters}
+\item[{\em string}]\$dotPath The dot-\/separated path \item[{\em bool}]\$bracketFirst Whether or not to put brackets around the first component of the path. \end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+string The bracket-\/separated path. 
+\end{DoxyReturn}
+\hypertarget{classMatrix_a9c51d19338f9d1e97ace7ae995292535}{
+\index{Matrix@{Matrix}!expand@{expand}}
+\index{expand@{expand}!Matrix@{Matrix}}
+\subsubsection[{expand}]{\setlength{\rightskip}{0pt plus 5cm}static Matrix::expand (
+\begin{DoxyParamCaption}
+\item[{\$}]{ flat}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}static\mbox{]}}}}
+\label{classMatrix_a9c51d19338f9d1e97ace7ae995292535}
+Expands a flattened array to an n-\/dimensional matrix. \hypertarget{classMatrix_adcb5796c89a9d7eefa4acddcf83d9f20}{
+\index{Matrix@{Matrix}!flatten@{flatten}}
+\index{flatten@{flatten}!Matrix@{Matrix}}
+\subsubsection[{flatten}]{\setlength{\rightskip}{0pt plus 5cm}static Matrix::flatten (
+\begin{DoxyParamCaption}
+\item[{\$}]{ array, }
+\item[{\$}]{ path = {\ttfamily null}}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}static\mbox{]}}}}
+\label{classMatrix_adcb5796c89a9d7eefa4acddcf83d9f20}
+Returns a flattened version of the data (one-\/dimensional array with dot-\/separated paths as its keys). \hypertarget{classMatrix_a7d0cdba14c85aa64f8e58c7b355b471f}{
+\index{Matrix@{Matrix}!offsetGet@{offsetGet}}
+\index{offsetGet@{offsetGet}!Matrix@{Matrix}}
+\subsubsection[{offsetGet}]{\setlength{\rightskip}{0pt plus 5cm}Matrix::offsetGet (
+\begin{DoxyParamCaption}
+\item[{\$}]{ offset}
+\end{DoxyParamCaption}
+)}}
+\label{classMatrix_a7d0cdba14c85aa64f8e58c7b355b471f}
+Required for ArrayAccess 
+
+Reimplemented in \hyperlink{classFileMatrix_a0bd0b2818c4319b502c494d638525921}{FileMatrix}.
+
+\hypertarget{classMatrix_aa305f72d6665a0d17b77dafede90f208}{
+\index{Matrix@{Matrix}!pathExists@{pathExists}}
+\index{pathExists@{pathExists}!Matrix@{Matrix}}
+\subsubsection[{pathExists}]{\setlength{\rightskip}{0pt plus 5cm}static Matrix::pathExists (
+\begin{DoxyParamCaption}
+\item[{\&\$}]{ array, }
+\item[{\$}]{ path}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}static\mbox{]}}}}
+\label{classMatrix_aa305f72d6665a0d17b77dafede90f208}
+Verifies that a value exists at the specified dot-\/separated path. 
+\begin{DoxyParams}{Parameters}
+\item[{\em array}]\$array The array to search \item[{\em string}]\$path The path to search for \end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+bool True if the path is set, false otherwise 
+\end{DoxyReturn}
+\hypertarget{classMatrix_aefa3e899317cb70f2ce981476c50b7ab}{
+\index{Matrix@{Matrix}!pathGet@{pathGet}}
+\index{pathGet@{pathGet}!Matrix@{Matrix}}
+\subsubsection[{pathGet}]{\setlength{\rightskip}{0pt plus 5cm}static\& Matrix::pathGet (
+\begin{DoxyParamCaption}
+\item[{\&\$}]{ array, }
+\item[{\$}]{ path}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}static\mbox{]}}}}
+\label{classMatrix_aefa3e899317cb70f2ce981476c50b7ab}
+Finds the value at a point in a multi-\/dimensional array indicated by a dot-\/separated path; 
+\begin{DoxyParams}{Parameters}
+\item[{\em array}]\$array The array to search \item[{\em string}]\$path The dot-\/separated path to search for \end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+mixed The value at the given location, by reference 
+\end{DoxyReturn}
+\hypertarget{classMatrix_ad35901e861ff1f6af31d1d8745b1fc06}{
+\index{Matrix@{Matrix}!pathSet@{pathSet}}
+\index{pathSet@{pathSet}!Matrix@{Matrix}}
+\subsubsection[{pathSet}]{\setlength{\rightskip}{0pt plus 5cm}static Matrix::pathSet (
+\begin{DoxyParamCaption}
+\item[{\&\$}]{ array, }
+\item[{\$}]{ path, }
+\item[{\$}]{ value}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}static\mbox{]}}}}
+\label{classMatrix_ad35901e861ff1f6af31d1d8745b1fc06}
+Sets a value to an array at index indicated by a dot-\/separated path, by reference. 
+\begin{DoxyParams}{Parameters}
+\item[{\em array}]\$array The array to set to \item[{\em string}]\$path The dot-\/separated path to set to \item[{\em mixed}]\$value The value to set \end{DoxyParams}
+\hypertarget{classMatrix_a7896e5ce4f773288a183e6cfe80fab56}{
+\index{Matrix@{Matrix}!pathUnset@{pathUnset}}
+\index{pathUnset@{pathUnset}!Matrix@{Matrix}}
+\subsubsection[{pathUnset}]{\setlength{\rightskip}{0pt plus 5cm}static Matrix::pathUnset (
+\begin{DoxyParamCaption}
+\item[{\&\$}]{ array, }
+\item[{\$}]{ path}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}static\mbox{]}}}}
+\label{classMatrix_a7896e5ce4f773288a183e6cfe80fab56}
+Unsets the specified dot-\/separated path. 
+\begin{DoxyParams}{Parameters}
+\item[{\em array}]\$array The array to unset from \item[{\em string}]\$path The path to unset \end{DoxyParams}
+
+
+The documentation for this class was generated from the following file:\begin{DoxyCompactItemize}
+\item 
+Library/Matrix.php\end{DoxyCompactItemize}

@@ -1,0 +1,126 @@
+\hypertarget{classRoute}{
+\section{Route Class Reference}
+\label{classRoute}\index{Route@{Route}}
+}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classRoute_a84933c8ee82f1e6f131b31a886eb45df}{\_\-\_\-construct} (\$route, \$customRoute=false)
+\item 
+\hyperlink{classRoute_a35a64db30f3a4fca7bf9d7c93609e6e7}{controllerClass} ()
+\item 
+\hyperlink{classRoute_ae03c1aa3164e2d41ef2d0d49a971af77}{params} ()
+\item 
+\hyperlink{classRoute_a97e57ba763516caf32fb7ecfb5e78a1d}{reconstruct} (\$params=true)
+\end{DoxyCompactItemize}
+\subsection*{Protected Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classRoute_a803115e927944fa64e86dedfa410cbdd}{\_\-dispatch} ()
+\end{DoxyCompactItemize}
+\subsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classRoute_a0f02597a98e8300aa3f1f3db9e7d78df}{
+{\bfseries \$\_\-originalRoute}}
+\label{classRoute_a0f02597a98e8300aa3f1f3db9e7d78df}
+
+\item 
+\hypertarget{classRoute_a88b214a66d19b32401b3e4757b0c8377}{
+{\bfseries \$\_\-route}}
+\label{classRoute_a88b214a66d19b32401b3e4757b0c8377}
+
+\item 
+\hypertarget{classRoute_a2d7b485f67afe8e0e175f9c94d9c9b4b}{
+{\bfseries \$\_\-controllers}}
+\label{classRoute_a2d7b485f67afe8e0e175f9c94d9c9b4b}
+
+\item 
+\hypertarget{classRoute_a62ebbc1f5dd9bde011be85d0f695261a}{
+{\bfseries \$\_\-controllerClass}}
+\label{classRoute_a62ebbc1f5dd9bde011be85d0f695261a}
+
+\item 
+\hypertarget{classRoute_af46f1787647f8577faa313e7d2c4e3f2}{
+{\bfseries \$\_\-params}}
+\label{classRoute_af46f1787647f8577faa313e7d2c4e3f2}
+
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+\hyperlink{classFrawst}{Frawst} routing class. 
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{classRoute_a84933c8ee82f1e6f131b31a886eb45df}{
+\index{Route@{Route}!\_\-\_\-construct@{\_\-\_\-construct}}
+\index{\_\-\_\-construct@{\_\-\_\-construct}!Route@{Route}}
+\subsubsection[{\_\-\_\-construct}]{\setlength{\rightskip}{0pt plus 5cm}Route::\_\-\_\-construct (
+\begin{DoxyParamCaption}
+\item[{\$}]{ route, }
+\item[{\$}]{ customRoute = {\ttfamily false}}
+\end{DoxyParamCaption}
+)}}
+\label{classRoute_a84933c8ee82f1e6f131b31a886eb45df}
+Constructor. 
+\begin{DoxyParams}{Parameters}
+\item[{\em string}]\$route The route to parse \item[{\em bool}]\$customRoute If set to true, will check the route against any specified custom routing rules. \end{DoxyParams}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{classRoute_a803115e927944fa64e86dedfa410cbdd}{
+\index{Route@{Route}!\_\-dispatch@{\_\-dispatch}}
+\index{\_\-dispatch@{\_\-dispatch}!Route@{Route}}
+\subsubsection[{\_\-dispatch}]{\setlength{\rightskip}{0pt plus 5cm}Route::\_\-dispatch (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}}
+\label{classRoute_a803115e927944fa64e86dedfa410cbdd}
+Determines the controller and parameters based on the route. 
+\begin{DoxyParams}{Parameters}
+\item[{\em string}]\$route \end{DoxyParams}
+\hypertarget{classRoute_a35a64db30f3a4fca7bf9d7c93609e6e7}{
+\index{Route@{Route}!controllerClass@{controllerClass}}
+\index{controllerClass@{controllerClass}!Route@{Route}}
+\subsubsection[{controllerClass}]{\setlength{\rightskip}{0pt plus 5cm}Route::controllerClass (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}
+\label{classRoute_a35a64db30f3a4fca7bf9d7c93609e6e7}
+\begin{DoxyReturn}{Returns}
+string Class name of the bottom-\/level controller 
+\end{DoxyReturn}
+\hypertarget{classRoute_ae03c1aa3164e2d41ef2d0d49a971af77}{
+\index{Route@{Route}!params@{params}}
+\index{params@{params}!Route@{Route}}
+\subsubsection[{params}]{\setlength{\rightskip}{0pt plus 5cm}Route::params (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}
+\label{classRoute_ae03c1aa3164e2d41ef2d0d49a971af77}
+\begin{DoxyReturn}{Returns}
+array Parameters for this route 
+\end{DoxyReturn}
+\hypertarget{classRoute_a97e57ba763516caf32fb7ecfb5e78a1d}{
+\index{Route@{Route}!reconstruct@{reconstruct}}
+\index{reconstruct@{reconstruct}!Route@{Route}}
+\subsubsection[{reconstruct}]{\setlength{\rightskip}{0pt plus 5cm}Route::reconstruct (
+\begin{DoxyParamCaption}
+\item[{\$}]{ params = {\ttfamily true}}
+\end{DoxyParamCaption}
+)}}
+\label{classRoute_a97e57ba763516caf32fb7ecfb5e78a1d}
+Reconstructs the route with the full controller stack. 
+\begin{DoxyParams}{Parameters}
+\item[{\em bool}]\$params Whether or not to append the parameters to the route \end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+string The reconstructed route 
+\end{DoxyReturn}
+
+
+The documentation for this class was generated from the following file:\begin{DoxyCompactItemize}
+\item 
+Route.php\end{DoxyCompactItemize}

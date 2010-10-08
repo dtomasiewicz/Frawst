@@ -1,0 +1,407 @@
+\hypertarget{classModel}{
+\section{Model Class Reference}
+\label{classModel}\index{Model@{Model}}
+}
+Inheritance diagram for Model:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{classModel}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classModel_a2e7e7681f2274b6b4c75afc8c8337147}{\_\-\_\-construct} (\$properties=array())
+\item 
+\hypertarget{classModel_affd04e1cae18cb61d1e219f5283eab35}{
+{\bfseries create} (\$data=array())}
+\label{classModel_affd04e1cae18cb61d1e219f5283eab35}
+
+\item 
+\hypertarget{classModel_a2f8ccba937b5f46ec24de1d473d7a8c2}{
+{\bfseries \_\-\_\-get} (\$property)}
+\label{classModel_a2f8ccba937b5f46ec24de1d473d7a8c2}
+
+\item 
+\hypertarget{classModel_a091cb63bb312f09b9ae8c6d49785e5dc}{
+{\bfseries \_\-\_\-set} (\$property, \$value)}
+\label{classModel_a091cb63bb312f09b9ae8c6d49785e5dc}
+
+\item 
+\hypertarget{classModel_a053565f875759519ec67550978c609be}{
+{\bfseries serialize} ()}
+\label{classModel_a053565f875759519ec67550978c609be}
+
+\item 
+\hypertarget{classModel_afad9b0b1f966a199acf03ddc2e7d6f2d}{
+{\bfseries unserialize} (\$properties)}
+\label{classModel_afad9b0b1f966a199acf03ddc2e7d6f2d}
+
+\item 
+\hyperlink{classModel_aac90fab22955257f7bb6bde27d0e01db}{get} (\$property=null)
+\item 
+\hyperlink{classModel_a69d22c532687c1fa41274c25da4b7c30}{set} (\$property, \$value= '', \$autoRelate=true)
+\item 
+\hypertarget{classModel_abf3248107ca60f4e1c8d89b94cb0fc62}{
+{\bfseries revert} (\$property=null)}
+\label{classModel_abf3248107ca60f4e1c8d89b94cb0fc62}
+
+\item 
+\hyperlink{classModel_a61131879ca51e77e5cad6329d08d9bdd}{save} (\$relationships=true)
+\item 
+\hyperlink{classModel_ac49ef0328b0d46dda63c5ae5e125ec30}{validate} (\$relationships=true)
+\item 
+\hyperlink{classModel_af55cc78d20b12b64bb6f584496a60a52}{delete} ()
+\item 
+\hyperlink{classModel_a52104bbbd42f14befcc6f38d37f0445f}{errors} (\$field=null)
+\item 
+\hypertarget{classModel_ad6eca2beb84492a5830c8c2d6c804982}{
+{\bfseries setErrors} (\$field, \$errors=array())}
+\label{classModel_ad6eca2beb84492a5830c8c2d6c804982}
+
+\item 
+\hypertarget{classModel_a792931bb73f9fd56b6fb5d9d7da0159c}{
+{\bfseries addError} (\$field, \$error)}
+\label{classModel_a792931bb73f9fd56b6fb5d9d7da0159c}
+
+\item 
+\hypertarget{classModel_a1d2310ef3baef425187b5467d9bf66d1}{
+{\bfseries valid} (\$fields=null)}
+\label{classModel_a1d2310ef3baef425187b5467d9bf66d1}
+
+\item 
+\hypertarget{classModel_ab96d610b44f216f5af1892e6200addf4}{
+{\bfseries relate} (\$alias)}
+\label{classModel_ab96d610b44f216f5af1892e6200addf4}
+
+\item 
+\hypertarget{classModel_a1fe3308bebd93b76c566279e963cd547}{
+{\bfseries factory} (\$\hyperlink{interfacemodel}{model})}
+\label{classModel_a1fe3308bebd93b76c566279e963cd547}
+
+\item 
+\hyperlink{classModel_a6ba8c6a73f09f80c7727da1994a211c3}{beforeFind} (\$params)
+\item 
+\hypertarget{classModel_a33ecdba8845bc3128958cd0649f8ea28}{
+{\bfseries beforeSave} ()}
+\label{classModel_a33ecdba8845bc3128958cd0649f8ea28}
+
+\item 
+\hypertarget{classModel_a3787b2b7a0a7a70871036075a5d4f502}{
+{\bfseries beforeValidate} ()}
+\label{classModel_a3787b2b7a0a7a70871036075a5d4f502}
+
+\item 
+\hypertarget{classModel_ab188f5378b4bb7f0b0513ab2dd905bdc}{
+{\bfseries afterSave} ()}
+\label{classModel_ab188f5378b4bb7f0b0513ab2dd905bdc}
+
+\item 
+\hyperlink{classModel_a82d9cc1f8c22f7b08d93d16fd53fdb42}{saved} (\$field=null)
+\item 
+\hypertarget{classModel_a9a0517293a298261adef33f176fbbf91}{
+{\bfseries uniqueId} ()}
+\label{classModel_a9a0517293a298261adef33f176fbbf91}
+
+\item 
+\hypertarget{classModel_a95f060065e1043e871ef6c23b470df53}{
+{\bfseries primaryKey} ()}
+\label{classModel_a95f060065e1043e871ef6c23b470df53}
+
+\end{DoxyCompactItemize}
+\subsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classModel_a8e853a3dd47485ede05e98c476c197c7}{
+static {\bfseries propertyExists} (\$property)}
+\label{classModel_a8e853a3dd47485ede05e98c476c197c7}
+
+\item 
+\hypertarget{classModel_a78c35654d16c5e224a469cb0ea561f17}{
+static {\bfseries dataSource} ()}
+\label{classModel_a78c35654d16c5e224a469cb0ea561f17}
+
+\item 
+\hypertarget{classModel_ac10ba432aee5f57e0aa486c957239b06}{
+static {\bfseries modelName} ()}
+\label{classModel_ac10ba432aee5f57e0aa486c957239b06}
+
+\item 
+\hypertarget{classModel_ac573f684b7d5c80e3242e74aff99a897}{
+static {\bfseries tableName} ()}
+\label{classModel_ac573f684b7d5c80e3242e74aff99a897}
+
+\item 
+\hypertarget{classModel_a54daacbb560bb2c415b0879487793244}{
+static {\bfseries properties} ()}
+\label{classModel_a54daacbb560bb2c415b0879487793244}
+
+\item 
+\hypertarget{classModel_aeb0b2da7c4ae1465de34422f681e357b}{
+static {\bfseries primaryKeyField} ()}
+\label{classModel_aeb0b2da7c4ae1465de34422f681e357b}
+
+\item 
+\hypertarget{classModel_ab284feac61b61b955221adb5f76e8bee}{
+static {\bfseries defaultValue} (\$prop)}
+\label{classModel_ab284feac61b61b955221adb5f76e8bee}
+
+\end{DoxyCompactItemize}
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classModel_ab37a4ee78ce10660122475f2f1d27fa9}{
+const {\bfseries INDEX\_\-PRIMARY} = 'PRIMARY'}
+\label{classModel_ab37a4ee78ce10660122475f2f1d27fa9}
+
+\item 
+\hypertarget{classModel_a641dddb8487a7bda77bfe975c85c2528}{
+const {\bfseries INDEX\_\-INDEX} = 'INDEX'}
+\label{classModel_a641dddb8487a7bda77bfe975c85c2528}
+
+\item 
+\hypertarget{classModel_a84b1d7c7fb2084244252166daed2a93a}{
+const {\bfseries INDEX\_\-FULLTEXT} = 'FULLTEXT'}
+\label{classModel_a84b1d7c7fb2084244252166daed2a93a}
+
+\item 
+\hypertarget{classModel_ae14f9ee9db585fb48c182e8fe185c5cd}{
+const {\bfseries FIELD\_\-INT} = 'INT'}
+\label{classModel_ae14f9ee9db585fb48c182e8fe185c5cd}
+
+\item 
+\hypertarget{classModel_a6da935295128cd12387e4d73bb0a83e9}{
+const {\bfseries FIELD\_\-VARCHAR} = 'VARCHAR'}
+\label{classModel_a6da935295128cd12387e4d73bb0a83e9}
+
+\item 
+\hypertarget{classModel_adc7733899124c4dafac510c49714aa7f}{
+const {\bfseries FIELD\_\-TEXT} = 'TEXT'}
+\label{classModel_adc7733899124c4dafac510c49714aa7f}
+
+\item 
+\hypertarget{classModel_a3feb4cc8cad0c26050ba1816ec5968eb}{
+const {\bfseries FIELD\_\-BOOL} = 'BOOL'}
+\label{classModel_a3feb4cc8cad0c26050ba1816ec5968eb}
+
+\end{DoxyCompactItemize}
+\subsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classModel_aad9adb0b9a2eaf177b36e1420efbdf34}{
+{\bfseries \$\_\-uniqueId}}
+\label{classModel_aad9adb0b9a2eaf177b36e1420efbdf34}
+
+\item 
+\hyperlink{classModel_a9397ae2d97751eff8f73ed7cf747cd86}{\$\_\-dataSource} = 'default'
+\item 
+\hypertarget{classModel_ab549c6de20616040a9ed609ad13e983d}{
+{\bfseries \$\_\-tableName}}
+\label{classModel_ab549c6de20616040a9ed609ad13e983d}
+
+\item 
+\hypertarget{classModel_abab928eebc4c42fec774e52ad6b81885}{
+{\bfseries \$\_\-modelName}}
+\label{classModel_abab928eebc4c42fec774e52ad6b81885}
+
+\item 
+\hypertarget{classModel_a953ee4b9941da74178a68dcd6043a6c4}{
+{\bfseries \$\_\-primaryKeyField}}
+\label{classModel_a953ee4b9941da74178a68dcd6043a6c4}
+
+\item 
+\hypertarget{classModel_ad3059a8372e09c6c2b7b55dd0ec3a708}{
+{\bfseries \$\_\-properties}}
+\label{classModel_ad3059a8372e09c6c2b7b55dd0ec3a708}
+
+\item 
+\hypertarget{classModel_a478c52723981155ef08c585d403fe976}{
+{\bfseries \$\_\-related} = array()}
+\label{classModel_a478c52723981155ef08c585d403fe976}
+
+\item 
+\hypertarget{classModel_ae08f2c8a5fccea4c3589cd1f66445d3f}{
+{\bfseries \$\_\-validate} = array()}
+\label{classModel_ae08f2c8a5fccea4c3589cd1f66445d3f}
+
+\item 
+\hypertarget{classModel_ab6a5989489e12b800733e5dd3c9f5da1}{
+{\bfseries \$\_\-stored}}
+\label{classModel_ab6a5989489e12b800733e5dd3c9f5da1}
+
+\item 
+\hypertarget{classModel_a53a696fcdf1c9057cb15270556ad32be}{
+{\bfseries \$\_\-changes}}
+\label{classModel_a53a696fcdf1c9057cb15270556ad32be}
+
+\item 
+\hypertarget{classModel_a6b5d8435c7e08f18ae45df5d3a821108}{
+{\bfseries \$\_\-saved}}
+\label{classModel_a6b5d8435c7e08f18ae45df5d3a821108}
+
+\item 
+\hypertarget{classModel_a1334a3f8cf937df309133e627a0cfc49}{
+{\bfseries \$\_\-relations} = array()}
+\label{classModel_a1334a3f8cf937df309133e627a0cfc49}
+
+\item 
+\hypertarget{classModel_a35a792dbdd1d8a5b52f0da0421a402d6}{
+{\bfseries \$\_\-errors} = array()}
+\label{classModel_a35a792dbdd1d8a5b52f0da0421a402d6}
+
+\item 
+\hypertarget{classModel_ad41f5bede8f7fcc307a12b6b64e4e894}{
+{\bfseries \$\_\-Factory}}
+\label{classModel_ad41f5bede8f7fcc307a12b6b64e4e894}
+
+\end{DoxyCompactItemize}
+\subsection*{Static Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classModel_aa96d314eb5f4c73e0bda8ea174e19664}{
+static {\bfseries \$\_\-nextUniqueId} = 1}
+\label{classModel_aa96d314eb5f4c73e0bda8ea174e19664}
+
+\item 
+\hypertarget{classModel_a8108a929e478a7d7a8e9ec6fac8a9fb6}{
+static {\bfseries \$\_\-dataSources} = array()}
+\label{classModel_a8108a929e478a7d7a8e9ec6fac8a9fb6}
+
+\item 
+\hypertarget{classModel_afedcdc26523874d393f219f1829f32f3}{
+static {\bfseries \$\_\-tableNames} = array()}
+\label{classModel_afedcdc26523874d393f219f1829f32f3}
+
+\item 
+\hypertarget{classModel_ae0caed3ad9c0a9f8a7318dca3815884e}{
+static {\bfseries \$\_\-modelNames} = array()}
+\label{classModel_ae0caed3ad9c0a9f8a7318dca3815884e}
+
+\item 
+\hypertarget{classModel_aaee3dd75fc8e3ba62e9ee329dd06cd6b}{
+static {\bfseries \$\_\-primaryKeyFields} = array()}
+\label{classModel_aaee3dd75fc8e3ba62e9ee329dd06cd6b}
+
+\end{DoxyCompactItemize}
+
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{classModel_a2e7e7681f2274b6b4c75afc8c8337147}{
+\index{Model@{Model}!\_\-\_\-construct@{\_\-\_\-construct}}
+\index{\_\-\_\-construct@{\_\-\_\-construct}!Model@{Model}}
+\subsubsection[{\_\-\_\-construct}]{\setlength{\rightskip}{0pt plus 5cm}Model::\_\-\_\-construct (
+\begin{DoxyParamCaption}
+\item[{\$}]{ properties = {\ttfamily array()}}
+\end{DoxyParamCaption}
+)}}
+\label{classModel_a2e7e7681f2274b6b4c75afc8c8337147}
+Constructor. This is the only place a primary key can be set from outside of the model. 
+
+\subsection{Member Function Documentation}
+\hypertarget{classModel_a6ba8c6a73f09f80c7727da1994a211c3}{
+\index{Model@{Model}!beforeFind@{beforeFind}}
+\index{beforeFind@{beforeFind}!Model@{Model}}
+\subsubsection[{beforeFind}]{\setlength{\rightskip}{0pt plus 5cm}Model::beforeFind (
+\begin{DoxyParamCaption}
+\item[{\$}]{ params}
+\end{DoxyParamCaption}
+)}}
+\label{classModel_a6ba8c6a73f09f80c7727da1994a211c3}
+Hooks \hypertarget{classModel_af55cc78d20b12b64bb6f584496a60a52}{
+\index{Model@{Model}!delete@{delete}}
+\index{delete@{delete}!Model@{Model}}
+\subsubsection[{delete}]{\setlength{\rightskip}{0pt plus 5cm}Model::delete (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}
+\label{classModel_af55cc78d20b12b64bb6f584496a60a52}
+Deletes this model. \hypertarget{classModel_a52104bbbd42f14befcc6f38d37f0445f}{
+\index{Model@{Model}!errors@{errors}}
+\index{errors@{errors}!Model@{Model}}
+\subsubsection[{errors}]{\setlength{\rightskip}{0pt plus 5cm}Model::errors (
+\begin{DoxyParamCaption}
+\item[{\$}]{ field = {\ttfamily null}}
+\end{DoxyParamCaption}
+)}}
+\label{classModel_a52104bbbd42f14befcc6f38d37f0445f}
+Methods to return validation errors from the previous validation attempt. \hypertarget{classModel_aac90fab22955257f7bb6bde27d0e01db}{
+\index{Model@{Model}!get@{get}}
+\index{get@{get}!Model@{Model}}
+\subsubsection[{get}]{\setlength{\rightskip}{0pt plus 5cm}Model::get (
+\begin{DoxyParamCaption}
+\item[{\$}]{ property = {\ttfamily null}}
+\end{DoxyParamCaption}
+)}}
+\label{classModel_aac90fab22955257f7bb6bde27d0e01db}
+Getter override. Will first check to see if the requested member name is a model property. If it is, it'll return the (unsaved) value of that property. Otherwise will attempt to return a relationship object.
+
+
+\begin{DoxyParams}{Parameters}
+\item[{\em string}]\$property The name of the property/relation \end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+mixed The value of the property, or a relation object, if exists. 
+\end{DoxyReturn}
+\hypertarget{classModel_a61131879ca51e77e5cad6329d08d9bdd}{
+\index{Model@{Model}!save@{save}}
+\index{save@{save}!Model@{Model}}
+\subsubsection[{save}]{\setlength{\rightskip}{0pt plus 5cm}Model::save (
+\begin{DoxyParamCaption}
+\item[{\$}]{ relationships = {\ttfamily true}}
+\end{DoxyParamCaption}
+)}}
+\label{classModel_a61131879ca51e77e5cad6329d08d9bdd}
+Saves models. \hypertarget{classModel_a82d9cc1f8c22f7b08d93d16fd53fdb42}{
+\index{Model@{Model}!saved@{saved}}
+\index{saved@{saved}!Model@{Model}}
+\subsubsection[{saved}]{\setlength{\rightskip}{0pt plus 5cm}Model::saved (
+\begin{DoxyParamCaption}
+\item[{\$}]{ field = {\ttfamily null}}
+\end{DoxyParamCaption}
+)}}
+\label{classModel_a82d9cc1f8c22f7b08d93d16fd53fdb42}
+Determines whether or not the modle has been saved. If a field is specified, will instead return the saved value of that field. \hypertarget{classModel_a69d22c532687c1fa41274c25da4b7c30}{
+\index{Model@{Model}!set@{set}}
+\index{set@{set}!Model@{Model}}
+\subsubsection[{set}]{\setlength{\rightskip}{0pt plus 5cm}Model::set (
+\begin{DoxyParamCaption}
+\item[{\$}]{ property, }
+\item[{\$}]{ value = {\ttfamily ''}, }
+\item[{\$}]{ autoRelate = {\ttfamily true}}
+\end{DoxyParamCaption}
+)}}
+\label{classModel_a69d22c532687c1fa41274c25da4b7c30}
+Sets the value of a model property or relation. You can flag autoRelate to false to avoid setting any relations, if your data is compromisable (for example, if you are simply \hyperlink{classModel_a69d22c532687c1fa41274c25da4b7c30}{set()}ing form data, users may be able to cross-\/site-\/script to change the relations).
+
+\begin{DoxyReturn}{Returns}
+true if everything set correctly, false if any property failed to set. since primary keys are ignored (they should be treated as immutable) a primary key may fail to set but still return true.
+\end{DoxyReturn}
+\mbox{[}1\mbox{]} (string \$name, mixed \$value\mbox{[}, boolean \$autoRelate = true\mbox{]}) 
+\begin{DoxyParams}{Parameters}
+\item[{\em string}]\$name The name of the property or relation to set \item[{\em mixed}]\$value The value to set the property or relation to \item[{\em boolean}]\$autoRelate Whether or not to allow relation setting\end{DoxyParams}
+\mbox{[}2\mbox{]} (array \$values\mbox{[}, boolean \$autoRelate = true\mbox{]}) 
+\begin{DoxyParams}{Parameters}
+\item[{\em array}]\$values An array of property =$>$ value pairs to be set \item[{\em boolean}]\$autoRelate Whether or not to allow relation setting \end{DoxyParams}
+\hypertarget{classModel_ac49ef0328b0d46dda63c5ae5e125ec30}{
+\index{Model@{Model}!validate@{validate}}
+\index{validate@{validate}!Model@{Model}}
+\subsubsection[{validate}]{\setlength{\rightskip}{0pt plus 5cm}Model::validate (
+\begin{DoxyParamCaption}
+\item[{\$}]{ relationships = {\ttfamily true}}
+\end{DoxyParamCaption}
+)}}
+\label{classModel_ac49ef0328b0d46dda63c5ae5e125ec30}
+Returns true if validation passes 
+
+\subsection{Member Data Documentation}
+\hypertarget{classModel_a9397ae2d97751eff8f73ed7cf747cd86}{
+\index{Model@{Model}!\$\_\-dataSource@{\$\_\-dataSource}}
+\index{\$\_\-dataSource@{\$\_\-dataSource}!Model@{Model}}
+\subsubsection[{\$\_\-dataSource}]{\setlength{\rightskip}{0pt plus 5cm}Model::\$\_\-dataSource = 'default'\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}}
+\label{classModel_a9397ae2d97751eff8f73ed7cf747cd86}
+The datasource where this model is stored. 
+
+The documentation for this class was generated from the following files:\begin{DoxyCompactItemize}
+\item 
+Exception/Model.php\item 
+vendor/Corelativ/Model.php\end{DoxyCompactItemize}

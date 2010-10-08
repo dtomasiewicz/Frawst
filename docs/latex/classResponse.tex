@@ -1,0 +1,183 @@
+\hypertarget{classResponse}{
+\section{Response Class Reference}
+\label{classResponse}\index{Response@{Response}}
+}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classResponse_a0b56fd29658dadcf8b08be1912a59c0e}{\_\-\_\-construct} (\$request)
+\item 
+\hyperlink{classResponse_a784441c53f2d035af9cf8736006aa914}{\_\-\_\-get} (\$name)
+\item 
+\hyperlink{classResponse_ac4311e7d9dcec3bcdb0d55807303e7c1}{data} (\$data=null)
+\item 
+\hyperlink{classResponse_a007132b026abc70f7085d153c2359969}{headers} ()
+\item 
+\hyperlink{classResponse_ae29e05652ee532c0e1fe33f1ea91b679}{header} (\$name, \$value=null)
+\item 
+\hyperlink{classResponse_ab821b9432e79a01873aebee827876f8e}{redirect} (\$to= '', \$external=false)
+\item 
+\hyperlink{classResponse_afe4adc06ad1212cdea51f1312ad58249}{render} (\$viewClass= '\hyperlink{classFrawst}{Frawst}$\backslash$$\backslash$\hyperlink{classView}{View}$\backslash$$\backslash$\hyperlink{classAppView}{AppView}')
+\item 
+\hyperlink{classResponse_ab15393b225938861debc57f2fce6481e}{send} (\$viewClass= '\hyperlink{classFrawst}{Frawst}$\backslash$$\backslash$\hyperlink{classView}{View}$\backslash$$\backslash$\hyperlink{classAppView}{AppView}')
+\end{DoxyCompactItemize}
+\subsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classResponse_aafda453f4de1b5633e6ef8b6d030ff6c}{
+{\bfseries \$\_\-Request}}
+\label{classResponse_aafda453f4de1b5633e6ef8b6d030ff6c}
+
+\item 
+\hypertarget{classResponse_a75e54e1efc790425d2569a4d0cc53b2c}{
+{\bfseries \$\_\-data}}
+\label{classResponse_a75e54e1efc790425d2569a4d0cc53b2c}
+
+\item 
+\hypertarget{classResponse_addb9138dcbc2c3d6ae35b037b11347eb}{
+{\bfseries \$\_\-headers} = array()}
+\label{classResponse_addb9138dcbc2c3d6ae35b037b11347eb}
+
+\item 
+\hypertarget{classResponse_ab48f20c310eba02881ad7575eb0b3c58}{
+{\bfseries \$\_\-redirect}}
+\label{classResponse_ab48f20c310eba02881ad7575eb0b3c58}
+
+\item 
+\hypertarget{classResponse_a77099aff672d68b84d44220b62ba0169}{
+{\bfseries \$\_\-View}}
+\label{classResponse_a77099aff672d68b84d44220b62ba0169}
+
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Handles a response to a \hyperlink{classRequest}{Request}. In charge of response headers, redirection, and rendering of a \hyperlink{classView}{View} if necessary. 
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{classResponse_a0b56fd29658dadcf8b08be1912a59c0e}{
+\index{Response@{Response}!\_\-\_\-construct@{\_\-\_\-construct}}
+\index{\_\-\_\-construct@{\_\-\_\-construct}!Response@{Response}}
+\subsubsection[{\_\-\_\-construct}]{\setlength{\rightskip}{0pt plus 5cm}Response::\_\-\_\-construct (
+\begin{DoxyParamCaption}
+\item[{\$}]{ request}
+\end{DoxyParamCaption}
+)}}
+\label{classResponse_a0b56fd29658dadcf8b08be1912a59c0e}
+Constructor. 
+\begin{DoxyParams}{Parameters}
+\item[{\em Frawst$\backslash$Request}]\hyperlink{classRequest}{Request} that is being responded to \end{DoxyParams}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{classResponse_a784441c53f2d035af9cf8736006aa914}{
+\index{Response@{Response}!\_\-\_\-get@{\_\-\_\-get}}
+\index{\_\-\_\-get@{\_\-\_\-get}!Response@{Response}}
+\subsubsection[{\_\-\_\-get}]{\setlength{\rightskip}{0pt plus 5cm}Response::\_\-\_\-get (
+\begin{DoxyParamCaption}
+\item[{\$}]{ name}
+\end{DoxyParamCaption}
+)}}
+\label{classResponse_a784441c53f2d035af9cf8736006aa914}
+Read-\/only immitation. 
+\begin{DoxyParams}{Parameters}
+\item[{\em string}]\$name \end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+mixed 
+\end{DoxyReturn}
+\hypertarget{classResponse_ac4311e7d9dcec3bcdb0d55807303e7c1}{
+\index{Response@{Response}!data@{data}}
+\index{data@{data}!Response@{Response}}
+\subsubsection[{data}]{\setlength{\rightskip}{0pt plus 5cm}Response::data (
+\begin{DoxyParamCaption}
+\item[{\$}]{ data = {\ttfamily null}}
+\end{DoxyParamCaption}
+)}}
+\label{classResponse_ac4311e7d9dcec3bcdb0d55807303e7c1}
+Returns the response data. Will set the data first, if provided. 
+\begin{DoxyParams}{Parameters}
+\item[{\em mixed}]\$data If not null, data will be set to this. \end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+mixed \hyperlink{classResponse}{Response} data 
+\end{DoxyReturn}
+\hypertarget{classResponse_ae29e05652ee532c0e1fe33f1ea91b679}{
+\index{Response@{Response}!header@{header}}
+\index{header@{header}!Response@{Response}}
+\subsubsection[{header}]{\setlength{\rightskip}{0pt plus 5cm}Response::header (
+\begin{DoxyParamCaption}
+\item[{\$}]{ name, }
+\item[{\$}]{ value = {\ttfamily null}}
+\end{DoxyParamCaption}
+)}}
+\label{classResponse_ae29e05652ee532c0e1fe33f1ea91b679}
+Returns the value of a response header. Will set the value first, if provided. 
+\begin{DoxyParams}{Parameters}
+\item[{\em string}]\$name The name of the header \item[{\em string}]\$value The value to set the header to \end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+string The response header value or null if not set 
+\end{DoxyReturn}
+\hypertarget{classResponse_a007132b026abc70f7085d153c2359969}{
+\index{Response@{Response}!headers@{headers}}
+\index{headers@{headers}!Response@{Response}}
+\subsubsection[{headers}]{\setlength{\rightskip}{0pt plus 5cm}Response::headers (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}
+\label{classResponse_a007132b026abc70f7085d153c2359969}
+\begin{DoxyReturn}{Returns}
+array Associative array of response headers 
+\end{DoxyReturn}
+\hypertarget{classResponse_ab821b9432e79a01873aebee827876f8e}{
+\index{Response@{Response}!redirect@{redirect}}
+\index{redirect@{redirect}!Response@{Response}}
+\subsubsection[{redirect}]{\setlength{\rightskip}{0pt plus 5cm}Response::redirect (
+\begin{DoxyParamCaption}
+\item[{\$}]{ to = {\ttfamily ''}, }
+\item[{\$}]{ external = {\ttfamily false}}
+\end{DoxyParamCaption}
+)}}
+\label{classResponse_ab821b9432e79a01873aebee827876f8e}
+Queues the \hyperlink{classResponse}{Response} for redirection. Will NOT occur immediately, so it is important to break or return in the calling context if further execution is not desired. This is so that sub-\/requests do not unexpectedly redirect the entire top-\/level request.
+
+HTTP redirection occurs when \hyperlink{classResponse_ab15393b225938861debc57f2fce6481e}{send()} is invoked, before rendering. If the redirect is internal and \hyperlink{classResponse_afe4adc06ad1212cdea51f1312ad58249}{render()} is invoked instead of \hyperlink{classResponse_ab15393b225938861debc57f2fce6481e}{send()}, a sub-\/ request will be created to the target route, and the rendering of that request will be returned instead.
+
+
+\begin{DoxyParams}{Parameters}
+\item[{\em string}]\$to The destination route or (if external) URI \item[{\em bool}]\$external If specifying a URI instead of an internal route, set this to true. \end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+bool false 
+\end{DoxyReturn}
+\hypertarget{classResponse_afe4adc06ad1212cdea51f1312ad58249}{
+\index{Response@{Response}!render@{render}}
+\index{render@{render}!Response@{Response}}
+\subsubsection[{render}]{\setlength{\rightskip}{0pt plus 5cm}Response::render (
+\begin{DoxyParamCaption}
+\item[{\$}]{ viewClass = {\ttfamily '{\bf Frawst}$\backslash$$\backslash${\bf View}$\backslash$$\backslash${\bf AppView}'}}
+\end{DoxyParamCaption}
+)}}
+\label{classResponse_afe4adc06ad1212cdea51f1312ad58249}
+Renders the view. If internally redirected, will render a sub-\/request. \begin{DoxyReturn}{Returns}
+string The rendered view 
+\end{DoxyReturn}
+\hypertarget{classResponse_ab15393b225938861debc57f2fce6481e}{
+\index{Response@{Response}!send@{send}}
+\index{send@{send}!Response@{Response}}
+\subsubsection[{send}]{\setlength{\rightskip}{0pt plus 5cm}Response::send (
+\begin{DoxyParamCaption}
+\item[{\$}]{ viewClass = {\ttfamily '{\bf Frawst}$\backslash$$\backslash${\bf View}$\backslash$$\backslash${\bf AppView}'}}
+\end{DoxyParamCaption}
+)}}
+\label{classResponse_ab15393b225938861debc57f2fce6481e}
+Sends any response headers to the browser, along with the view rendering.
+
+Headers are sent after the view is rendered and before it is outputted, in case the headers are changed from within the view. The only exception is the Location (redirect) header, which will be sent first since rendering a redirected request would be a waste of time.
+
+
+\begin{DoxyParams}{Parameters}
+\item[{\em strint}]\$viewClass The name of the class to use for rendering the view \end{DoxyParams}
+
+
+The documentation for this class was generated from the following file:\begin{DoxyCompactItemize}
+\item 
+Response.php\end{DoxyCompactItemize}

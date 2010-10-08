@@ -1,0 +1,108 @@
+\hypertarget{classInflector}{
+\section{Inflector Class Reference}
+\label{classInflector}\index{Inflector@{Inflector}}
+}
+\subsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classInflector_a908104f472ffc12abdbf413907ac79e8}{
+static {\bfseries upperFirst} (\$str)}
+\label{classInflector_a908104f472ffc12abdbf413907ac79e8}
+
+\item 
+static \hyperlink{classInflector_a8a88a95ac17f430c6f12b84eb1248bf7}{camelCase} (\$str)
+\item 
+static \hyperlink{classInflector_a28be98649c8abe82e4c6dd59d8a52251}{underscore} (\$string)
+\item 
+static \hyperlink{classInflector_abae1c2ef023e5a0648a7a0daabba51e5}{camelBack} (\$str)
+\item 
+\hypertarget{classInflector_a896c15c7c8c0b1a90f56fc296c081d1f}{
+static {\bfseries isUpper} (\$str)}
+\label{classInflector_a896c15c7c8c0b1a90f56fc296c081d1f}
+
+\item 
+\hypertarget{classInflector_a2f6b727703c6e6e04a389154b4e74acb}{
+static {\bfseries isLower} (\$str)}
+\label{classInflector_a2f6b727703c6e6e04a389154b4e74acb}
+
+\item 
+\hypertarget{classInflector_afc39bbe1faba49520a80158fbdf9f2e2}{
+static {\bfseries slug} (\$str)}
+\label{classInflector_afc39bbe1faba49520a80158fbdf9f2e2}
+
+\end{DoxyCompactItemize}
+\subsection*{Static Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classInflector_aa9f0be1fd13b8c885df0f932d9b08ffb}{
+static {\bfseries \$\_\-camelBack} = array()}
+\label{classInflector_aa9f0be1fd13b8c885df0f932d9b08ffb}
+
+\item 
+\hypertarget{classInflector_a94b4787f78be8ac2b218e5d68278c55c}{
+static {\bfseries \$\_\-underscore} = array()}
+\label{classInflector_a94b4787f78be8ac2b218e5d68278c55c}
+
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Provides various tools for manipulating strings. 
+
+\subsection{Member Function Documentation}
+\hypertarget{classInflector_abae1c2ef023e5a0648a7a0daabba51e5}{
+\index{Inflector@{Inflector}!camelBack@{camelBack}}
+\index{camelBack@{camelBack}!Inflector@{Inflector}}
+\subsubsection[{camelBack}]{\setlength{\rightskip}{0pt plus 5cm}static Inflector::camelBack (
+\begin{DoxyParamCaption}
+\item[{\$}]{ str}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}static\mbox{]}}}}
+\label{classInflector_abae1c2ef023e5a0648a7a0daabba51e5}
+Same as camelCase, only leaves the first letter in lower-\/case (most often used for model properties).
+
+
+\begin{DoxyParams}{Parameters}
+\item[{\em string}]\$str The underscore string to be formatted. \end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+string The formatted string. 
+\end{DoxyReturn}
+\hypertarget{classInflector_a8a88a95ac17f430c6f12b84eb1248bf7}{
+\index{Inflector@{Inflector}!camelCase@{camelCase}}
+\index{camelCase@{camelCase}!Inflector@{Inflector}}
+\subsubsection[{camelCase}]{\setlength{\rightskip}{0pt plus 5cm}static Inflector::camelCase (
+\begin{DoxyParamCaption}
+\item[{\$}]{ str}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}static\mbox{]}}}}
+\label{classInflector_a8a88a95ac17f430c6f12b84eb1248bf7}
+Converts lower-\/case underscored words to CamelCase.
+
+
+\begin{DoxyParams}{Parameters}
+\item[{\em string}]\$str String to be CamelCased. \end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+string The CamelCased string. 
+\end{DoxyReturn}
+\hypertarget{classInflector_a28be98649c8abe82e4c6dd59d8a52251}{
+\index{Inflector@{Inflector}!underscore@{underscore}}
+\index{underscore@{underscore}!Inflector@{Inflector}}
+\subsubsection[{underscore}]{\setlength{\rightskip}{0pt plus 5cm}static Inflector::underscore (
+\begin{DoxyParamCaption}
+\item[{\$}]{ string}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}static\mbox{]}}}}
+\label{classInflector_a28be98649c8abe82e4c6dd59d8a52251}
+Converts CamelCase words to underscore format. This might be faster as a regex... don't feel like benchmarking right now.
+
+
+\begin{DoxyParams}{Parameters}
+\item[{\em string}]\$str String to be converted to underscore. \end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+string The underscore formatted string. 
+\end{DoxyReturn}
+
+
+The documentation for this class was generated from the following file:\begin{DoxyCompactItemize}
+\item 
+Library/Inflector.php\end{DoxyCompactItemize}

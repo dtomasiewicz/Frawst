@@ -1,0 +1,113 @@
+\hypertarget{classXRequest}{
+\section{XRequest Class Reference}
+\label{classXRequest}\index{XRequest@{XRequest}}
+}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classXRequest_abf5cb6cee4e104ed2a6fa9cc1659fe79}{\_\-\_\-construct} (\$uri, \$data=array(), \$method= 'GET', \$headers=array())
+\item 
+\hyperlink{classXRequest_a7cc9ccf8e01f3fd885029d0a04281c75}{\_\-\_\-get} (\$name)
+\item 
+\hyperlink{classXRequest_afff17e6f3ff03dfb594f801992074389}{execute} ()
+\item 
+\hyperlink{classXRequest_a0c1a9397c901f52e2cc0f79d6d3aa76b}{handle} ()
+\end{DoxyCompactItemize}
+\subsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hypertarget{classXRequest_a24be959a56bd280ffa08b4a7e3676d88}{
+{\bfseries \$\_\-handle}}
+\label{classXRequest_a24be959a56bd280ffa08b4a7e3676d88}
+
+\item 
+\hypertarget{classXRequest_a5aca604d767ee86e5c66f6b15f71ace9}{
+{\bfseries \$\_\-data}}
+\label{classXRequest_a5aca604d767ee86e5c66f6b15f71ace9}
+
+\item 
+\hypertarget{classXRequest_a549e72fc8aa404e33c671d0bda3bd4e1}{
+{\bfseries \$\_\-headers}}
+\label{classXRequest_a549e72fc8aa404e33c671d0bda3bd4e1}
+
+\item 
+\hypertarget{classXRequest_af1c7a52b0b4b8a1a8d3dd91951cc9020}{
+{\bfseries \$\_\-method}}
+\label{classXRequest_af1c7a52b0b4b8a1a8d3dd91951cc9020}
+
+\item 
+\hypertarget{classXRequest_a936fb5c46a0975b29428a7b1df3d05a5}{
+{\bfseries \$\_\-Response}}
+\label{classXRequest_a936fb5c46a0975b29428a7b1df3d05a5}
+
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+External \hyperlink{classRequest}{Request} class
+
+This class immitates behaviours of the standard \hyperlink{classRequest}{Request} class, but applies to external requests to sources outside of the current application. 
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{classXRequest_abf5cb6cee4e104ed2a6fa9cc1659fe79}{
+\index{XRequest@{XRequest}!\_\-\_\-construct@{\_\-\_\-construct}}
+\index{\_\-\_\-construct@{\_\-\_\-construct}!XRequest@{XRequest}}
+\subsubsection[{\_\-\_\-construct}]{\setlength{\rightskip}{0pt plus 5cm}XRequest::\_\-\_\-construct (
+\begin{DoxyParamCaption}
+\item[{\$}]{ uri, }
+\item[{\$}]{ data = {\ttfamily array()}, }
+\item[{\$}]{ method = {\ttfamily 'GET'}, }
+\item[{\$}]{ headers = {\ttfamily array()}}
+\end{DoxyParamCaption}
+)}}
+\label{classXRequest_abf5cb6cee4e104ed2a6fa9cc1659fe79}
+Constructor. 
+\begin{DoxyParams}{Parameters}
+\item[{\em string}]\$uri The URI to which the request is made \item[{\em array}]\$data The data to send in the request \item[{\em string}]\$method The request method \item[{\em array}]\$headers \hyperlink{classRequest}{Request} headers \end{DoxyParams}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{classXRequest_a7cc9ccf8e01f3fd885029d0a04281c75}{
+\index{XRequest@{XRequest}!\_\-\_\-get@{\_\-\_\-get}}
+\index{\_\-\_\-get@{\_\-\_\-get}!XRequest@{XRequest}}
+\subsubsection[{\_\-\_\-get}]{\setlength{\rightskip}{0pt plus 5cm}XRequest::\_\-\_\-get (
+\begin{DoxyParamCaption}
+\item[{\$}]{ name}
+\end{DoxyParamCaption}
+)}}
+\label{classXRequest_a7cc9ccf8e01f3fd885029d0a04281c75}
+Immitate read-\/only properties 
+\begin{DoxyParams}{Parameters}
+\item[{\em string}]\$name \end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+mixed 
+\end{DoxyReturn}
+\hypertarget{classXRequest_afff17e6f3ff03dfb594f801992074389}{
+\index{XRequest@{XRequest}!execute@{execute}}
+\index{execute@{execute}!XRequest@{XRequest}}
+\subsubsection[{execute}]{\setlength{\rightskip}{0pt plus 5cm}XRequest::execute (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}
+\label{classXRequest_afff17e6f3ff03dfb594f801992074389}
+Executes the request. \begin{DoxyReturn}{Returns}
+mixed False if the request fails, or a \hyperlink{classFrawst}{Frawst} object if it's successful. 
+\end{DoxyReturn}
+\hypertarget{classXRequest_a0c1a9397c901f52e2cc0f79d6d3aa76b}{
+\index{XRequest@{XRequest}!handle@{handle}}
+\index{handle@{handle}!XRequest@{XRequest}}
+\subsubsection[{handle}]{\setlength{\rightskip}{0pt plus 5cm}resource The cURL XRequest::handle (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}
+\label{classXRequest_a0c1a9397c901f52e2cc0f79d6d3aa76b}
+Returns the curl file handle used for this request. Only available after \hyperlink{classXRequest_afff17e6f3ff03dfb594f801992074389}{execute()} is invoked. \begin{DoxyReturn}{Returns}
+resource 
+\end{DoxyReturn}
+
+
+The documentation for this class was generated from the following file:\begin{DoxyCompactItemize}
+\item 
+XRequest.php\end{DoxyCompactItemize}
