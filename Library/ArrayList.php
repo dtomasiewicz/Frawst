@@ -6,7 +6,7 @@
 	 * Handles all array-type structure that also require supplemental information
 	 * or methods. This may get changed to simply extend ArrayObject
 	 */
-	class ArrayList implements \ArrayAccess, \Iterator, \Countable {
+	class ArrayList implements \ArrayAccess, \Iterator, \Countable, JSONEncodable {
 		protected $_data = array();
 		
 		public function __construct($data = null) {
@@ -127,5 +127,13 @@
 		}
 		public function reverse() {
 			$this->_data = array_reverse($this->_data);
+		}
+		
+		/**
+		 * Prepares the list for JSON-encoding
+		 * @return string JSON-encodable data
+		 */
+		public function toJSON() {
+			return Serialize::toJSON($this->_data, 0, false);
 		}
 	}

@@ -1,5 +1,6 @@
 <?php
 	namespace Frawst;
+	use \Frawst\Library\Serialize;
 	
 	class View {
 		protected $_helpers;
@@ -63,7 +64,7 @@
 				// if the template does not exist, send as JSON
 				$this->_layout = null;
 				$this->_Response->header('Content-Type', 'application/json');
-				return json_encode($data);
+				return Serialize::tojSON($data);
 			}
 		}
 		

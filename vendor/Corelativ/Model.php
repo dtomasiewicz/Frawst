@@ -2,11 +2,12 @@
 	namespace Corelativ;
 	use \Corelativ\Factory,
 		\Frawst\Library\Validator,
+		\Frawst\Library\JSONEncodable,
 		\Frawst\Exception,
 		\DataPane,
 		\DataPane\Data;
 	
-	abstract class Model implements \Serializable {
+	abstract class Model implements \Serializable, JSONEncodable {
 		const INDEX_PRIMARY = 'PRIMARY';
 		const INDEX_INDEX = 'INDEX';
 		const INDEX_FULLTEXT = 'FULLTEXT';
@@ -159,11 +160,15 @@
 		}
 		
 		public function serialize() {
-			return serialize($this->_stored);
+			return serialize($this->get());
 		}
 		
 		public function unserialize($properties) {
 			$this->__construct(unserialize($properties));
+		}
+		
+		public function toJSON() {
+			return $this->get();
 		}
 		
 		/**
