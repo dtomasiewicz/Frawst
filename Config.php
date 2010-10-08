@@ -8,6 +8,7 @@
 	 * Config
 	 *
 	 * Reads variables from configuration files.
+	 * @todo Make this instantiable
 	 */	
 	abstract class Config {
 		protected static $_data = array();

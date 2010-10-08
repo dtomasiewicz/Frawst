@@ -4,7 +4,7 @@
 	/**
 	 * Base Controller class for the Frawst framework.
 	 */
-	abstract class Controller implements \ArrayAccess {
+	abstract class Controller {
 		
 		/**
 		 * @var array The component objects in use by the controller
@@ -95,23 +95,4 @@
 			
 			return $this->_after($data);
 		}
-		
-		/**
-		 * The following methods are required for the ArrayAccess interface. They're used
-		 * to allow storage of data for use by various methods in the controller. This data is
-		 * for controller use only and will NOT be present in the Response.
-		 */
-		public function offsetExists($offset) {
-			return array_key_exists($offset, $this->_data);
-		}
-		public function offsetGet($offset) {
-			return $this->_data[$offset];
-		}
-		public function offsetSet($offset, $value) {
-			$this->_data[$offset] = $value;
-		}
-		public function offsetUnset($offset) {
-			unset($this->_data[$offset]);
-		}
-		
 	}
