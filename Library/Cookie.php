@@ -9,24 +9,30 @@
 		public $path;
 		public $domain;
 		
-		public function __construct($name, $value = null, $expires = 0, $path = null, $domain = null) {
-			$this->_name = $name;
-			$this->value = is_null($value) && Matrix::pathExists($_COOKIE, $this->_name)
-				? Matrix::pathGet($_COOKIE, $this->_name)
-				: $value;
-			$this->expires = $expires;
-			$this->path = is_null($path) ? \Frawst\WEB_ROOT.'/' : $path;
-			$this->domain = is_null($domain) ? \Frawst\DOMAIN : $domain;
+		public static function get($name) {
+			return Matrix::pathGet($_COOKIE, $name);
 		}
 		
-		public function save() {
-			setcookie(Matrix::dotToBracket($this->_name), $this->value, $this->expires, $this->path, $this->domain);
-			Matrix::pathSet($_COOKIE, $this->_name, $this->value);
+		public static function set($name, $value, $expires = 0, $path = null, $domain = null) {
+			if($path === null) {
+				$path = \Frawst\WEB_ROOT.'/';
+			}
+			
+			if($domain === null) {
+				$domain = \Frawst\DOMAIN;
+			}
+			
+			setcookie(Matrix::dotToBracket($name), $value, $expires, $path, $domain);
+			
+			if($expires > time() || $expires == 0) {
+				Matrix::pathSet($_COOKIE, $name, $value);
+			} else {
+				Matrix::pathUnset($_COOKIE, $name);
+			}
 		}
 		
-		public function delete() {
-			setcookie(Matrix::dotToBracket($this->_name), '', time()-3600, $this->path, $this->domain);
-			Matrix::pathUnset($_COOKIE, $this->_name);
+		public static function delete($name, $path = null, $domain = null) {
+			self::set($name, '', time()-3600, $path, $domain);
 		}
 		
 		public static function exists($name) {

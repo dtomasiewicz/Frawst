@@ -1,6 +1,8 @@
 <?php
 	namespace Frawst;
 	use \Frawst\Library\Matrix,
+	    \Frawst\Library\Security,
+	    \Frawst\Library\Session,
 	    \Frawst\Library\Validator,
 	    \Frawst\Exception;
 	
@@ -19,6 +21,8 @@
 	 * automatically.
 	 */
 	abstract class Form extends Matrix {
+		protected static $_method = 'POST';
+		
 		/**
 		 * An array of key/value pairs where the keys are all fields that may
 		 * be submitted with this form, and the values are their default values.
@@ -46,6 +50,14 @@
 		 * @vara array
 		 */
 		protected $_defaults;
+		
+		/**
+		 * Whether or not to require a token for this form. If the form is vulnerable
+		 * to CSRF, this should be set to true.
+		 * @var bool
+		 */
+		protected static $_useToken = true;
+		const TOKEN_NAME = '__TOKEN';
 		
 		/**
 		 * An associative array of errors for this form, where the keys are field names
@@ -95,6 +107,10 @@
 			return end($class);
 		}
 		
+		public static function method() {
+			return strtoupper(static::$_method);
+		}
+		
 		/**
 		 * Determines whether or not the given data is compatible with this form.
 		 * @param array $data
@@ -120,6 +136,53 @@
 			}
 			
 			return true;
+		}
+		
+		/**
+		 * Attempts to load an instance of the form with the given data.
+		 * @param array $data The form data
+		 * @return Frawst\Form A form object if the data is valid, otherwise null.
+		 */
+		public static function load($data) {
+			if(static::$_useToken) {
+				if(!isset($data[static::TOKEN_NAME]) || !static::checkToken($data[static::TOKEN_NAME])) {
+					return null;
+				} else {
+					unset($data[static::TOKEN_NAME]);
+				}
+			}
+			
+			if(static::compatible($data)) {
+				$c = get_called_class();
+				return new $c($data);
+			} else {
+				return null;
+			}
+		}
+		
+		public static function checkToken($token) {
+			$parts = explode('-', $token);
+			if(count($parts) != 2) {
+				return false;
+			} else {
+				return (bool) (Security::hash(Session::id().$parts[1]) == $parts[0]);
+			}
+		}
+		
+		/**
+		 * Storage-less token creation. Hashes the current microtime with the SESSION id
+		 * and returns the hash concatenated to the microtime. When the token is checked, the
+		 * microtime is re-hashed with the SESSION id, and if it matches the given hash,
+		 * the token is valid.
+		 * @return string The form token
+		 */
+		public static function makeToken() {
+			if(static::$_useToken) {
+				$time = microtime(true);
+				return Security::hash(Session::id().$time).'-'.$time;
+			} else {
+				return null;
+			}
 		}
 		
 		/**

@@ -14,7 +14,7 @@
 			}
 		}
 		
-		public function open($formName, $action = null, $method = 'POST', $attrs = array()) {
+		public function open($formName, $action = null, $attrs = array()) {
 			if (!($form = $this->_View->Response->Request->form($formName))) {
 				$class = 'Frawst\\Form\\'.$formName;
 				$form = new $class();
@@ -22,10 +22,20 @@
 			$this->_Form = $form;
 			
 			$attrs['action'] = $action;
-			$attrs['method'] = $method;
+			$attrs['method'] = $this->_Form->method();
 			
-			return '<form '.$this->parseAttributes($attrs).'>'.
-			       '<input type="hidden" name="___METHOD" value="'.$method.'">';
+			$out = '<form '.$this->parseAttributes($attrs).'>';
+			
+			if($attrs['method'] != 'GET') {
+				$out .= '<input type="hidden" name="___METHOD" value="'.$attrs['method'].'">';
+			}
+			
+			if($token = $this->_Form->makeToken()) {
+				$class = get_class($this->_Form);
+				$out .= '<input type="hidden" name="'.$class::TOKEN_NAME.'" value="'.$token.'">';
+			}
+			
+			return $out;
 		}
 		
 		public function close() {
@@ -44,81 +54,6 @@
 			
 			return $out;
 		}
-		
-		/*
-		public function fieldValue($name) {
-			if (Matrix::pathExists($this->data, $name)) {
-				return Matrix::pathGet($this->data, $name);
-			} elseif (array_key_exists('default', $this->fields[$name])) {
-				return $this->fields[$name]['default'];
-			} else {
-				return null;
-			}
-		}
-		*
-		
-		/**
-		 * Renders the full form
-		 * @return string The rendered form
-		 *
-		public function render() {
-			$out = $this->renderOpen();
-			foreach ($this->fields as $field => $config) {
-				$out .= $config['type'] == self::FIELD_HIDDEN
-					? $this->renderField($field)
-					: '<p>'.$this->renderField($field, true).'</p>';
-			}
-			return $out.$this->renderClose();
-		}
-		
-		/**
-		 * Renders the specified field
-		 * @param string $name
-		 * @param bool $renderLabel If true, will use the configured label or
-		 *                          fallback to the field name.
-		 * @return string The rendered field (and label)
-		 *
-		public function renderField($name, $renderLabel = false) {
-			$method = 'render'.ucfirst($this->fields[$name]['type']);
-			$field = static::$method($name);
-			
-			if ($renderLabel) {
-				$label = isset($this->fields[$name]['label'])
-					? $this->fields[$name]['label']
-					: $name;
-				return static::label($label, $field);
-			} else {
-				return $field;
-			}
-		}
-		
-		public static function open($action = null, $method = 'POST', $attrs = array()) {
-			$attrs['action'] = $action;
-			$attrs['method'] = $method;
-			
-			return '<form '.self::parseAttributes($attrs).'>';
-		}
-		protected function renderOpen() {
-			return static::open($this->action, $this->method, $this->attrs).
-			// REST hack to get PUT and DELETE methods working in all browsers
-			       static::hidden('___METHOD', $this->method).
-			       static::hidden('___FORMNAME', static::name());
-			       
-		}
-		
-		public static function close() {
-			return '</form>';
-		}
-		protected function renderClose() {
-			return static::close();
-		}
-		
-		/**
-		 * Label
-		 *
-		public static function label($label, $content) {
-			return '<label>'.$label.' '.$content.'</label>';
-		}*/
 		
 		public function input($name, $attrs = array()) {
 			$attrs['name'] = Matrix::dotToBracket($name);

@@ -2,54 +2,29 @@
 	namespace Frawst\Component;
 	use \Frawst\Component,
 		\Frawst\Library\Security,
-		\Frawst\Library\Cookie as CookieLib;
+		\Frawst\Library\Session as SessionLib;
 	
 	class Session extends Component implements \ArrayAccess {
-		const cookieName = 'Session';
-		protected $_id;
-		
-		protected function _init() {
-			$this->start();
-		}
-		
-		public function start() {
-			$cookie = new CookieLib(self::cookieName.'.SESSID');
-			if (isset($cookie->value)) {
-				$id = $cookie->value;
-			} else {
-				$id = Security::hash(microtime(true));
-				$cookie->value = $id;
-				$cookie->save();
-			}
-			// the session ID here is NOT the same as the one in the cookie. the
-			// ID used internally is the cookie ID combined with the remote address,
-			// so that a session hijacker will also need to have the same IP
-			$this->_id = Security::hash($_SERVER['REMOTE_ADDR'].$id);
-		}
 		
 		public function offsetSet($offset, $value) {
-			$cookie = new CookieLib(self::cookieName.'.'.$offset, $value);
-			$cookie->save();
+			SessionLib::set($offset, $value);
 		}
 		public function offsetGet($offset) {
-			$cookie = new CookieLib(self::cookieName.'.'.$offset);
-			return $cookie->value;
+			return SessionLib::exists($offset) ? SessionLib::get($offset) : null;
 		}
 		public function offsetExists($offset) {
-			return CookieLib::exists(self::cookieName.'.'.$offset);
+			return SessionLib::exists($offset);
 		}
 		public function offsetUnset($offset) {
-			$cookie = new CookieLib(self::cookieName.'.'.$offset);
-			$cookie->delete();
+			SessionLib::delete($offset);
 		}
 		
 		public function id() {
-			return $this->_id;
+			return SessionLib::id();
 		}
 		
 		public function destroy() {
-			unset($this['SESSID']);
-			$this->start();
+			SessionLib::destroy();
 		}
 		
 		public function addFeedback($message, $status = 0) {

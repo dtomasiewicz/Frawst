@@ -53,7 +53,7 @@
 	ini_set('display_errors', '1');
 	error_reporting(E_ALL | E_STRICT);
 	set_error_handler(function($code, $message, $file, $line) {
-		throw new Language($message, 0, $code, $file, $line);
+		throw new \Frawst\Exception\Language($message, 0, $code, $file, $line);
 	});
 	
 	// Paths in which libraries can be held.

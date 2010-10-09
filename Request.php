@@ -48,10 +48,9 @@
 		protected $_data;
 		
 		/**
-		 * A Form object, created if formdata was submitted with the request
-		 * @var Frawst\Form
+		 * @var array An array of forms submitted to the request
 		 */
-		protected $_Form;
+		protected $_forms;
 		
 		/**
 		 * The response object for this request
@@ -257,19 +256,14 @@
 		
 		/**
 		 * Returns a Form object using the request data, if it is compatible.
-		 * @param string $formName The name of the form. If not provided, will check for a
-		 *                         ___FORMNAME key in the request data.
+		 * @param string $formName The name of the form.
 		 * @return Frawst\Form
 		 */
-		public function form($formName = null) {
-			if (isset($this->_Form)) {
-				return is_null($formName) || $this->_Form->name() == $formName
-					? $this->_Form
-					: null;
-			} elseif (empty($this->_data) || is_null($formName)) {
-				return null;
-			} elseif (class_exists($class = 'Frawst\\Form\\'.$formName) && $class::compatible($this->_data)) {
-				return $this->_Form = new $class($this->_data);
+		public function form($formName) {
+			if (isset($this->_forms[$formName])) {
+				return $this->_forms[$formName];
+			} elseif(class_exists($class = 'Frawst\\Form\\'.$formName)) {
+				return $class::load($this->_data);
 			} else {
 				return null;
 			}

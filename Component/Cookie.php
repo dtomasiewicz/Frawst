@@ -5,18 +5,15 @@
 	
 	class Cookie extends Component implements \ArrayAccess {
 		public function offsetSet($offset, $value) {
-			$cookie = new CookieLib($offset, $value);
-			$cookie->save();
+			CookieLib::set($offset, $value);
 		}
 		public function offsetGet($offset) {
-			$cookie = new CookieLib($offset);
-			return $cookie->value;
+			return CookieLib::exists($offset) ? CookieLib::get($offset) : null;
 		}
 		public function offsetExists($offset) {
 			return CookieLib::exists($offset);
 		}
 		public function offsetUnset($offset) {
-			$cookie = new CookieLib($offset);
-			$cookie->delete();
+			CookieLib::delete($offset);
 		}
 	}
