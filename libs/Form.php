@@ -14,7 +14,8 @@
 	 * prevents duplication of form processing if you use the same form in multiple areas
 	 * of your site. It also helps protect against XSS by ensuring no additional fields
 	 * are passed in (as long as you check for compatibility before using the form) and all
-	 * required fields are present.
+	 * required fields are present. Anti-CSRF form tokens are also implemented and will be
+	 * injected by default for all forms as long as you are using the FORM helper.
 	 * 
 	 * This class is NOT used to output form markup! For that, you can use the Form helper. Simply
 	 * pass the name of your Form class in the open() method, and the fields will be (re)populated
@@ -24,8 +25,7 @@
 		protected static $_method = 'POST';
 		
 		/**
-		 * An array of key/value pairs where the keys are all fields that may
-		 * be submitted with this form, and the values are their default values.
+		 * An associative array of fields for this form.
 		 * @var array
 		 */
 		protected static $_fields = array();
@@ -66,19 +66,42 @@
 		 */
 		protected $_errors = array();
 		
+		/**
+		 * Instantiates the form object with the given data. If the data contains fields
+		 * not specified in $_fields, they are ignored.
+		 * @param array $data
+		 */
 		public function __construct($data = array()) {
-			parent::__construct($data);
 			$this->_defaults = static::$_fields;
+			foreach(Matrix::flatten($data) as $path => $value) {
+				if(Matrix::pathExists(static::$_fields, $path)) {
+					parent::set($path, $value);
+				}
+			}
 		}
 		
+		/**
+		 * Sets default values for this form. These are the values that should be
+		 * used as defaults if no data already exists from an unsuccessful submission.
+		 * @param array $defaults
+		 */
 		public function setDefaults($defaults) {
 			$this->_defaults = $defaults+$this->_defaults;
 		}
 		
+		/**
+		 * Sets the form errors. Will clear any existing errors.
+		 * @param array $errors
+		 */
 		public function setErrors($errors) {
 			$this->_errors = $errors;
 		}
 		
+		/**
+		 * Adds errors to a field.
+		 * @param string $field
+		 * @param array $errors
+		 */
 		public function addErrors($field, $errors) {
 			if (count($errors)) {
 				if (!Matrix::pathExists($this->_errors, $field)) {
@@ -93,15 +116,55 @@
 			$this->addErrors($field, array($error));
 		}
 		
+		/**
+		 * Returns an array of errors for the specified field. If no field is specified,
+		 * returns all errors for this form.
+		 * @param string $field
+		 */
 		public function errors($field = null) {
 			return Matrix::pathExists($this->_errors, $field)
 				? Matrix::pathGet($this->_errors, $field)
 				: array();
 		}
-				
+		
 		/**
-		 * Returns the form name
+		 * If a value does not exist in the form data, use the default
+		 * value instead.
 		 */
+		public function get($field = null) {
+			return parent::exists($field)
+				? parent::get($field)
+				: Matrix::pathGet($this->_defaults, $field);
+		}
+		
+		/**
+		 * Validates the form based on validation rules set it in $_validate. May be
+		 * overridden in extending classes to customize validation. Errors are stored
+		 * by field name in $_errors
+		 * @return bool True if no errors were found, false otherwise
+		 */
+		public function validate() {
+			$this->_errors = array();
+			foreach (static::$_validate as $field => $rules) {
+				if (count($errors = Validator::check($this[$field], $rules, $this))) {
+					Matrix::pathSet($this->_errors, $field, $errors);
+				}
+			}
+			return count($this->_errors) == 0;
+		}
+		
+		/**
+		 * Checks the specified field for validation errors. If no field is given, checks
+		 * the whole form for validation errors.
+		 * @param string $field A field name, or null to check the whole form
+		 * @return bool True if errors exist
+		 */
+		public function valid($field = null) {
+			return Matrix::pathExists($this->_errors, field)
+				? (bool) (count(Matrix::pathGet($this->_errors, $field)) == 0)
+				: true;
+		}
+		
 		public static function name() {
 			$class = explode('\\', get_called_class());
 			return end($class);
@@ -112,21 +175,14 @@
 		}
 		
 		/**
-		 * Determines whether or not the given data is compatible with this form.
+		 * Determines whether or not the given data is compatible with this form. May
+		 * be extended to customize behaviour.
 		 * @param array $data
 		 * @return bool
 		 */
 		public static function compatible($data, $allowExtraFields = false) {
-			if(!$allowExtraFields) {
-				foreach (Matrix::flatten($data) as $field => $value) {
-					if (!Matrix::pathExists(static::$_fields, $field)) {
-						return false;
-					}
-				}
-			}
-			
 			$requiredPresent = static::$_requiredPresent === true
-				? array_keys(static::$_fields)
+				? array_keys(Matrix::flatten(static::$_fields))
 				: static::$_requiredPresent;
 			
 			foreach($requiredPresent as $field) {
@@ -160,12 +216,17 @@
 			}
 		}
 		
+		/**
+		 * Verifies a given token to determine if it is valid for this session and form. 
+		 * @param string $token
+		 * @return bool True if the token is valid, false otherwise.
+		 */
 		public static function checkToken($token) {
 			$parts = explode('-', $token);
 			if(count($parts) != 2) {
 				return false;
 			} else {
-				return (bool) (Security::hash(Session::id().$parts[1]) == $parts[0]);
+				return (bool) (Security::hash(Session::id().get_called_class().$parts[1]) == $parts[0]);
 			}
 		}
 		
@@ -179,35 +240,9 @@
 		public static function makeToken() {
 			if(static::$_useToken) {
 				$time = microtime(true);
-				return Security::hash(Session::id().$time).'-'.$time;
+				return Security::hash(Session::id().get_called_class().$time).'-'.$time;
 			} else {
 				return null;
 			}
-		}
-		
-		/**
-		 * If a value does not exist in the form data, use the default
-		 * value instead.
-		 */
-		public function get($field = null) {
-			return parent::exists($field)
-				? parent::get($field)
-				: Matrix::pathGet($this->_defaults, $field);
-		}
-		
-		public function validate() {
-			$this->_errors = array();
-			foreach (static::$_validate as $field => $rules) {
-				if (count($errors = Validator::check($this[$field], $rules, $this))) {
-					Matrix::pathSet($this->_errors, $field, $errors);
-				}
-			}
-			return count($this->_errors) == 0;
-		}
-		
-		public function valid($field = null) {
-			return Matrix::pathExists($this->_errors, field)
-				? (bool) (count(Matrix::pathGet($this->_errors, $field)) == 0)
-				: true;
 		}
 	}

@@ -140,8 +140,7 @@
 			if (is_null($route)) {
 				$route = $this->_Route->reconstruct();
 			}
-			$root = URL_REWRITE ? WEB_ROOT : WEB_ROOT.'/index.php';
-			return $root.'/'.$route;
+			return URL_REWRITE ? WEB_ROOT.$route : WEB_ROOT.'index.php/'.$route;
 		}
 		
 		/**
@@ -262,7 +261,7 @@
 		public function form($formName) {
 			if (isset($this->_forms[$formName])) {
 				return $this->_forms[$formName];
-			} elseif(class_exists($class = 'Frawst\\Form\\'.$formName)) {
+			} elseif(class_exists($class = 'Frawst\\Form\\'.$formName) && $class::method() == $this->method()) {
 				return $class::load($this->_data);
 			} else {
 				return null;

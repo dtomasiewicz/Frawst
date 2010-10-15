@@ -28,7 +28,11 @@
 				self::$_paths[$scope][$pathType] = array();
 			}
 			
-			self::$_paths[$scope][$pathType][] = rtrim($path, '/\\');;
+			if(substr($path, -1) != DIRECTORY_SEPARATOR) {
+				$path .= DIRECTORY_SEPARATOR;
+			}
+			
+			self::$_paths[$scope][$pathType][] = $path;
 		}
 		
 		/**
@@ -135,7 +139,7 @@
 					}
 					
 					if(count($prefix)) {
-						$subDir = DIRECTORY_SEPARATOR.array_pop($prefix).$subDir;
+						$subDir = array_pop($prefix).$subDir.DIRECTORY_SEPARATOR;
 					} else {
 						$finished = true;
 					}

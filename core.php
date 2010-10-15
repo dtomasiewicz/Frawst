@@ -24,15 +24,15 @@
 	}
 	
 	if(!defined('Frawst\\ROOT')) {
-		define('Frawst\\ROOT', dirname(__FILE__));
+		define('Frawst\\ROOT', dirname(__FILE__).DIRECTORY_SEPARATOR);
 	}
 		
 	if(!defined('Frawst\\APP_ROOT')) {
-		define('Frawst\\APP_ROOT', dirname(ROOT).DIRECTORY_SEPARATOR.APP_NAME);
+		define('Frawst\\APP_ROOT', dirname(ROOT).DIRECTORY_SEPARATOR.APP_NAME.DIRECTORY_SEPARATOR);
 	}
 	
 	if(!defined('Frawst\\WEB_ROOT')) {
-		define('Frawst\\WEB_ROOT', rtrim(dirname($_SERVER['SCRIPT_NAME']), '/'));
+		define('Frawst\\WEB_ROOT', rtrim(dirname($_SERVER['SCRIPT_NAME']), '/').'/');
 	}
 	
 	if(!defined('Frawst\\AJAX_SUFFIX')) {
@@ -47,23 +47,31 @@
 		}
 	}
 	
-	require 'Loader.php';
-	spl_autoload_register(array('Frawst\\Loader', 'import'));
-	
 	ini_set('display_errors', '1');
 	error_reporting(E_ALL | E_STRICT);
+	
+	require 'libs/Loader.php';
+	spl_autoload_register(array('Frawst\\Loader', 'import'));
+	
 	set_error_handler(function($code, $message, $file, $line) {
 		throw new \Frawst\Exception\Language($message, 0, $code, $file, $line);
 	});
 	
 	// Paths in which libraries can be held.
-	Loader::addPath(ROOT, 'Frawst', 'core');
-	Loader::addPath(ROOT.DIRECTORY_SEPARATOR.'vendor', '*', 'core');
-	Loader::addPath(APP_ROOT, 'Frawst', 'app');
-	Loader::addPath(APP_ROOT.DIRECTORY_SEPARATOR.'vendor', '*', 'app');
+	Loader::addPath(ROOT.'libs'.DIRECTORY_SEPARATOR, 'Frawst', 'core');
+	Loader::addPath(ROOT.'vendors'.DIRECTORY_SEPARATOR, '*', 'core');
+	Loader::addPath(ROOT.'configs'.DIRECTORY_SEPARATOR, 'configs', 'core');
+	Loader::addPath(ROOT.'views'.DIRECTORY_SEPARATOR, 'views', 'core');
+	
+	Loader::addPath(APP_ROOT.'libs'.DIRECTORY_SEPARATOR, 'Frawst', 'app');
+	Loader::addPath(APP_ROOT.'vendors'.DIRECTORY_SEPARATOR, '*', 'app');
+	Loader::addPath(APP_ROOT.'configs'.DIRECTORY_SEPARATOR, 'configs', 'app');
+	Loader::addPath(APP_ROOT.'views'.DIRECTORY_SEPARATOR, 'views', 'app');
 	
 	// Additional bootstrapping
-	Loader::import('Frawst\bootstrap');
+	if(file_exists($bs = APP_ROOT.'bootstrap.php')) {
+		require $bs;
+	}
 	
 	date_default_timezone_set(Config::read('Frawst.timezone'));
 	setlocale(LC_ALL, Config::read('Frawst.locale'));

@@ -18,7 +18,7 @@
 	}
 	if(($corCfg = Config::read('Corelativ')) && $corCfg['enable']) {
 		\Corelativ\Mapper::init($corCfg);
-		Loader::addPath(APP_ROOT.DIRECTORY_SEPARATOR.'Model', 'Corelativ\Model', 'app');
+		Loader::addPath(APP_ROOT.'libs'.DIRECTORY_SEPARATOR.'Model'.DIRECTORY_SEPARATOR, 'Corelativ\Model', 'app');
 	}
 	if(($scCfg = Config::read('SimpleCache')) && $scCfg['enable']) {
 		\SimpleCache\Cache::init($scCfg);

@@ -3,11 +3,6 @@
 	use \Frawst\Library\Matrix;
 	
 	class Cookie {
-		protected $_name;
-		public $value;
-		public $expires;
-		public $path;
-		public $domain;
 		
 		public static function get($name) {
 			return Matrix::pathGet($_COOKIE, $name);
@@ -15,7 +10,7 @@
 		
 		public static function set($name, $value, $expires = 0, $path = null, $domain = null) {
 			if($path === null) {
-				$path = \Frawst\WEB_ROOT.'/';
+				$path = \Frawst\WEB_ROOT;
 			}
 			
 			if($domain === null) {

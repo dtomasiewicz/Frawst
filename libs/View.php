@@ -13,7 +13,7 @@
 		public function __construct($response) {
 			$this->_Response = $response;
 			
-			$paths = Loader::getPaths('Frawst\\View');
+			$paths = Loader::getPaths('views');
 			$this->_templateDir = $paths[0];
 		}
 		
@@ -105,7 +105,7 @@
 		}
 		
 		public function webroot($resource = '') {
-			return rtrim(WEB_ROOT.'/'.$resource, '/');
+			return WEB_ROOT.$resource;
 		}
 		
 		public function modGet($changes = array()) {
