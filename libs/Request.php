@@ -262,7 +262,7 @@
 			if (isset($this->_forms[$formName])) {
 				return $this->_forms[$formName];
 			} elseif(class_exists($class = 'Frawst\\Form\\'.$formName) && $class::method() == $this->method()) {
-				return $class::load($this->_data);
+				return $this->_forms[$formName] = $class::load($this->_data);
 			} else {
 				return null;
 			}
