@@ -21,7 +21,7 @@
 			}
 			$this->_Form = $form;
 			
-			$attrs['action'] = $action;
+			$attrs['action'] = $this->_View->path($action);
 			$attrs['method'] = $this->_Form->method();
 			
 			$out = '<form '.$this->parseAttributes($attrs).'>';
@@ -36,6 +36,10 @@
 			}
 			
 			return $out;
+		}
+		
+		public function populate($data = array()) {
+			$this->_Form->populate($data);
 		}
 		
 		public function close() {

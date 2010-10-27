@@ -190,6 +190,11 @@
 			return $this->_Route->params();
 		}
 		
+		public function param($index) {
+			$params = $this->_Route->params();
+			return isset($params[$index]) ? $params[$index] : null;
+		}
+		
 		/**
 		 * Returns GET data. See Request::data() for argument/return docs
 		 * @param string $key

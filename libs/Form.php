@@ -85,7 +85,7 @@
 		 * used as defaults if no data already exists from an unsuccessful submission.
 		 * @param array $defaults
 		 */
-		public function setDefaults($defaults) {
+		public function populate($defaults) {
 			$this->_defaults = $defaults+$this->_defaults;
 		}
 		
@@ -222,12 +222,7 @@
 		 * @return bool True if the token is valid, false otherwise.
 		 */
 		public static function checkToken($token) {
-			$parts = explode('-', $token);
-			if(count($parts) != 2) {
-				return false;
-			} else {
-				return (bool) (Security::hash(Session::id().get_called_class().$parts[1]) == $parts[0]);
-			}
+			return Security::checkToken($token, get_called_class());
 		}
 		
 		/**
@@ -238,11 +233,8 @@
 		 * @return string The form token
 		 */
 		public static function makeToken() {
-			if(static::$_useToken) {
-				$time = microtime(true);
-				return Security::hash(Session::id().get_called_class().$time).'-'.$time;
-			} else {
-				return null;
-			}
+			return static::$_useToken
+				? Security::makeToken(get_called_class())
+				: null;
 		}
 	}
