@@ -26,7 +26,7 @@
 		public static function parseAttributes($attrs) {
 			$str = '';
 			foreach ($attrs as $attr => $value) {
-				if (!is_null($value)) {
+				if ($value !== null) {
 					$str .= $attr.'="'.Sanitize::html($value).'" ';
 				}
 			}

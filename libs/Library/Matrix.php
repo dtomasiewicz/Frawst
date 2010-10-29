@@ -79,7 +79,14 @@
 		public static function dotToBracket($dotPath, $bracketFirst = false) {
 			$segs = explode('.', $dotPath);
 			$path = $bracketFirst ? '' : array_shift($segs);
-			return count($segs) ? $path.'['.implode('][', $segs).']' : $path;
+			foreach($segs as $seg) {
+				if($seg == '*') {
+					$path .= '[]';
+				} else {
+					$path .= '['.$seg.']';
+				}
+			}
+			return $path;
 		}
 		
 		/**

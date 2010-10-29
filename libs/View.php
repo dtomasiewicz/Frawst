@@ -32,8 +32,8 @@
 			}
  		}
 		
-		public function render() {
-			$content = $this->_renderContent();
+		public function render($data) {
+			$content = $this->_renderContent($data);
 			
 			if (!$this->isAjax() && is_string($this->_layout)) {
 				return $this->_renderFile(
@@ -51,9 +51,8 @@
 		 * a layout.
 		 * @return string
 		 */
-		protected function _renderContent() {
+		protected function _renderContent($data) {
 			$template = 'controller/'.$this->Request->route();
-			$data = $this->_Response->data();
 			
 			if(null !== $this->_templatePath($template)) {
 				if(!is_array($data)) {

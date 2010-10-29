@@ -73,11 +73,7 @@
 		 */
 		public function __construct($data = array()) {
 			$this->_defaults = static::$_fields;
-			foreach(Matrix::flatten($data) as $path => $value) {
-				if(Matrix::pathExists(static::$_fields, $path)) {
-					parent::set($path, $value);
-				}
-			}
+			parent::__construct($data);
 		}
 		
 		/**
@@ -132,9 +128,13 @@
 		 * value instead.
 		 */
 		public function get($field = null) {
-			return parent::exists($field)
-				? parent::get($field)
-				: Matrix::pathGet($this->_defaults, $field);
+			if(parent::exists($field)) {
+				return parent::get($field);
+			} else {
+				return Matrix::pathExists($this->_defaults, $field)
+					? Matrix::pathGet($this->_defaults, $field)
+					: null;
+			}
 		}
 		
 		/**

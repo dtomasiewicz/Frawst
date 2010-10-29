@@ -61,7 +61,7 @@
 		
 		public function input($name, $attrs = array()) {
 			$attrs['name'] = Matrix::dotToBracket($name);
-			$attrs['value'] = $this->_Form[$name];
+			$attrs['value'] = $this->_Form->get($name);
 			return '<input '.$this->parseAttributes($attrs).'>';
 		}
 		
@@ -95,13 +95,16 @@
 		public function checkbox($name, $attrs = array()) {
 			$attrs['name'] = Matrix::dotToBracket($name);
 			$attrs['type'] = 'checkbox';
-			$attrs['checked'] = $this->_Form[$name] ? 'checked' : null;
+			$attrs['checked'] = $this->_Form->get($name) !== null
+				? 'checked'
+				: null;
 			$attrs['value'] = isset($attrs['value']) ? $attrs['value'] : 1;
 			return '<input '.$this->parseAttributes($attrs).'>';
 		}
 		
 		/**
 		 * Radio
+		 * @todo make this array-proof
 		 */
 		public function radio($name, $value, $attrs = array()) {
 			$attrs['name'] = Matrix::dotToBracket($name);
@@ -118,7 +121,8 @@
 		 */
 		public function textarea($name, $attrs = array()) {
 			$attrs['name'] = Matrix::dotToBracket($name);
-			return '<textarea '.$this->parseAttributes($attrs).'>'.Sanitize::html($this->_Form[$name]).'</textarea>';
+			$value = $this->_Form->get($name);
+			return '<textarea '.$this->parseAttributes($attrs).'>'.Sanitize::html($value).'</textarea>';
 		}
 		
 		/**
@@ -128,7 +132,7 @@
 			$attrs['name'] = Matrix::dotToBracket($name);
 			$out = '<select '.$this->parseAttributes($attrs).'>';
 			
-			$selected = $this->_Form[$name];
+			$selected = $this->_Form->get($name);
 			foreach ($options as $value => $content) {
 				$out .= '<option value="'.$value.'"';
 				if ($selected == $value) {
@@ -139,9 +143,12 @@
 			return $out.'</select>';
 		}
 		
-		public function submit($value = null, $attrs = array()) {
+		public function submit($value = null, $name = null, $attrs = array()) {
 			$attrs['type'] = 'submit';
 			$attrs['value'] = $value;
+			if($name !== null) {
+				$attrs['name'] = Matrix::dotToBracket($name);
+			}
 			return '<input '.$this->parseAttributes($attrs).'>';
 		}
 		

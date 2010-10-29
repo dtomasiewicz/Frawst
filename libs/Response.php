@@ -140,7 +140,7 @@
 				throw new Exception\Frawst('Cannot render a request pending an external redirection.');
 			} else {
 				$this->_View = new $viewClass($this);
-				return $this->_View->render();
+				return $this->_View->render($this->_data);
 			}
 		}
 		
