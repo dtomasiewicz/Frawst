@@ -14,7 +14,7 @@
 			if (parent::offsetExists($offset)) {
 				return true;
 			} else {
-				$path = $this->_directory.DIRECTORY_SEPARATOR.str_replace('.', DIRECTORY_SEPARATOR, $offset);
+				$path = $this->_directory.str_replace('.', DIRECTORY_SEPARATOR, $offset);
 				return file_exists($path);
 			}
 		}
@@ -24,7 +24,7 @@
 				return parent::offsetGet($offset);
 			}
 			
-			$path = $this->_directory.DIRECTORY_SEPARATOR.str_replace('.', DIRECTORY_SEPARATOR, $offset);
+			$path = $this->_directory.str_replace('.', DIRECTORY_SEPARATOR, $offset);
 			
 			if (!file_exists($path) || !is_readable(dirname($path))) {
 				throw new Exception\File('Cannot get value from FileMatrix at: '.$offset);
@@ -37,7 +37,7 @@
 		}
 		
 		public function offsetSet($offset, $value) {
-			$path = $this->_directory.DIRECTORY_SEPARATOR.str_replace('.', DIRECTORY_SEPARATOR, $offset);
+			$path = $this->_directory.str_replace('.', DIRECTORY_SEPARATOR, $offset);
 			
 			if (!file_exists(dirname($path))) {
 				mkdir(dirname($path), 0, true);
@@ -52,7 +52,7 @@
 		}
 		
 		public function offsetUnset($offset) {
-			$path = $this->_directory.DIRECTORY_SEPARATOR.str_replace('.', DIRECTORY_SEPARATOR, $offset);
+			$path = $this->_directory.str_replace('.', DIRECTORY_SEPARATOR, $offset);
 			
 			if (file_exists($path)) {
 				if (is_writable($path)) {
