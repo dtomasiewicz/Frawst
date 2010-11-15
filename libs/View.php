@@ -52,7 +52,11 @@
 		 * @return string
 		 */
 		protected function _renderContent($data) {
-			$template = 'controller/'.$this->Request->route();
+			if($this->_Response->status() == Response::STATUS_OK) {
+				$template = 'controller/'.$this->Request->route();
+			} else {
+				$template = 'error/'.$this->_Response->status();
+			}
 			
 			if(null !== $this->_templatePath($template)) {
 				if(!is_array($data)) {
