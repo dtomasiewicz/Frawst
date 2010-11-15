@@ -52,13 +52,7 @@
 		 * @return string
 		 */
 		protected function _renderContent($data) {
-			if($this->_Response->status() == Response::STATUS_OK) {
-				$template = 'controller/'.$this->Request->route();
-			} else {
-				$template = 'error/'.$this->_Response->status();
-			}
-			
-			if(null !== $this->_templatePath($template)) {
+			if(null !== $template = $this->_findTemplate()) {
 				if(!is_array($data)) {
 					$data = array('status' => $data);
 				}
@@ -68,6 +62,40 @@
 				$this->_layout = null;
 				$this->_Response->header('Content-Type', 'application/json');
 				return Serialize::tojSON($data);
+			}
+		}
+		
+		/**
+		 * Attempts to find the template file for rendering. This is based on
+		 * the request route and the response status.
+		 * @return string The path to the template, relative to the views direcetory
+		 */
+		protected function _findTemplate() {
+			$status = $this->_Response->status();
+			if($status == Response::STATUS_OK) {
+				if(null !== $this->_templatePath($template = 'controller/'.$this->Request->route())) {
+					return $template;
+				} else {
+					return null;
+				}
+			} else {
+				// attempt to find an error document to render
+				$dir = 'error/'.$this->Request->route();
+				
+				$exhausted = false;
+				while(!$exhausted) {
+					if(null !== $this->_templatePath($template = $dir.'/'.$status)) {
+						return $template;
+					} else {
+						if(false !== $pos = strrpos($dir, '/')) {
+							$dir = substr($dir, 0, $pos);
+						} else {
+							$exhausted = true;
+						}
+					}
+				}
+				
+				return null;
 			}
 		}
 		

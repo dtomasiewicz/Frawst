@@ -70,7 +70,7 @@
 		 * @var string For internal redirects only, used if trying to render a redirected
 		 * request
 		 */
-		protected $_redirect;
+		protected $_internalRedirect;
 		
 		/**
 		 * @var Frawst\View View object. Should be able to render() the response data into an
@@ -173,7 +173,7 @@
 		 */
 		public function redirect($to = '', $status = self::STATUS_FOUND, $external = false) {
 			if (!$external) {
-				$this->_redirect = $to = trim($to, '/');
+				$this->_internalRedirect = $to = trim($to, '/');
 				// some browsers (e.g. Firefox) fail to pass non-standard headers to next page
 				// this is somewhat of a hack to get it to work
 				if ($this->_Request->isAjax()) {
@@ -198,13 +198,22 @@
 		}
 		
 		/**
+		 * @return bool True if this response must be redirected, false otherwise.
+		 */
+		public function mustRedirect() {
+			return $this->_status >= 300 && $this->_status < 400
+				? true
+				: false;
+		}
+		
+		/**
 		 * Renders the view. If internally redirected, will render a sub-request.
 		 * @return string The rendered view
 		 */
 		public function render() {
-			if (isset($this->_redirect)) {
-				return $this->_Request->subRequest($this->_redirect, array(), 'GET')->execute()->render();
-			} elseif ($this->_status >= 300 && $this->_status < 400) {
+			if (isset($this->_internalRedirect)) {
+				return $this->_Request->subRequest($this->_internalRedirect, array(), 'GET')->execute()->render();
+			} elseif ($this->mustRedirect()) {
 				throw new Exception\Frawst('Cannot render a request pending an external redirection.');
 			} else {
 				$class = VIEW_CLASS;
@@ -231,7 +240,7 @@
 				}
 				header($statusHeader);
 				
-				if($this->_status >= 300 && $this->_status < 400 && $redirect = $this->header('Location')) {
+				if($this->mustRedirect() && $redirect = $this->header('Location')) {
 					header('Location: '.$redirect);
 					exit;
 				}
