@@ -17,6 +17,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&nbsp;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&nbsp;Pages</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
       <li><a href="examples.html"><span>Examples</span></a></li>
       <li id="searchli">
@@ -54,17 +55,14 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <h1>ArrayList Class Reference</h1>  </div>
 </div>
 <div class="contents">
-<!-- doxytag: class="ArrayList" --><div class="dynheader">
+<!-- doxytag: class="ArrayList" --><!-- doxytag: inherits="JSONEncodable" --><div class="dynheader">
 Inheritance diagram for ArrayList:</div>
 <div class="dyncontent">
  <div class="center">
   <img src="classArrayList.png" usemap="#ArrayList_map" alt=""/>
   <map id="ArrayList_map" name="ArrayList_map">
-<area href="classCollection.html" alt="Collection" shape="rect" coords="0,56,69,80"/>
-<area href="classResult.html" alt="Result" shape="rect" coords="79,56,148,80"/>
-<area href="classModelSet.html" alt="ModelSet" shape="rect" coords="0,112,69,136"/>
-<area href="classMysqli.html" alt="Mysqli" shape="rect" coords="79,112,148,136"/>
-<area href="classHierarchy.html" alt="Hierarchy" shape="rect" coords="0,168,69,192"/>
+<area href="interfaceJSONEncodable.html" alt="JSONEncodable" shape="rect" coords="0,0,106,24"/>
+<area href="classCollection.html" alt="Collection" shape="rect" coords="0,112,106,136"/>
 </map>
 </div>
 
@@ -114,6 +112,7 @@ Public Member Functions</h2></td></tr>
 &nbsp;</td><td class="memItemRight" valign="bottom"><b>remove</b> ($index)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a04aef6ed21c038bf15e708a8dea8c7d1"></a><!-- doxytag: member="ArrayList::reverse" ref="a04aef6ed21c038bf15e708a8dea8c7d1" args="()" -->
 &nbsp;</td><td class="memItemRight" valign="bottom"><b>reverse</b> ()</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classArrayList.html#ae15f74916c7173d961d6cc850776e1ae">toJSON</a> ()</td></tr>
 <tr><td colspan="2"><h2><a name="pro-attribs"></a>
 Protected Attributes</h2></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa2020764364f5af7bde0001145eb1e04"></a><!-- doxytag: member="ArrayList::$_data" ref="aa2020764364f5af7bde0001145eb1e04" args="" -->
@@ -245,8 +244,29 @@ Protected Attributes</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="ae15f74916c7173d961d6cc850776e1ae"></a><!-- doxytag: member="ArrayList::toJSON" ref="ae15f74916c7173d961d6cc850776e1ae" args="()" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">ArrayList::toJSON </td>
+          <td>(</td>
+          <td class="paramname"></td>
+          <td>&nbsp;)&nbsp;</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+<p>Prepares the list for JSON-encoding </p>
+<dl class="return"><dt><b>Returns:</b></dt><dd>string JSON-encodable data </dd></dl>
+
+<p>Implements <a class="el" href="interfaceJSONEncodable.html#ab9dcc56991715c542fbec7f1db0b177e">JSONEncodable</a>.</p>
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>Library/ArrayList.php</li>
+<li>libs/Library/ArrayList.php</li>
 </ul>
 </div>
 <!--- window showing the filter options -->
@@ -263,7 +283,7 @@ Protected Attributes</h2></td></tr>
 </iframe>
 </div>
 
-<hr class="footer"/><address class="footer"><small>Generated on Thu Oct 7 2010 18:49:21 for Frawst by&nbsp;
+<hr class="footer"/><address class="footer"><small>Generated on Mon Nov 15 2010 00:25:18 for Frawst by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.7.1 </small></address>
 </body>

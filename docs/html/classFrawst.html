@@ -17,6 +17,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&nbsp;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&nbsp;Pages</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
       <li><a href="examples.html"><span>Examples</span></a></li>
       <li id="searchli">
@@ -47,8 +48,6 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   </div>
 </div>
 <div class="header">
-  <div class="summary">
-<a href="#pub-attribs">Public Attributes</a>  </div>
   <div class="headertitle">
 <h1>Frawst Class Reference</h1>  </div>
 </div>
@@ -66,51 +65,10 @@ Inheritance diagram for Frawst:</div>
 <area href="classModel.html" alt="Model" shape="rect" coords="312,56,380,80"/>
 </map>
 </div>
-
-<p><a href="classFrawst-members.html">List of all members.</a></p>
 <table class="memberdecls">
-<tr><td colspan="2"><h2><a name="pub-attribs"></a>
-Public Attributes</h2></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a3efd5952499d6cd33bda3d18bc0c4cbb"></a><!-- doxytag: member="Frawst::$method" ref="a3efd5952499d6cd33bda3d18bc0c4cbb" args="" -->
-&nbsp;</td><td class="memItemRight" valign="bottom"><b>$method</b> = $_SERVER['REQUEST_METHOD']</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">&nbsp;</td><td class="memItemRight" valign="bottom"><b>$route</b></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">foreach($_SERVER as $key=&gt;<br class="typebreak"/>
- $value) if(substr($route,-strlen(AJAX_SUFFIX))==AJAX_SUFFIX)&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classFrawst.html#a0db08eb8a67a4f462d0602b663dddc90">$request</a> = new <a class="el" href="classRequest.html">Request</a>(new <a class="el" href="classRoute.html">Route</a>($route, true), $data, $method, $headers)</td></tr>
 </table>
-<hr/><h2>Member Data Documentation</h2>
-<a class="anchor" id="a0db08eb8a67a4f462d0602b663dddc90"></a><!-- doxytag: member="Frawst::$request" ref="a0db08eb8a67a4f462d0602b663dddc90" args="" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">foreach ($_SERVER as $key=&gt; $value) if (substr($route,-strlen(AJAX_SUFFIX))==AJAX_SUFFIX) Frawst::$request = new <a class="el" href="classRequest.html">Request</a>(new <a class="el" href="classRoute.html">Route</a>($route, true), $data, $method, $headers)</td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-<p>Extract HTTP headers from the ugly $_SERVER array </p>
-
-</div>
-</div>
-<a class="anchor" id="a83dcf7e16e11a55f3f79d6f4722d12a4"></a><!-- doxytag: member="Frawst::$route" ref="a83dcf7e16e11a55f3f79d6f4722d12a4" args="" -->
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">Frawst::$route</td>
-        </tr>
-      </table>
-</div>
-<div class="memdoc">
-<b>Initial value:</b><div class="fragment"><pre class="fragment"> ltrim(isset($_SERVER[<span class="stringliteral">&#39;PATH_INFO&#39;</span>])
-                        ? $_SERVER[<span class="stringliteral">&#39;PATH_INFO&#39;</span>]
-                        : <span class="stringliteral">&#39;&#39;</span>, <span class="charliteral">&#39;/&#39;</span>)
-</pre></div>
-</div>
-</div>
-<hr/>The documentation for this class was generated from the following files:<ul>
-<li>Exception/Frawst.php</li>
-<li>core.php</li>
+<hr/>The documentation for this class was generated from the following file:<ul>
+<li>libs/Exception/Frawst.php</li>
 </ul>
 </div>
 <!--- window showing the filter options -->
@@ -127,7 +85,7 @@ Public Attributes</h2></td></tr>
 </iframe>
 </div>
 
-<hr class="footer"/><address class="footer"><small>Generated on Thu Oct 7 2010 18:49:21 for Frawst by&nbsp;
+<hr class="footer"/><address class="footer"><small>Generated on Mon Nov 15 2010 00:25:18 for Frawst by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.7.1 </small></address>
 </body>

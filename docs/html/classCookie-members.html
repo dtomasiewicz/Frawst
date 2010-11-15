@@ -17,6 +17,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&nbsp;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&nbsp;Pages</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
       <li><a href="examples.html"><span>Examples</span></a></li>
       <li id="searchli">
@@ -53,22 +54,17 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="contents">
 This is the complete list of members for <a class="el" href="classCookie.html">Cookie</a>, including all inherited members.<table>
   <tr bgcolor="#f0f0f0"><td><b>$_Controller</b> (defined in <a class="el" href="classComponent.html">Component</a>)</td><td><a class="el" href="classComponent.html">Component</a></td><td><code> [protected]</code></td></tr>
-  <tr bgcolor="#f0f0f0"><td><b>$_name</b> (defined in <a class="el" href="classCookie.html">Cookie</a>)</td><td><a class="el" href="classCookie.html">Cookie</a></td><td><code> [protected]</code></td></tr>
-  <tr bgcolor="#f0f0f0"><td><b>$domain</b> (defined in <a class="el" href="classCookie.html">Cookie</a>)</td><td><a class="el" href="classCookie.html">Cookie</a></td><td></td></tr>
-  <tr bgcolor="#f0f0f0"><td><b>$expires</b> (defined in <a class="el" href="classCookie.html">Cookie</a>)</td><td><a class="el" href="classCookie.html">Cookie</a></td><td></td></tr>
-  <tr bgcolor="#f0f0f0"><td><b>$path</b> (defined in <a class="el" href="classCookie.html">Cookie</a>)</td><td><a class="el" href="classCookie.html">Cookie</a></td><td></td></tr>
-  <tr bgcolor="#f0f0f0"><td><b>$value</b> (defined in <a class="el" href="classCookie.html">Cookie</a>)</td><td><a class="el" href="classCookie.html">Cookie</a></td><td></td></tr>
-  <tr bgcolor="#f0f0f0"><td><b>__construct</b>($name, $value=null, $expires=0, $path=null, $domain=null) (defined in <a class="el" href="classCookie.html">Cookie</a>)</td><td><a class="el" href="classCookie.html">Cookie</a></td><td></td></tr>
   <tr bgcolor="#f0f0f0"><td><b>__construct</b>($controller) (defined in <a class="el" href="classComponent.html">Component</a>)</td><td><a class="el" href="classComponent.html">Component</a></td><td></td></tr>
-  <tr bgcolor="#f0f0f0"><td><b>__get</b>($name) (defined in <a class="el" href="classComponent.html">Component</a>)</td><td><a class="el" href="classComponent.html">Component</a></td><td></td></tr>
-  <tr bgcolor="#f0f0f0"><td><b>_init</b>() (defined in <a class="el" href="classComponent.html">Component</a>)</td><td><a class="el" href="classComponent.html">Component</a></td><td><code> [protected]</code></td></tr>
-  <tr bgcolor="#f0f0f0"><td><b>delete</b>() (defined in <a class="el" href="classCookie.html">Cookie</a>)</td><td><a class="el" href="classCookie.html">Cookie</a></td><td></td></tr>
+  <tr class="memlist"><td><a class="el" href="classComponent.html#ae72a2aff44cb477971a8649abba407cd">__get</a>($name)</td><td><a class="el" href="classComponent.html">Component</a></td><td></td></tr>
+  <tr class="memlist"><td><a class="el" href="classComponent.html#ae69207eea0ccf6cc855e74fa05b6db17">_init</a>()</td><td><a class="el" href="classComponent.html">Component</a></td><td><code> [protected]</code></td></tr>
+  <tr bgcolor="#f0f0f0"><td><b>delete</b>($name, $path=null, $domain=null) (defined in <a class="el" href="classCookie.html">Cookie</a>)</td><td><a class="el" href="classCookie.html">Cookie</a></td><td><code> [static]</code></td></tr>
   <tr bgcolor="#f0f0f0"><td><b>exists</b>($name) (defined in <a class="el" href="classCookie.html">Cookie</a>)</td><td><a class="el" href="classCookie.html">Cookie</a></td><td><code> [static]</code></td></tr>
+  <tr bgcolor="#f0f0f0"><td><b>get</b>($name) (defined in <a class="el" href="classCookie.html">Cookie</a>)</td><td><a class="el" href="classCookie.html">Cookie</a></td><td><code> [static]</code></td></tr>
   <tr bgcolor="#f0f0f0"><td><b>offsetExists</b>($offset) (defined in <a class="el" href="classCookie.html">Cookie</a>)</td><td><a class="el" href="classCookie.html">Cookie</a></td><td></td></tr>
   <tr bgcolor="#f0f0f0"><td><b>offsetGet</b>($offset) (defined in <a class="el" href="classCookie.html">Cookie</a>)</td><td><a class="el" href="classCookie.html">Cookie</a></td><td></td></tr>
   <tr bgcolor="#f0f0f0"><td><b>offsetSet</b>($offset, $value) (defined in <a class="el" href="classCookie.html">Cookie</a>)</td><td><a class="el" href="classCookie.html">Cookie</a></td><td></td></tr>
   <tr bgcolor="#f0f0f0"><td><b>offsetUnset</b>($offset) (defined in <a class="el" href="classCookie.html">Cookie</a>)</td><td><a class="el" href="classCookie.html">Cookie</a></td><td></td></tr>
-  <tr bgcolor="#f0f0f0"><td><b>save</b>() (defined in <a class="el" href="classCookie.html">Cookie</a>)</td><td><a class="el" href="classCookie.html">Cookie</a></td><td></td></tr>
+  <tr bgcolor="#f0f0f0"><td><b>set</b>($name, $value, $expires=0, $path=null, $domain=null) (defined in <a class="el" href="classCookie.html">Cookie</a>)</td><td><a class="el" href="classCookie.html">Cookie</a></td><td><code> [static]</code></td></tr>
 </table></div>
 <!--- window showing the filter options -->
 <div id="MSearchSelectWindow"
@@ -84,7 +80,7 @@ This is the complete list of members for <a class="el" href="classCookie.html">C
 </iframe>
 </div>
 
-<hr class="footer"/><address class="footer"><small>Generated on Thu Oct 7 2010 18:49:21 for Frawst by&nbsp;
+<hr class="footer"/><address class="footer"><small>Generated on Mon Nov 15 2010 00:25:18 for Frawst by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.7.1 </small></address>
 </body>

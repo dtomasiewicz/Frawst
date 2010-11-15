@@ -17,6 +17,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&nbsp;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&nbsp;Pages</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
       <li><a href="examples.html"><span>Examples</span></a></li>
       <li id="searchli">
@@ -58,11 +59,137 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <table class="memberdecls">
 <tr><td colspan="2"><h2><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="adcc0ad33133e434d1d0bd5883959f372"></a><!-- doxytag: member="Security::hash" ref="adcc0ad33133e434d1d0bd5883959f372" args="($string)" -->
-static&nbsp;</td><td class="memItemRight" valign="bottom"><b>hash</b> ($string)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">static&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSecurity.html#a8c40107049054e3b49c9af065d6f06bb">unique</a> ()</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">static&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSecurity.html#a87f2dc3c881edffaf55bb7dcfcc7d9f5">hash</a> ($string, $salt=null)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">static&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSecurity.html#aedcdd63d848d967a4d33b1b2a802c742">makeToken</a> ($salt= '')</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">static&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classSecurity.html#ad34f92a1aafbd96e7af9ce283f919d81">checkToken</a> ($token, $salt= '', $timeframe=null)</td></tr>
 </table>
+<hr/><h2>Member Function Documentation</h2>
+<a class="anchor" id="ad34f92a1aafbd96e7af9ce283f919d81"></a><!-- doxytag: member="Security::checkToken" ref="ad34f92a1aafbd96e7af9ce283f919d81" args="($token, $salt= '', $timeframe=null)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">static Security::checkToken </td>
+          <td>(</td>
+          <td class="paramtype">$&nbsp;</td>
+          <td class="paramname"> <em>token</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">$&nbsp;</td>
+          <td class="paramname"> <em>salt</em> = <code>''</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">$&nbsp;</td>
+          <td class="paramname"> <em>timeframe</em> = <code>null</code></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td><code> [static]</code></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+<p>Checks a security token for validity. </p>
+<dl><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"></td><td valign="top"><em>string</em>&nbsp;</td><td>$token </td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>string</em>&nbsp;</td><td>$salt The salt string that was used to make the token </td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>int</em>&nbsp;</td><td>$timeframe The timeframe for which the token is valid after being created. If 0 (default), tokens will not expire until the session does. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="return"><dt><b>Returns:</b></dt><dd>bool True if the token is valid, false if not </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="a87f2dc3c881edffaf55bb7dcfcc7d9f5"></a><!-- doxytag: member="Security::hash" ref="a87f2dc3c881edffaf55bb7dcfcc7d9f5" args="($string, $salt=null)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">static Security::hash </td>
+          <td>(</td>
+          <td class="paramtype">$&nbsp;</td>
+          <td class="paramname"> <em>string</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">$&nbsp;</td>
+          <td class="paramname"> <em>salt</em> = <code>null</code></td><td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td><td><code> [static]</code></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+<p>Creates a SHA1 hash of a given string, automatically appending the configured security salt. </p>
+<dl><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"></td><td valign="top"><em>string</em>&nbsp;</td><td>$string The string to be hashed </td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>string</em>&nbsp;</td><td>$salt The salt to be used. If omitted, the salt in <a class="el" href="classFrawst.html">Frawst</a> config will be used. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="return"><dt><b>Returns:</b></dt><dd>string </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="aedcdd63d848d967a4d33b1b2a802c742"></a><!-- doxytag: member="Security::makeToken" ref="aedcdd63d848d967a4d33b1b2a802c742" args="($salt= '')" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">static Security::makeToken </td>
+          <td>(</td>
+          <td class="paramtype">$&nbsp;</td>
+          <td class="paramname"> <em>salt</em> = <code>''</code></td>
+          <td>&nbsp;)&nbsp;</td>
+          <td><code> [static]</code></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+<p>Creates a general-purpose security token associated with the client's session ID and the current microtime. This token can be used to protect against CSRF, ensuring malicious unauthorized requests do not succeed. </p>
+<dl><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign="top"></td><td valign="top"><em>string</em>&nbsp;</td><td>$salt A salt to be used (in addition to the configured salt) to differentiate tokens with different origins. For example, if you include a form name as the salt when creating and checking a token, it ensures the token was not from a different form. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="return"><dt><b>Returns:</b></dt><dd>string </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="a8c40107049054e3b49c9af065d6f06bb"></a><!-- doxytag: member="Security::unique" ref="a8c40107049054e3b49c9af065d6f06bb" args="()" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">static Security::unique </td>
+          <td>(</td>
+          <td class="paramname"></td>
+          <td>&nbsp;)&nbsp;</td>
+          <td><code> [static]</code></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+<dl class="return"><dt><b>Returns:</b></dt><dd>a unique identifier </dd></dl>
+
+</div>
+</div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>Library/Security.php</li>
+<li>libs/Library/Security.php</li>
 </ul>
 </div>
 <!--- window showing the filter options -->
@@ -79,7 +206,7 @@ static&nbsp;</td><td class="memItemRight" valign="bottom"><b>hash</b> ($string)<
 </iframe>
 </div>
 
-<hr class="footer"/><address class="footer"><small>Generated on Thu Oct 7 2010 18:49:21 for Frawst by&nbsp;
+<hr class="footer"/><address class="footer"><small>Generated on Mon Nov 15 2010 00:25:18 for Frawst by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.7.1 </small></address>
 </body>

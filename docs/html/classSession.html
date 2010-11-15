@@ -17,6 +17,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&nbsp;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&nbsp;Pages</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
       <li><a href="examples.html"><span>Examples</span></a></li>
       <li id="searchli">
@@ -49,9 +50,9 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pub-static-methods">Static Public Member Functions</a> &#124;
 <a href="#pub-attribs">Public Attributes</a> &#124;
-<a href="#pro-methods">Protected Member Functions</a> &#124;
-<a href="#pro-attribs">Protected Attributes</a>  </div>
+<a href="#pro-static-attribs">Static Protected Attributes</a>  </div>
   <div class="headertitle">
 <h1>Session Class Reference</h1>  </div>
 </div>
@@ -70,8 +71,6 @@ Inheritance diagram for Session:</div>
 <table class="memberdecls">
 <tr><td colspan="2"><h2><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a91bc789717d481ad5b4092fc7de9520c"></a><!-- doxytag: member="Session::start" ref="a91bc789717d481ad5b4092fc7de9520c" args="()" -->
-&nbsp;</td><td class="memItemRight" valign="bottom"><b>start</b> ()</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a71c2094d14dec32f7316332ce828ce9c"></a><!-- doxytag: member="Session::offsetSet" ref="a71c2094d14dec32f7316332ce828ce9c" args="($offset, $value)" -->
 &nbsp;</td><td class="memItemRight" valign="bottom"><b>offsetSet</b> ($offset, $value)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="add0611fb94dae2ef4f0c4ee42724a249"></a><!-- doxytag: member="Session::offsetGet" ref="add0611fb94dae2ef4f0c4ee42724a249" args="($offset)" -->
@@ -88,21 +87,34 @@ Public Member Functions</h2></td></tr>
 &nbsp;</td><td class="memItemRight" valign="bottom"><b>addFeedback</b> ($message, $status=0)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab71f5250f5f910d169ed61643d38fd2c"></a><!-- doxytag: member="Session::feedback" ref="ab71f5250f5f910d169ed61643d38fd2c" args="()" -->
 &nbsp;</td><td class="memItemRight" valign="bottom"><b>feedback</b> ()</td></tr>
+<tr><td colspan="2"><h2><a name="pub-static-methods"></a>
+Static Public Member Functions</h2></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ac7df4ddf4ca4f3eaa2cad24dd4c25f0d"></a><!-- doxytag: member="Session::start" ref="ac7df4ddf4ca4f3eaa2cad24dd4c25f0d" args="()" -->
+static&nbsp;</td><td class="memItemRight" valign="bottom"><b>start</b> ()</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a5dde74b6fa44649e5b73cb1096930dd4"></a><!-- doxytag: member="Session::destroy" ref="a5dde74b6fa44649e5b73cb1096930dd4" args="()" -->
+static&nbsp;</td><td class="memItemRight" valign="bottom"><b>destroy</b> ()</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1d530d9cd2d5fbb4d69a82c40971bee8"></a><!-- doxytag: member="Session::id" ref="a1d530d9cd2d5fbb4d69a82c40971bee8" args="()" -->
+static&nbsp;</td><td class="memItemRight" valign="bottom"><b>id</b> ()</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a06b5c83aa922885acd73206eab682ad0"></a><!-- doxytag: member="Session::set" ref="a06b5c83aa922885acd73206eab682ad0" args="($name, $value)" -->
+static&nbsp;</td><td class="memItemRight" valign="bottom"><b>set</b> ($name, $value)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a3ab93001efaf4399c6b2a576c0901454"></a><!-- doxytag: member="Session::get" ref="a3ab93001efaf4399c6b2a576c0901454" args="($name)" -->
+static&nbsp;</td><td class="memItemRight" valign="bottom"><b>get</b> ($name)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a65494672eb7440e6d1ae78e9b43f2e07"></a><!-- doxytag: member="Session::delete" ref="a65494672eb7440e6d1ae78e9b43f2e07" args="($name)" -->
+static&nbsp;</td><td class="memItemRight" valign="bottom"><b>delete</b> ($name)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad3ac7fbfbb15f1346dc6e3032a7f6e26"></a><!-- doxytag: member="Session::exists" ref="ad3ac7fbfbb15f1346dc6e3032a7f6e26" args="($name)" -->
+static&nbsp;</td><td class="memItemRight" valign="bottom"><b>exists</b> ($name)</td></tr>
 <tr><td colspan="2"><h2><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a11be3c09c8b8328f776ab418bd918ba0"></a><!-- doxytag: member="Session::cookieName" ref="a11be3c09c8b8328f776ab418bd918ba0" args="" -->
-const&nbsp;</td><td class="memItemRight" valign="bottom"><b>cookieName</b> = '<a class="el" href="classSession.html">Session</a>'</td></tr>
-<tr><td colspan="2"><h2><a name="pro-methods"></a>
-Protected Member Functions</h2></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a43eb64d79c4a35638f2d64265de4aa56"></a><!-- doxytag: member="Session::_init" ref="a43eb64d79c4a35638f2d64265de4aa56" args="()" -->
-&nbsp;</td><td class="memItemRight" valign="bottom"><b>_init</b> ()</td></tr>
-<tr><td colspan="2"><h2><a name="pro-attribs"></a>
-Protected Attributes</h2></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aeccd30d2f052e1423c6bf3c6ac67c0ca"></a><!-- doxytag: member="Session::COOKIE_NAME" ref="aeccd30d2f052e1423c6bf3c6ac67c0ca" args="" -->
+const&nbsp;</td><td class="memItemRight" valign="bottom"><b>COOKIE_NAME</b> = '<a class="el" href="classSession.html">Session</a>'</td></tr>
+<tr><td colspan="2"><h2><a name="pro-static-attribs"></a>
+Static Protected Attributes</h2></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a4854a1f2ded7eb0c5e9c66f2830f92d6"></a><!-- doxytag: member="Session::$_id" ref="a4854a1f2ded7eb0c5e9c66f2830f92d6" args="" -->
-&nbsp;</td><td class="memItemRight" valign="bottom"><b>$_id</b></td></tr>
+static&nbsp;</td><td class="memItemRight" valign="bottom"><b>$_id</b></td></tr>
 </table>
-<hr/>The documentation for this class was generated from the following file:<ul>
-<li>Component/Session.php</li>
+<hr/>The documentation for this class was generated from the following files:<ul>
+<li>libs/Component/Session.php</li>
+<li>libs/Library/Session.php</li>
 </ul>
 </div>
 <!--- window showing the filter options -->
@@ -119,7 +131,7 @@ Protected Attributes</h2></td></tr>
 </iframe>
 </div>
 
-<hr class="footer"/><address class="footer"><small>Generated on Thu Oct 7 2010 18:49:21 for Frawst by&nbsp;
+<hr class="footer"/><address class="footer"><small>Generated on Mon Nov 15 2010 00:25:18 for Frawst by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.7.1 </small></address>
 </body>

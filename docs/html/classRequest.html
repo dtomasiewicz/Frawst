@@ -17,6 +17,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&nbsp;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&nbsp;Pages</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
       <li><a href="examples.html"><span>Examples</span></a></li>
       <li id="searchli">
@@ -71,12 +72,14 @@ Public Member Functions</h2></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRequest.html#aac8d4b96b9b900a7edf41ca657ea0b6d">method</a> ()</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a67c4deda799d1c1d4839ed4f7830fa55"></a><!-- doxytag: member="Request::params" ref="a67c4deda799d1c1d4839ed4f7830fa55" args="()" -->
 &nbsp;</td><td class="memItemRight" valign="bottom"><b>params</b> ()</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aed471cd8166445eed2e6799f90499756"></a><!-- doxytag: member="Request::param" ref="aed471cd8166445eed2e6799f90499756" args="($index)" -->
+&nbsp;</td><td class="memItemRight" valign="bottom"><b>param</b> ($index)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRequest.html#a07e525938b1a92175ffe01808e070ec8">get</a> ($key=null, $default=null)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRequest.html#a5439c158517f97674d201dcfe5dad11d">post</a> ($key=null, $default=null)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRequest.html#af523fe9032ce728bcb27156eae258c0d">put</a> ($key=null, $default=null)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRequest.html#a4a342ba4c5656bb467e43605287a8e2a">delete</a> ($key=null, $default=null)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRequest.html#ac6dea526aea1f35a9f939b4b768397d8">data</a> ($key=null, $default=null)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRequest.html#aa906be06b4d1c1d722727efc04d300e7">form</a> ($formName=null)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRequest.html#a649c3866a95e9bde0f703cfbdaa528e8">form</a> ($formName)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRequest.html#a096cae394f50b2f9be98354272c2c32e">persist</a> ($key, $value=null)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRequest.html#a134ffcd200dcc73daf24b378ca056ba7">getRuntime</a> ()</td></tr>
 <tr><td colspan="2"><h2><a name="pro-attribs"></a>
@@ -93,8 +96,8 @@ Protected Attributes</h2></td></tr>
 &nbsp;</td><td class="memItemRight" valign="bottom"><b>$_method</b></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aad7894a284ec13d0c720a9c18db06151"></a><!-- doxytag: member="Request::$_data" ref="aad7894a284ec13d0c720a9c18db06151" args="" -->
 &nbsp;</td><td class="memItemRight" valign="bottom"><b>$_data</b></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aba57a9def753ffdf8e5c037372df974b"></a><!-- doxytag: member="Request::$_Form" ref="aba57a9def753ffdf8e5c037372df974b" args="" -->
-&nbsp;</td><td class="memItemRight" valign="bottom"><b>$_Form</b></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a0cc84b743e8fb2ecb8860028f12a0cb7"></a><!-- doxytag: member="Request::$_forms" ref="a0cc84b743e8fb2ecb8860028f12a0cb7" args="" -->
+&nbsp;</td><td class="memItemRight" valign="bottom"><b>$_forms</b></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa885eff8edc7e0361676bff6528915f6"></a><!-- doxytag: member="Request::$_Response" ref="aa885eff8edc7e0361676bff6528915f6" args="" -->
 &nbsp;</td><td class="memItemRight" valign="bottom"><b>$_Response</b></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classRequest.html#a6529301fb8d03a3724f00c0f625accce">$_persist</a></td></tr>
@@ -277,7 +280,7 @@ Protected Attributes</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="aa906be06b4d1c1d722727efc04d300e7"></a><!-- doxytag: member="Request::form" ref="aa906be06b4d1c1d722727efc04d300e7" args="($formName=null)" -->
+<a class="anchor" id="a649c3866a95e9bde0f703cfbdaa528e8"></a><!-- doxytag: member="Request::form" ref="a649c3866a95e9bde0f703cfbdaa528e8" args="($formName)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -285,7 +288,7 @@ Protected Attributes</h2></td></tr>
           <td class="memname">Request::form </td>
           <td>(</td>
           <td class="paramtype">$&nbsp;</td>
-          <td class="paramname"> <em>formName</em> = <code>null</code></td>
+          <td class="paramname"> <em>formName</em></td>
           <td>&nbsp;)&nbsp;</td>
           <td></td>
         </tr>
@@ -295,7 +298,7 @@ Protected Attributes</h2></td></tr>
 <p>Returns a <a class="el" href="classForm.html">Form</a> object using the request data, if it is compatible. </p>
 <dl><dt><b>Parameters:</b></dt><dd>
   <table border="0" cellspacing="2" cellpadding="0">
-    <tr><td valign="top"></td><td valign="top"><em>string</em>&nbsp;</td><td>$formName The name of the form. If not provided, will check for a ___FORMNAME key in the request data. </td></tr>
+    <tr><td valign="top"></td><td valign="top"><em>string</em>&nbsp;</td><td>$formName The name of the form. </td></tr>
   </table>
   </dd>
 </dl>
@@ -655,7 +658,7 @@ Protected Attributes</h2></td></tr>
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>Request.php</li>
+<li>libs/Request.php</li>
 </ul>
 </div>
 <!--- window showing the filter options -->
@@ -672,7 +675,7 @@ Protected Attributes</h2></td></tr>
 </iframe>
 </div>
 
-<hr class="footer"/><address class="footer"><small>Generated on Thu Oct 7 2010 18:49:21 for Frawst by&nbsp;
+<hr class="footer"/><address class="footer"><small>Generated on Mon Nov 15 2010 00:25:18 for Frawst by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.7.1 </small></address>
 </body>

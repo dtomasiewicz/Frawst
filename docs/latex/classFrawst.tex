@@ -8,40 +8,8 @@ Inheritance diagram for Frawst:\begin{figure}[H]
 \includegraphics[height=2.000000cm]{classFrawst}
 \end{center}
 \end{figure}
-\subsection*{Public Attributes}
-\begin{DoxyCompactItemize}
+
+
+The documentation for this class was generated from the following file:\begin{DoxyCompactItemize}
 \item 
-\hypertarget{classFrawst_a3efd5952499d6cd33bda3d18bc0c4cbb}{
-{\bfseries \$method} = \$\_\-SERVER\mbox{[}'REQUEST\_\-METHOD'\mbox{]}}
-\label{classFrawst_a3efd5952499d6cd33bda3d18bc0c4cbb}
-
-\item 
-{\bfseries \$route}
-\item 
-foreach(\$\_\-SERVER as \$key=$>$ \$value) if(substr(\$route,-\/strlen(AJAX\_\-SUFFIX))==AJAX\_\-SUFFIX) \hyperlink{classFrawst_a0db08eb8a67a4f462d0602b663dddc90}{\$request} = new \hyperlink{classRequest}{Request}(new \hyperlink{classRoute}{Route}(\$route, true), \$data, \$method, \$headers)
-\end{DoxyCompactItemize}
-
-
-\subsection{Member Data Documentation}
-\hypertarget{classFrawst_a0db08eb8a67a4f462d0602b663dddc90}{
-\index{Frawst@{Frawst}!\$request@{\$request}}
-\index{\$request@{\$request}!Frawst@{Frawst}}
-\subsubsection[{\$request}]{\setlength{\rightskip}{0pt plus 5cm}foreach (\$\_\-SERVER as \$key=$>$ \$value) if (substr(\$route,-\/strlen(AJAX\_\-SUFFIX))==AJAX\_\-SUFFIX) Frawst::\$request = new {\bf Request}(new {\bf Route}(\$route, true), \$data, \$method, \$headers)}}
-\label{classFrawst_a0db08eb8a67a4f462d0602b663dddc90}
-Extract HTTP headers from the ugly \$\_\-SERVER array \hypertarget{classFrawst_a83dcf7e16e11a55f3f79d6f4722d12a4}{
-\index{Frawst@{Frawst}!\$route@{\$route}}
-\index{\$route@{\$route}!Frawst@{Frawst}}
-\subsubsection[{\$route}]{\setlength{\rightskip}{0pt plus 5cm}Frawst::\$route}}
-\label{classFrawst_a83dcf7e16e11a55f3f79d6f4722d12a4}
-{\bfseries Initial value:}
-\begin{DoxyCode}
- ltrim(isset($_SERVER['PATH_INFO'])
-                        ? $_SERVER['PATH_INFO']
-                        : '', '/')
-\end{DoxyCode}
-
-
-The documentation for this class was generated from the following files:\begin{DoxyCompactItemize}
-\item 
-Exception/Frawst.php\item 
-core.php\end{DoxyCompactItemize}
+libs/Exception/Frawst.php\end{DoxyCompactItemize}

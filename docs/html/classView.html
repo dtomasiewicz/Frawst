@@ -17,6 +17,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&nbsp;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&nbsp;Pages</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
       <li><a href="examples.html"><span>Examples</span></a></li>
       <li id="searchli">
@@ -63,8 +64,8 @@ Public Member Functions</h2></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aff2c8a304801730574b5bc109c482e09"></a><!-- doxytag: member="View::__construct" ref="aff2c8a304801730574b5bc109c482e09" args="($response)" -->
 &nbsp;</td><td class="memItemRight" valign="bottom"><b>__construct</b> ($response)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classView.html#a82676edf021e4e4e89bd6d4876ad7fb9">__get</a> ($name)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad6b9299348ecf7eb493628ed7f5af3c5"></a><!-- doxytag: member="View::render" ref="ad6b9299348ecf7eb493628ed7f5af3c5" args="()" -->
-&nbsp;</td><td class="memItemRight" valign="bottom"><b>render</b> ()</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1dab1e88315e34d6f4c74b75ca12f12d"></a><!-- doxytag: member="View::render" ref="a1dab1e88315e34d6f4c74b75ca12f12d" args="($data)" -->
+&nbsp;</td><td class="memItemRight" valign="bottom"><b>render</b> ($data)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad28ba2a16ab546f22dd5a60e65f20d2a"></a><!-- doxytag: member="View::partial" ref="ad28ba2a16ab546f22dd5a60e65f20d2a" args="($partial, $data=array())" -->
 &nbsp;</td><td class="memItemRight" valign="bottom"><b>partial</b> ($partial, $data=array())</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1e38f96f791a0d264ea794ccd1c7c8ee"></a><!-- doxytag: member="View::isAjax" ref="a1e38f96f791a0d264ea794ccd1c7c8ee" args="()" -->
@@ -81,7 +82,8 @@ Public Member Functions</h2></td></tr>
 &nbsp;</td><td class="memItemRight" valign="bottom"><b>layout</b> ($layout=null)</td></tr>
 <tr><td colspan="2"><h2><a name="pro-methods"></a>
 Protected Member Functions</h2></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classView.html#a9f84b28f6e760240626aac39e0f21d02">_renderContent</a> ()</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classView.html#afd382c9e42d6c24b8a064b615db7a898">_renderContent</a> ($data)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classView.html#a2cc8578430d33232105f4bab57978e7c">_findTemplate</a> ()</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">&nbsp;</td><td class="memItemRight" valign="bottom"><a class="el" href="classView.html#a0ff5857aa83ff98b3eb7e6067469cd54">_templatePath</a> ($file)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab0a86a216c1ad07e4580a4574f9b32e9"></a><!-- doxytag: member="View::_renderFile" ref="ab0a86a216c1ad07e4580a4574f9b32e9" args="($___file, $___data)" -->
 &nbsp;</td><td class="memItemRight" valign="bottom"><b>_renderFile</b> ($___file, $___data)</td></tr>
@@ -120,14 +122,34 @@ Protected Attributes</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="a9f84b28f6e760240626aac39e0f21d02"></a><!-- doxytag: member="View::_renderContent" ref="a9f84b28f6e760240626aac39e0f21d02" args="()" -->
+<a class="anchor" id="a2cc8578430d33232105f4bab57978e7c"></a><!-- doxytag: member="View::_findTemplate" ref="a2cc8578430d33232105f4bab57978e7c" args="()" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">View::_findTemplate </td>
+          <td>(</td>
+          <td class="paramname"></td>
+          <td>&nbsp;)&nbsp;</td>
+          <td><code> [protected]</code></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+<p>Attempts to find the template file for rendering. This is based on the request route and the response status. </p>
+<dl class="return"><dt><b>Returns:</b></dt><dd>string The path to the template, relative to the views direcetory </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="afd382c9e42d6c24b8a064b615db7a898"></a><!-- doxytag: member="View::_renderContent" ref="afd382c9e42d6c24b8a064b615db7a898" args="($data)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
           <td class="memname">View::_renderContent </td>
           <td>(</td>
-          <td class="paramname"></td>
+          <td class="paramtype">$&nbsp;</td>
+          <td class="paramname"> <em>data</em></td>
           <td>&nbsp;)&nbsp;</td>
           <td><code> [protected]</code></td>
         </tr>
@@ -166,7 +188,7 @@ Protected Attributes</h2></td></tr>
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>View.php</li>
+<li>libs/View.php</li>
 </ul>
 </div>
 <!--- window showing the filter options -->
@@ -183,7 +205,7 @@ Protected Attributes</h2></td></tr>
 </iframe>
 </div>
 
-<hr class="footer"/><address class="footer"><small>Generated on Thu Oct 7 2010 18:49:21 for Frawst by&nbsp;
+<hr class="footer"/><address class="footer"><small>Generated on Mon Nov 15 2010 00:25:18 for Frawst by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.7.1 </small></address>
 </body>

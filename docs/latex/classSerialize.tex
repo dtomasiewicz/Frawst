@@ -6,6 +6,8 @@
 \begin{DoxyCompactItemize}
 \item 
 static \hyperlink{classSerialize_aa315f53f9a533f087af8c01cf9d18b8e}{getSerialClass} (\$serial)
+\item 
+static \hyperlink{classSerialize_af8e93bb937969b273883d9385021b324}{toJSON} (\$data, \$opts=0, \$do\_\-encode=true)
 \end{DoxyCompactItemize}
 
 
@@ -28,8 +30,25 @@ Safely determines the type or classname of a serialized entity without unseriali
 \begin{DoxyReturn}{Returns}
 string The type or class name the entity would unserialize to 
 \end{DoxyReturn}
+\hypertarget{classSerialize_af8e93bb937969b273883d9385021b324}{
+\index{Serialize@{Serialize}!toJSON@{toJSON}}
+\index{toJSON@{toJSON}!Serialize@{Serialize}}
+\subsubsection[{toJSON}]{\setlength{\rightskip}{0pt plus 5cm}static Serialize::toJSON (
+\begin{DoxyParamCaption}
+\item[{\$}]{ data, }
+\item[{\$}]{ opts = {\ttfamily 0}, }
+\item[{\$}]{ do\_\-encode = {\ttfamily true}}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}static\mbox{]}}}}
+\label{classSerialize_af8e93bb937969b273883d9385021b324}
+Encodes the given data to JSON, checking for \_\-\_\-toJSON hooks on objects. 
+\begin{DoxyParams}{Parameters}
+\item[{\em mixed}]\$data \item[{\em int}]\$opts JSON encoding options (see php.net/json\_\-encode for details) \item[{\em bool}]\$do\_\-encode If true, the returned value will be JSON-\/encoded. Otherwise, it will be JSON-\/ready (\_\-\_\-toJSON will have been hooked on all objects). \end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+string The JSON-\/encoded data, or the data to be JSON-\/encoded \$do\_\-encode is false 
+\end{DoxyReturn}
 
 
 The documentation for this class was generated from the following file:\begin{DoxyCompactItemize}
 \item 
-Library/Serialize.php\end{DoxyCompactItemize}
+libs/Library/Serialize.php\end{DoxyCompactItemize}

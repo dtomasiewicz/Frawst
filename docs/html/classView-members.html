@@ -17,6 +17,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
   <div class="tabs">
     <ul class="tablist">
       <li><a href="index.html"><span>Main&nbsp;Page</span></a></li>
+      <li><a href="pages.html"><span>Related&nbsp;Pages</span></a></li>
       <li class="current"><a href="annotated.html"><span>Classes</span></a></li>
       <li><a href="examples.html"><span>Examples</span></a></li>
       <li id="searchli">
@@ -59,8 +60,9 @@ This is the complete list of members for <a class="el" href="classView.html">Vie
   <tr bgcolor="#f0f0f0"><td><b>$_templateDir</b> (defined in <a class="el" href="classView.html">View</a>)</td><td><a class="el" href="classView.html">View</a></td><td><code> [protected]</code></td></tr>
   <tr bgcolor="#f0f0f0"><td><b>__construct</b>($response) (defined in <a class="el" href="classView.html">View</a>)</td><td><a class="el" href="classView.html">View</a></td><td></td></tr>
   <tr class="memlist"><td><a class="el" href="classView.html#a82676edf021e4e4e89bd6d4876ad7fb9">__get</a>($name)</td><td><a class="el" href="classView.html">View</a></td><td></td></tr>
+  <tr class="memlist"><td><a class="el" href="classView.html#a2cc8578430d33232105f4bab57978e7c">_findTemplate</a>()</td><td><a class="el" href="classView.html">View</a></td><td><code> [protected]</code></td></tr>
   <tr bgcolor="#f0f0f0"><td><b>_helper</b>($name) (defined in <a class="el" href="classView.html">View</a>)</td><td><a class="el" href="classView.html">View</a></td><td><code> [protected]</code></td></tr>
-  <tr class="memlist"><td><a class="el" href="classView.html#a9f84b28f6e760240626aac39e0f21d02">_renderContent</a>()</td><td><a class="el" href="classView.html">View</a></td><td><code> [protected]</code></td></tr>
+  <tr class="memlist"><td><a class="el" href="classView.html#afd382c9e42d6c24b8a064b615db7a898">_renderContent</a>($data)</td><td><a class="el" href="classView.html">View</a></td><td><code> [protected]</code></td></tr>
   <tr bgcolor="#f0f0f0"><td><b>_renderFile</b>($___file, $___data) (defined in <a class="el" href="classView.html">View</a>)</td><td><a class="el" href="classView.html">View</a></td><td><code> [protected]</code></td></tr>
   <tr class="memlist"><td><a class="el" href="classView.html#a0ff5857aa83ff98b3eb7e6067469cd54">_templatePath</a>($file)</td><td><a class="el" href="classView.html">View</a></td><td><code> [protected]</code></td></tr>
   <tr bgcolor="#f0f0f0"><td><b>ajax</b>($route, $data=array(), $method= 'GET') (defined in <a class="el" href="classView.html">View</a>)</td><td><a class="el" href="classView.html">View</a></td><td></td></tr>
@@ -69,7 +71,7 @@ This is the complete list of members for <a class="el" href="classView.html">Vie
   <tr bgcolor="#f0f0f0"><td><b>modGet</b>($changes=array()) (defined in <a class="el" href="classView.html">View</a>)</td><td><a class="el" href="classView.html">View</a></td><td></td></tr>
   <tr bgcolor="#f0f0f0"><td><b>partial</b>($partial, $data=array()) (defined in <a class="el" href="classView.html">View</a>)</td><td><a class="el" href="classView.html">View</a></td><td></td></tr>
   <tr bgcolor="#f0f0f0"><td><b>path</b>($route=null) (defined in <a class="el" href="classView.html">View</a>)</td><td><a class="el" href="classView.html">View</a></td><td></td></tr>
-  <tr bgcolor="#f0f0f0"><td><b>render</b>() (defined in <a class="el" href="classView.html">View</a>)</td><td><a class="el" href="classView.html">View</a></td><td></td></tr>
+  <tr bgcolor="#f0f0f0"><td><b>render</b>($data) (defined in <a class="el" href="classView.html">View</a>)</td><td><a class="el" href="classView.html">View</a></td><td></td></tr>
   <tr bgcolor="#f0f0f0"><td><b>webroot</b>($resource= '') (defined in <a class="el" href="classView.html">View</a>)</td><td><a class="el" href="classView.html">View</a></td><td></td></tr>
 </table></div>
 <!--- window showing the filter options -->
@@ -86,7 +88,7 @@ This is the complete list of members for <a class="el" href="classView.html">Vie
 </iframe>
 </div>
 
-<hr class="footer"/><address class="footer"><small>Generated on Thu Oct 7 2010 18:49:21 for Frawst by&nbsp;
+<hr class="footer"/><address class="footer"><small>Generated on Mon Nov 15 2010 00:25:18 for Frawst by&nbsp;
 <a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.7.1 </small></address>
 </body>

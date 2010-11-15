@@ -5,13 +5,79 @@
 \subsection*{Static Public Member Functions}
 \begin{DoxyCompactItemize}
 \item 
-\hypertarget{classSecurity_adcc0ad33133e434d1d0bd5883959f372}{
-static {\bfseries hash} (\$string)}
-\label{classSecurity_adcc0ad33133e434d1d0bd5883959f372}
-
+static \hyperlink{classSecurity_a8c40107049054e3b49c9af065d6f06bb}{unique} ()
+\item 
+static \hyperlink{classSecurity_a87f2dc3c881edffaf55bb7dcfcc7d9f5}{hash} (\$string, \$salt=null)
+\item 
+static \hyperlink{classSecurity_aedcdd63d848d967a4d33b1b2a802c742}{makeToken} (\$salt= '')
+\item 
+static \hyperlink{classSecurity_ad34f92a1aafbd96e7af9ce283f919d81}{checkToken} (\$token, \$salt= '', \$timeframe=null)
 \end{DoxyCompactItemize}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{classSecurity_ad34f92a1aafbd96e7af9ce283f919d81}{
+\index{Security@{Security}!checkToken@{checkToken}}
+\index{checkToken@{checkToken}!Security@{Security}}
+\subsubsection[{checkToken}]{\setlength{\rightskip}{0pt plus 5cm}static Security::checkToken (
+\begin{DoxyParamCaption}
+\item[{\$}]{ token, }
+\item[{\$}]{ salt = {\ttfamily ''}, }
+\item[{\$}]{ timeframe = {\ttfamily null}}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}static\mbox{]}}}}
+\label{classSecurity_ad34f92a1aafbd96e7af9ce283f919d81}
+Checks a security token for validity. 
+\begin{DoxyParams}{Parameters}
+\item[{\em string}]\$token \item[{\em string}]\$salt The salt string that was used to make the token \item[{\em int}]\$timeframe The timeframe for which the token is valid after being created. If 0 (default), tokens will not expire until the session does. \end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+bool True if the token is valid, false if not 
+\end{DoxyReturn}
+\hypertarget{classSecurity_a87f2dc3c881edffaf55bb7dcfcc7d9f5}{
+\index{Security@{Security}!hash@{hash}}
+\index{hash@{hash}!Security@{Security}}
+\subsubsection[{hash}]{\setlength{\rightskip}{0pt plus 5cm}static Security::hash (
+\begin{DoxyParamCaption}
+\item[{\$}]{ string, }
+\item[{\$}]{ salt = {\ttfamily null}}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}static\mbox{]}}}}
+\label{classSecurity_a87f2dc3c881edffaf55bb7dcfcc7d9f5}
+Creates a SHA1 hash of a given string, automatically appending the configured security salt. 
+\begin{DoxyParams}{Parameters}
+\item[{\em string}]\$string The string to be hashed \item[{\em string}]\$salt The salt to be used. If omitted, the salt in \hyperlink{classFrawst}{Frawst} config will be used. \end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+string 
+\end{DoxyReturn}
+\hypertarget{classSecurity_aedcdd63d848d967a4d33b1b2a802c742}{
+\index{Security@{Security}!makeToken@{makeToken}}
+\index{makeToken@{makeToken}!Security@{Security}}
+\subsubsection[{makeToken}]{\setlength{\rightskip}{0pt plus 5cm}static Security::makeToken (
+\begin{DoxyParamCaption}
+\item[{\$}]{ salt = {\ttfamily ''}}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}static\mbox{]}}}}
+\label{classSecurity_aedcdd63d848d967a4d33b1b2a802c742}
+Creates a general-\/purpose security token associated with the client's session ID and the current microtime. This token can be used to protect against CSRF, ensuring malicious unauthorized requests do not succeed. 
+\begin{DoxyParams}{Parameters}
+\item[{\em string}]\$salt A salt to be used (in addition to the configured salt) to differentiate tokens with different origins. For example, if you include a form name as the salt when creating and checking a token, it ensures the token was not from a different form. \end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+string 
+\end{DoxyReturn}
+\hypertarget{classSecurity_a8c40107049054e3b49c9af065d6f06bb}{
+\index{Security@{Security}!unique@{unique}}
+\index{unique@{unique}!Security@{Security}}
+\subsubsection[{unique}]{\setlength{\rightskip}{0pt plus 5cm}static Security::unique (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}static\mbox{]}}}}
+\label{classSecurity_a8c40107049054e3b49c9af065d6f06bb}
+\begin{DoxyReturn}{Returns}
+a unique identifier 
+\end{DoxyReturn}
 
 
 The documentation for this class was generated from the following file:\begin{DoxyCompactItemize}
 \item 
-Library/Security.php\end{DoxyCompactItemize}
+libs/Library/Security.php\end{DoxyCompactItemize}

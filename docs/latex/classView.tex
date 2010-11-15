@@ -12,9 +12,9 @@
 \item 
 \hyperlink{classView_a82676edf021e4e4e89bd6d4876ad7fb9}{\_\-\_\-get} (\$name)
 \item 
-\hypertarget{classView_ad6b9299348ecf7eb493628ed7f5af3c5}{
-{\bfseries render} ()}
-\label{classView_ad6b9299348ecf7eb493628ed7f5af3c5}
+\hypertarget{classView_a1dab1e88315e34d6f4c74b75ca12f12d}{
+{\bfseries render} (\$data)}
+\label{classView_a1dab1e88315e34d6f4c74b75ca12f12d}
 
 \item 
 \hypertarget{classView_ad28ba2a16ab546f22dd5a60e65f20d2a}{
@@ -55,7 +55,9 @@
 \subsection*{Protected Member Functions}
 \begin{DoxyCompactItemize}
 \item 
-\hyperlink{classView_a9f84b28f6e760240626aac39e0f21d02}{\_\-renderContent} ()
+\hyperlink{classView_afd382c9e42d6c24b8a064b615db7a898}{\_\-renderContent} (\$data)
+\item 
+\hyperlink{classView_a2cc8578430d33232105f4bab57978e7c}{\_\-findTemplate} ()
 \item 
 \hyperlink{classView_a0ff5857aa83ff98b3eb7e6067469cd54}{\_\-templatePath} (\$file)
 \item 
@@ -109,15 +111,27 @@
 \end{DoxyParamCaption}
 )}}
 \label{classView_a82676edf021e4e4e89bd6d4876ad7fb9}
-Attempt to load Helpers on-\/demand \hypertarget{classView_a9f84b28f6e760240626aac39e0f21d02}{
-\index{View@{View}!\_\-renderContent@{\_\-renderContent}}
-\index{\_\-renderContent@{\_\-renderContent}!View@{View}}
-\subsubsection[{\_\-renderContent}]{\setlength{\rightskip}{0pt plus 5cm}View::\_\-renderContent (
+Attempt to load Helpers on-\/demand \hypertarget{classView_a2cc8578430d33232105f4bab57978e7c}{
+\index{View@{View}!\_\-findTemplate@{\_\-findTemplate}}
+\index{\_\-findTemplate@{\_\-findTemplate}!View@{View}}
+\subsubsection[{\_\-findTemplate}]{\setlength{\rightskip}{0pt plus 5cm}View::\_\-findTemplate (
 \begin{DoxyParamCaption}
 {}
 \end{DoxyParamCaption}
 )\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}}
-\label{classView_a9f84b28f6e760240626aac39e0f21d02}
+\label{classView_a2cc8578430d33232105f4bab57978e7c}
+Attempts to find the template file for rendering. This is based on the request route and the response status. \begin{DoxyReturn}{Returns}
+string The path to the template, relative to the views direcetory 
+\end{DoxyReturn}
+\hypertarget{classView_afd382c9e42d6c24b8a064b615db7a898}{
+\index{View@{View}!\_\-renderContent@{\_\-renderContent}}
+\index{\_\-renderContent@{\_\-renderContent}!View@{View}}
+\subsubsection[{\_\-renderContent}]{\setlength{\rightskip}{0pt plus 5cm}View::\_\-renderContent (
+\begin{DoxyParamCaption}
+\item[{\$}]{ data}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}protected\mbox{]}}}}
+\label{classView_afd382c9e42d6c24b8a064b615db7a898}
 Renders the content template with the data supplied from the controller. If the template file does not exist, the response will be sent as JSON, without a layout. \begin{DoxyReturn}{Returns}
 string 
 \end{DoxyReturn}
@@ -140,4 +154,4 @@ string the absolute path to the file, or null if it does not exist
 
 The documentation for this class was generated from the following file:\begin{DoxyCompactItemize}
 \item 
-View.php\end{DoxyCompactItemize}
+libs/View.php\end{DoxyCompactItemize}
