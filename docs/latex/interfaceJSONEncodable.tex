@@ -1,0 +1,42 @@
+\hypertarget{interfaceJSONEncodable}{
+\section{JSONEncodable Interface Reference}
+\label{interfaceJSONEncodable}\index{JSONEncodable@{JSONEncodable}}
+}
+Inheritance diagram for JSONEncodable:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=3.000000cm]{interfaceJSONEncodable}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{interfaceJSONEncodable_ab9dcc56991715c542fbec7f1db0b177e}{toJSON} ()
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+This interface can be implemented to give more flexible JSON encoding to objects. An implementing class supplies a toJSON function that will return data to be json\_\-encode'd instead of the object itself. This can be particularly useful when protected/private properties need to be available in the encoded JSON. 
+
+\subsection{Member Function Documentation}
+\hypertarget{interfaceJSONEncodable_ab9dcc56991715c542fbec7f1db0b177e}{
+\index{JSONEncodable@{JSONEncodable}!toJSON@{toJSON}}
+\index{toJSON@{toJSON}!JSONEncodable@{JSONEncodable}}
+\subsubsection[{toJSON}]{\setlength{\rightskip}{0pt plus 5cm}JSONEncodable::toJSON (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}
+\label{interfaceJSONEncodable_ab9dcc56991715c542fbec7f1db0b177e}
+\begin{DoxyReturn}{Returns}
+mixed The data to be JSON-\/encoded 
+\end{DoxyReturn}
+
+
+Implemented in \hyperlink{classArrayList_ae15f74916c7173d961d6cc850776e1ae}{ArrayList}.
+
+
+
+The documentation for this interface was generated from the following file:\begin{DoxyCompactItemize}
+\item 
+libs/Library/JSONEncodable.php\end{DoxyCompactItemize}
