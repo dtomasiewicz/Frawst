@@ -79,14 +79,7 @@
 		public static function dotToBracket($dotPath, $bracketFirst = false) {
 			$segs = explode('.', $dotPath);
 			$path = $bracketFirst ? '' : array_shift($segs);
-			foreach($segs as $seg) {
-				if($seg == '*') {
-					$path .= '[]';
-				} else {
-					$path .= '['.$seg.']';
-				}
-			}
-			return $path;
+			return count($segs) ? $path.'['.implode('][', $segs).']' : $path;
 		}
 		
 		/**
@@ -96,12 +89,7 @@
 		 * @return string The dot-separated path
 		 */
 		public static function bracketToDot($bracketPath) {
-			$segs = explode('][', $bracketPath);
-			// first component may or may not be bracketed
-			foreach ($subSegs = array_reverse(explode('[', array_shift($segs), 2)) as $subSeg) {
-				array_unshift($segs, rtrim($subSeg, ']'));
-			}
-			return implode('.', $segs);
+			return str_replace('[', '.', str_replace('][', '[', trim($bracketPath, '[]')));
 		}
 		
 		/**
