@@ -64,7 +64,7 @@
 				self::$_camelBack[$string] = $str;
 			}
 			
-			return self::$_camelBack[$str];
+			return self::$_camelBack[$string];
 		}
 		
 		/**
@@ -94,6 +94,7 @@
 		public static function slug($str, $spaceReplace = '_') {
 			$slug = '';
 			$spaceLast = true;
+			$str = trim($str);
 			for($i = 0; $i < strlen($str); $i++) {
 				$ch = substr($str, $i, 1);
 				if($ch === ' ' && !$spaceLast) {
@@ -104,6 +105,7 @@
 					$slug .= $ch;
 				}
 			}
+			
 			return $slug;
 		}
 	}
