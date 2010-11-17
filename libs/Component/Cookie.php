@@ -3,6 +3,10 @@
 	use \Frawst\Component,
 		\Frawst\Library\Cookie as CookieLib;
 	
+	/**
+	 * Provides an array-like interface for setting and deleting cookies
+	 * from the controller.
+	 */
 	class Cookie extends Component implements \ArrayAccess {
 		public function offsetSet($offset, $value) {
 			CookieLib::set($offset, $value);

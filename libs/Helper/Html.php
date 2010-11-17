@@ -4,7 +4,11 @@
 		\Frawst\Library\Sanitize,
 		\Frawst\Library\Inflector;
 	
+	/**
+	 * HTML helper. 
+	 */
 	class Html extends Helper {
+		
 		protected $_tags = array(
 			'image' => '<img src="%s" %s>',
 			'link' => '<a href="%s" %s>%s</a>'
@@ -33,4 +37,5 @@
 		public function paragraphs($string) {
 			return Sanitize::paragraphs($string);
 		}
+		
 	}

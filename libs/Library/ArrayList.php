@@ -33,7 +33,14 @@
 		}
 		
 		/**
-		 * Merges another arraylist into this one
+		 * Merges another iterator into this one
+		 * @param Iterator|array $other The other iterator or array to
+		 *                              merge into this one
+		 * @param bool $overwrite If false, the keys in $othe will be ignored
+		 *                        and the values will simply be pushed onto this
+		 *                        list. Otherwise, if a key conflict is encountered,
+		 *                        the value from $other will overwrite the value
+		 *                        from $this.
 		 */
 		public function merge($other, $overwrite = false) {
 			foreach ($other as $key => $value) {
@@ -45,6 +52,10 @@
 			}
 		}
 		
+		/**
+		 * Sorts this list with the given callback function.
+		 * @param callback $callback
+		 */
 		public function usort($callback) {
 			usort($this->_data, $callback);
 		}

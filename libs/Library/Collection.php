@@ -3,12 +3,21 @@
 	use \Frawst\Exception;
 	
 	/**
-	 * Used for sets of objects that are intended to be iterated and counted
-	 * like arrays, but allows storage of extra data that arrays do not.
+	 * Similar to an ArrayList, but all objects stored must be instances of
+	 * a common base class.
 	 */
 	class Collection extends ArrayList {
+		
+		const SORT_ASC = 1;
+		const SORT_DESC = -1;
+		
 		protected $_type;
 		
+		/**
+		 * @param string $type The name of the class which all members of this
+		 *                     collection must be instances of
+		 * @para array $data Members to add to the collection upon creation
+		 */
 		public function __construct($type, $data = null) {
 			$this->_type = $type;
 			parent::__construct($data);
@@ -52,37 +61,51 @@
 		}
 		
 		/**
-		 * Getting a value from the collection will return an array of that
-		 * value from each collection item.
+		 * Attempts to get the value of the specified property from each object
+		 * in this colleciton, and returns them as an array.
+		 * @param string $property
+		 * @return array
 		 */
-		public function __get($name) {
+		public function getAll($property) {
 			$values = array();
-			foreach ($this->get() as $key => $item) {
-				$values[$key] = $item->$name;
+			foreach($this->_data as $key => $item) {
+				$values[$key] = $item->$property;
 			}
 			return $values;
 		}
-		
-		/**
-		 * Setting a value to the collection will attempt to set that value
-		 * in all collection items.
-		 */
-		public function __set($name, $value) {
-			foreach ($this->get() as $item) {
-				$item->$name = $value;
-			}
+		public function __get($name) {
+			return $this->getAll($name);
 		}
 		
 		/**
-		 * Calling a method will return an array of the result of that method
-		 * being called on all items in the collection.
+		 * Attempts to set the value of the specified property to all objects
+		 * in the set.
+		 * @param string $property Name of the property
+		 * @param mixed $value Value to set
 		 */
-		public function __call($method, $args) {
+		public function setAll($property, $value) {
+			foreach($this->_data as $key => $item) {
+				$item->$property = $value;
+			}
+		}
+		public function __set($property, $value) {
+			$this->setAll($property, $value);
+		}
+		
+		/**
+		 * Attempts to call a method on all members of this collection and returns
+		 * the results as an array
+		 */
+		public function callAll($method, $args) {
 			$results = array();
-			foreach ($this->get() as $key => $item) {
+			foreach($this->_data as $key => $item) {
 				$results[$key] = call_user_func_array(array($item, $method), $args);
 			}
 			return $results;
+		}
+		
+		public function __call($method, $args) {
+			return $this->call($method, $args);
 		}
 		
 		/**
@@ -98,8 +121,10 @@
 		
 		/**
 		 * Sorts objects in the collection by the specified property.
+		 * @param string $property The property to sort by
+		 * @param int $direction
 		 */
-		public function sortBy($property, $direction = ASC) {
+		public function sortBy($property, $direction = self::SORT_ASC) {
 			parent::usort(function($a, $b) {
 				global $property, $direction;
 				

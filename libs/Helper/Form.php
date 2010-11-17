@@ -3,9 +3,28 @@
 	use \Frawst\Library\Matrix,
 	    \Frawst\Library\Sanitize;
 	
+	/**
+	 * Form helper. Used to create forms based on definitions (extensions
+	 * of Frawst\Form)
+	 * 
+	 * Features:
+	 *  - automatically generates security tokens to prevent CSRF
+	 *  - will automatically populate fields with (in order of priority)
+	 *    1. data already submitted to this request by the same form
+	 *    2. values provided using the populate() method
+	 *    3. defaults from the form definition
+	 *  - dot-path field naming
+	 */
 	class Form extends \Frawst\Helper {
+		
+		/**
+		 * @var Frawst\Form An instance of the form definition
+		 */
 		protected $_Form;
 		
+		/**
+		 * Immitate read-only properties
+		 */
 		public function __get($name) {
 			if ($name == 'Form') {
 				return $this->_Form;
@@ -14,6 +33,15 @@
 			}
 		}
 		
+		/**
+		 * Opens a form. Loads the form definition and returns mark-up for the
+		 * opening tag and any necessary hidden tags.
+		 * @param string $formName The name of the form. There should be a form
+		 *                         definition class called Frawst\Form\$formName
+		 * @param string $action The action for the form. Expects an application route.
+		 * @param array $attrs Any additional attributes/values for the FORM tag
+		 * @return string HTML for the form opening
+		 */
 		public function open($formName, $action = null, $attrs = array()) {
 			if (!($form = $this->_View->Response->Request->form($formName))) {
 				$class = 'Frawst\\Form\\'.$formName;
@@ -26,6 +54,8 @@
 			
 			$out = '<form '.$this->parseAttributes($attrs).'>';
 			
+			// store the method in a hidden field for browsers that don't support
+			// methods other than GET and POST
 			if($attrs['method'] != 'GET') {
 				$out .= '<input type="hidden" name="___METHOD" value="'.$attrs['method'].'">';
 			}
@@ -38,25 +68,39 @@
 			return $out;
 		}
 		
+		/**
+		 * Populates the form with the given data. Keys should be in
+		 * dot-path format.
+		 * @param array $data
+		 */
 		public function populate($data = array()) {
 			$this->_Form->populate($data);
 		}
 		
+		/**
+		 * Closes the form
+		 * @return string The form closing tag
+		 */
 		public function close() {
 			$this->_Form = null;
 			return '</form>';
 		}
 		
+		/**
+		 * Returns mark-up for a list of errors on the given field
+		 * @param string $field The name of the field (dot-path)
+		 */
 		public function errors($field) {
 			$errors = $this->_Form->errors($field);
-			
-			$out = '<ul class="fieldErrors fieldErrors-'.str_replace('.', '-', $field).'">';
-			foreach ($errors as $message) {
-				$out .= '<li>'.$message.'</li>';
+			if(count($errors)) {
+				$out = '<ul class="fieldErrors fieldErrors-'.str_replace('.', '-', $field).'">';
+				foreach ($errors as $message) {
+					$out .= '<li>'.$message.'</li>';
+				}
+				return $out.'</ul>';
+			} else {
+				return '';
 			}
-			$out .= '</ul>';
-			
-			return $out;
 		}
 		
 		public function input($name, $attrs = array()) {
@@ -104,13 +148,12 @@
 		
 		/**
 		 * Radio
-		 * @todo make this array-proof
 		 */
 		public function radio($name, $value, $attrs = array()) {
 			$attrs['name'] = Matrix::dotToBracket($name);
 			$attrs['type'] = 'radio';
 			$attrs['value'] = $value;
-			$attrs['checked'] = $value == $this->_Form[$name]
+			$attrs['checked'] = $value == $this->_Form->get($name)
 				? 'checked'
 				: null;
 			return '<input '.$this->parseAttributes($attrs).'>';

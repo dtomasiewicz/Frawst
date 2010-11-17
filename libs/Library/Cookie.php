@@ -2,6 +2,9 @@
 	namespace Frawst\Library;
 	use \Frawst\Library\Matrix;
 	
+	/**
+	 * Wrapper class for PHP cookies.
+	 */
 	class Cookie {
 		
 		public static function get($name) {
@@ -33,4 +36,5 @@
 		public static function exists($name) {
 			return Matrix::pathExists($_COOKIE, $name);
 		}
+		
 	}

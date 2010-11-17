@@ -79,10 +79,13 @@
 		/**
 		 * Sets default values for this form. These are the values that should be
 		 * used as defaults if no data already exists from an unsuccessful submission.
+		 * Keys should be in dot-path format.
 		 * @param array $defaults
 		 */
 		public function populate($defaults) {
-			$this->_defaults = $defaults+$this->_defaults;
+			foreach($defaults as $key => $value) {
+				Matrix::pathSet($this->_defaults, $key, $value);
+			}
 		}
 		
 		/**

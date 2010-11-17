@@ -1,13 +1,20 @@
 <?php
 	namespace Frawst\Library;
 	
-	class Date {		
+	/**
+	 * Date formatting functions.
+	 * @todo this class should be rewritten to support PHP5's date objects
+	 */
+	class Date {
+		
 		const SECOND = 1;
 		const MINUTE = 60;
 		const HOUR = 3600;
 		const DAY = 86400;
+		// approximate
 		const MONTH = 2629744;
 		const YEAR = 31556926;
+		const LEAP_YEAR = 31643326;
 		
 		/**
 		 * Returns Today if the specified time falls during the current day,
