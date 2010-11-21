@@ -7,7 +7,7 @@ Frawst is a hierarchial model-view-controller (HMVC) framework written for PHP 5
 
 **But what does it do?**
 
-Frawst strives to give consistent structure to applications without making the developers feel fenced-in to its design paradigm.
+Frawst strives to give consistent structure to applications without making developers feel too fenced-in by its ideology.
 
 **Okay, but what's the difference between Frawst and all of the other PHP MVC frameworks out there?**
 
@@ -19,11 +19,11 @@ There are a few aspects that sets Frawst apart from the other options. Here are 
 
 **Sounds good, where do I start?**
 
-At the moment, there is zero to no documentation available, so I don't really expect anyone else to be using this but myself. Does that mean I'm talking to myself? Oh well.
+I'm working on writing documentation and tutorials at the moment, but they're still in the early stages. When available, they will be posted at Frawst.com/docs.
 
-If you somehow managed to find this project, despite the non-existence of a website or any substantial documentation, then feel free to try it out and modify it at your own risk. Remember that it's still in initial development, so don't use it for anything important.
+If you somehow managed to find this project, despite the non-existence of a website, then feel free to try it out and modify it at your own risk. Remember that it's still in initial development, so don't use it for anything important.
 
-Eventually there will be a link to a website and perhaps some tutorials here; seeing as though I'm working and school is starting soon, I'm not sure when that will be.
+Eventually there will be a website, though seeing as I'm working 2 part-time jobs and going to school full-time, I'm not sure when that will be.
 
 Daniel Tomasiewicz  
 dtomasiewicz@gmail.com  
