@@ -1,7 +1,6 @@
 <?php
 	namespace Frawst;
-	use \Frawst\Library\Matrix,
-		\Frawst\Exception;
+	use \Frawst\Library\Matrix;
 	
 	/**
 	 * Frawst Request Handler
@@ -100,7 +99,7 @@
 				case 'Route':
 					return $this->_Route;
 				default:
-					throw new Exception\Frawst('Trying to access undeclared property Request::$'.$name);
+					throw new \Frawst\Exception('Trying to access undeclared property Request::$'.$name);
 			}
 		}
 		
@@ -175,7 +174,7 @@
 				$this->_Response->data($this->_Controller->execute());
 				return $this->_Response;
 			} else {
-				throw new Exception\Frawst('Cannot execute request to '.$this->route().' more than once.');
+				throw new \Frawst\Exception('Cannot execute request to '.$this->route().' more than once.');
 			}
 		}
 		

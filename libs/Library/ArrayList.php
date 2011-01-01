@@ -1,6 +1,5 @@
 <?php
 	namespace Frawst\Library;
-	use \Frawst\Exception;
 	
 	/**
 	 * Handles all array-type structure that also require supplemental information

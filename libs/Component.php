@@ -24,7 +24,7 @@
 			if ($name == 'Controller') {
 				return $this->_Controller;
 			} else {
-				throw new Exception\Frawst('Invalid Component property: '.$name);
+				throw new Exception('Invalid Component property: '.$name);
 			}
 		}
 		

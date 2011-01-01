@@ -1,7 +1,6 @@
 <?php
 	namespace Frawst;
-	use \Frawst\Library\Sanitize,
-	    \Frawst\Exception;
+	use \Frawst\Library\Sanitize;
 	
 	abstract class Helper {
 		protected $_View;
@@ -15,7 +14,7 @@
 			if ($name == 'View') {
 				return $this->_View;
 			} else {
-				throw new Exception\Frawst('Invalid View property: '.$name);
+				throw new Exception('Invalid View property: '.$name);
 			}
 		}
 		

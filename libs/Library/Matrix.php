@@ -1,7 +1,6 @@
 <?php
 	namespace Frawst\Library;
-	use \Serializable,
-		\Frawst\Exception;
+	use \Serializable;
 	
 	class Matrix implements \ArrayAccess {
 		protected $_data = array();
@@ -138,7 +137,7 @@
 				if (array_key_exists($key, $target)) {
 					$target =& $target[$key];
 				} else {
-					throw new Exception\Frawst('Path does not exist: '.$path);
+					throw new \Frawst\Exception('Path does not exist: '.$path);
 				}
 			}
 			
@@ -197,7 +196,7 @@
 			if (Matrix::pathExists($array, $path) && is_array($val = Matrix::pathGet($array, $path))) {
 				$val[] = $value;
 			} else {
-				throw new Exception\Frawst('Trying to push to non-array: '.$path);
+				throw new \Frawst\Exception('Trying to push to non-array: '.$path);
 			}
 		}
 		
@@ -209,7 +208,7 @@
 					Matrix::pathSet($array, $path, array_merge($val, $merge));
 				}
 			} else {
-				throw new Exception\Frawst('Trying to merge with non-array: '.$path);
+				throw new \Frawst\Exception('Trying to merge with non-array: '.$path);
 			}
 		}
 		

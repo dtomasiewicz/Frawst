@@ -1,7 +1,6 @@
 <?php
 	namespace Frawst;
-	use \Frawst\Exception,
-	    \Frawst\View\AppView;
+	use \Frawst\View\AppView;
 	
    /**
     * Handles a response to a Request. In charge of response headers, redirection,
@@ -102,7 +101,7 @@
 				case 'Request':
 					return $this->_Request;
 				default:
-					throw new Exception\Frawst('Invalid Response property: '.$name);
+					throw new \Frawst\Exception('Invalid Response property: '.$name);
 			}
 		}
 		
@@ -214,7 +213,7 @@
 			if (isset($this->_internalRedirect)) {
 				return $this->_Request->subRequest($this->_internalRedirect, array(), 'GET')->execute()->render();
 			} elseif ($this->mustRedirect()) {
-				throw new Exception\Frawst('Cannot render a request pending an external redirection.');
+				throw new \Frawst\Exception('Cannot render a request pending an external redirection.');
 			} else {
 				$class = VIEW_CLASS;
 				$this->_View = new $class($this);

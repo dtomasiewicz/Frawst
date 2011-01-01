@@ -1,6 +1,5 @@
 <?php
 	namespace Frawst\Library;
-	use \Frawst\Exception;
 	
 	/**
 	 * Similar to an ArrayList, but all objects stored must be instances of
@@ -49,7 +48,7 @@
 		
 		private function __notWelcome($item) {
 			$type = is_object($item) ? get_class($item) : gettype($item);
-			throw new Exception\Frawst('Variable of type '.$type.' is not welcome in a Collection of type '.$this->type().'.');
+			throw new Exception('Variable of type '.$type.' is not welcome in a Collection of type '.$this->type().'.');
 		}
 		
 		public function welcomes($item) {

@@ -1,6 +1,5 @@
 <?php
 	namespace Frawst\Library;
-	use \Frawst\Exception;
 		
 	class FileMatrix extends Matrix {
 		protected $_directory;
@@ -27,7 +26,7 @@
 			$path = $this->_directory.str_replace('.', DIRECTORY_SEPARATOR, $offset);
 			
 			if (!file_exists($path) || !is_readable(dirname($path))) {
-				throw new Exception\File('Cannot get value from FileMatrix at: '.$offset);
+				throw new FileException('Cannot get value from FileMatrix at: '.$offset);
 			}
 			
 			$data = self::read($path);
@@ -44,7 +43,7 @@
 			}
 			
 			if (!is_writable(dirname($path))) {
-				throw new Exception\File('Cannot set value to FileMatrix at '.$offset.': Directory is not writable.');
+				throw new FileException('Cannot set value to FileMatrix at '.$offset.': Directory is not writable.');
 			}
 			
 			file_put_contents($path, serialize($value));
@@ -63,7 +62,7 @@
 					}
 					parent::offsetUnset($offset);
 				} else {
-					throw new Exception\File('Cannot unset value from FileMatrix at '.$offset.': Directory is not writable.');
+					throw new FileException('Cannot unset value from FileMatrix at '.$offset.': Directory is not writable.');
 				}
 			}
 		}

@@ -1,6 +1,5 @@
 <?php
 	namespace Frawst;
-	use \Frawst\Exception;
 	
    /**
     * Handles response to external requests.
@@ -42,7 +41,7 @@
 				case 'Request':
 					return $this->_Request;
 				default:
-					throw new Exception\Frawst('Invalid Response property: '.$name);
+					throw new Exception('Invalid Response property: '.$name);
 			}
 		}
 		

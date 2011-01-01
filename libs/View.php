@@ -28,7 +28,7 @@
 			} elseif ($helper = $this->_helper($name)) {
 				return $helper;
 			} else {
-				throw new Exception\Frawst('Invalid helper: '.$name);
+				throw new Exception('Invalid helper: '.$name);
 			}
  		}
 		
@@ -119,7 +119,7 @@
 				require($___file);
 				return ob_get_clean();
 			} else {
-				throw new Exception\Frawst('Non-existent view template: '.$___file);
+				throw new Exception('Non-existent view template: '.$___file);
 			}
 		}
 		

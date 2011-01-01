@@ -58,7 +58,7 @@
 				case 'Response':
 					return $this->_Response;
 				default:
-					throw new Exception\Frawst('Trying to access undeclared property Request::$'.$name);
+					throw new Exception('Trying to access undeclared property Request::$'.$name);
 			}
 		}
 		

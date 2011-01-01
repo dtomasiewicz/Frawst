@@ -3,8 +3,7 @@
 	use \Frawst\Library\Matrix,
 	    \Frawst\Library\Security,
 	    \Frawst\Library\Session,
-	    \Frawst\Library\Validator,
-	    \Frawst\Exception;
+	    \Frawst\Library\Validator;
 	
 	/**
 	 * Base Frawst Form class

@@ -1,8 +1,7 @@
 <?php
 	namespace Frawst;
 	use \Frawst\Library\Matrix,
-		\Frawst\Loader,
-		\Frawst\Exception;
+		\Frawst\Loader;
 	
 	/**
 	 * Config

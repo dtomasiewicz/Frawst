@@ -43,7 +43,7 @@
 			} elseif ($c = $this->_component($name)) {
 				return $c;
 			} else {
-				throw new Exception\Controller('Invalid controller property: '.$name);
+				throw new ControllerException('Invalid controller property: '.$name);
 			}
 		}
 		

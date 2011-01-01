@@ -1,6 +1,5 @@
 <?php
 	namespace Frawst\Library;
-	use \Frawst\Exception;
 	
 	abstract class Validator {
 		const BLANK = '/^\s*$/';
@@ -78,7 +77,7 @@
 						$errors[] = $error;
 					}
 				} else {
-					throw new Exception\Frawst('Could not find a callback for unknown validation rule: '.$rule);
+					throw new \Frawst\Exception('Could not find a callback for unknown validation rule: '.$rule);
 				}
 			}
 			
