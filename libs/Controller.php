@@ -89,7 +89,7 @@
 			
 			if($this->_before()) {
 				if(method_exists($this, $method = strtolower($this->Request->method()))) {
-					$data = call_user_func_array(array($this, $method), $this->Request->params());
+					$data = call_user_func_array(array($this, $method), $this->Request->param());
 				}
 			}
 			

@@ -1,7 +1,7 @@
 <?php
 	namespace Frawst;
 	
-	class Language extends \Frawst\Exception {
+	class LanguageException extends \Frawst\Exception {
 		public $severity;
 		
 		public function __construct($message, $code, $severity, $file, $line) {

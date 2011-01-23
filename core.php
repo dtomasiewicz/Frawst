@@ -58,7 +58,7 @@
 	spl_autoload_register(array('Frawst\\Loader', 'import'));
 	
 	set_error_handler(function($code, $message, $file, $line) {
-		throw new \Frawst\Exception\Language($message, 0, $code, $file, $line);
+		throw new LanguageException($message, 0, $code, $file, $line);
 	});
 	
 	// Paths in which libraries can be held.

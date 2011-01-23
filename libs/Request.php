@@ -185,13 +185,12 @@
 			return $this->_method;
 		}
 		
-		public function params() {
-			return $this->_Route->params();
+		public function param($param = null) {
+			return $this->_Route->param($param);
 		}
-		
-		public function param($index) {
-			$params = $this->_Route->params();
-			return isset($params[$index]) ? $params[$index] : null;
+
+		public function option($option = null) {
+			return $this->_Route->option($option);
 		}
 		
 		/**
