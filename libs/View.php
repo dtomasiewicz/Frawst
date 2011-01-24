@@ -1,6 +1,5 @@
 <?php
 	namespace Frawst;
-	use \Frawst\Library\Serialize;
 	
 	class View {
 		protected $_helpers;

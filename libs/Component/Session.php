@@ -1,7 +1,7 @@
 <?php
 	namespace Frawst\Component;
 	use \Frawst\Component,
-		\Frawst\Library\Session as SessionLib;
+		\Frawst\Session as SessionLib;
 	
 	/**
 	 * Provides an array-style interface for setting and deleting session

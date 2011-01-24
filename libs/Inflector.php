@@ -1,5 +1,5 @@
 <?php
-	namespace Frawst\Library;
+	namespace Frawst;
 	
 	/**
 	 * Provides various tools for manipulating strings.

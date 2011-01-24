@@ -1,7 +1,7 @@
 <?php
 	namespace Frawst\Helper;
-	use \Frawst\Library\Matrix,
-	    \Frawst\Library\Sanitize;
+	use \Frawst\Matrix,
+	    \Frawst\Sanitize;
 	
 	/**
 	 * Form helper. Used to create forms based on definitions (extensions

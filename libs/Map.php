@@ -1,5 +1,5 @@
 <?php
-	namespace Frawst\Library;
+	namespace Frawst;
 	
 	class Map implements \ArrayAccess, \Countable, \JSONEncodable {
 		private $__type;

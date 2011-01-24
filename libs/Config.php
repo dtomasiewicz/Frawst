@@ -1,7 +1,5 @@
 <?php
 	namespace Frawst;
-	use \Frawst\Library\Matrix,
-		\Frawst\Loader;
 	
 	/**
 	 * Config

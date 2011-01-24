@@ -1,5 +1,5 @@
 <?php
-	namespace Frawst\Library;
+	namespace Frawst;
 	
 	/**
 	 * Similar to an ArrayList, but all objects stored must be instances of

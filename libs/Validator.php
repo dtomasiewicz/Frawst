@@ -1,5 +1,5 @@
 <?php
-	namespace Frawst\Library;
+	namespace Frawst;
 	
 	abstract class Validator {
 		const BLANK = '/^\s*$/';

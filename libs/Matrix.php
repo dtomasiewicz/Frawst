@@ -1,5 +1,5 @@
 <?php
-	namespace Frawst\Library;
+	namespace Frawst;
 	use \Serializable;
 	
 	class Matrix implements \ArrayAccess {
@@ -76,7 +76,7 @@
 		 * @return string The bracket-separated path.
 		 */
 		public static function dotToBracket($dotPath, $bracketFirst = false) {
-			$segs = explode('.', $dotPath);
+			$segs = explode('.', str_replace('*', '', $dotPath));
 			$path = $bracketFirst ? '' : array_shift($segs);
 			return count($segs) ? $path.'['.implode('][', $segs).']' : $path;
 		}

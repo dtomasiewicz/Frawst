@@ -1,5 +1,5 @@
 <?php
-	namespace Frawst\Library;
+	namespace Frawst;
 		
 	class FileMatrix extends Matrix {
 		protected $_directory;

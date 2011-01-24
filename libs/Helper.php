@@ -1,6 +1,5 @@
 <?php
 	namespace Frawst;
-	use \Frawst\Library\Sanitize;
 	
 	abstract class Helper {
 		protected $_View;

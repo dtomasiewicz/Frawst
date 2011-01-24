@@ -1,5 +1,5 @@
 <?php
-	namespace Frawst\Library;
+	namespace Frawst;
 	
 	class Session {
 		const COOKIE_NAME = 'Session';

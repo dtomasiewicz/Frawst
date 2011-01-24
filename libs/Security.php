@@ -1,6 +1,5 @@
 <?php
-	namespace Frawst\Library;
-	use \Frawst\Config;
+	namespace Frawst;
 	
 	class Security {
 		/**

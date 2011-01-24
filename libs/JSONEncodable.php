@@ -1,5 +1,5 @@
 <?php
-	namespace Frawst\Library;
+	namespace Frawst;
 	
 	/**
 	 * This interface can be implemented to give more flexible JSON encoding to

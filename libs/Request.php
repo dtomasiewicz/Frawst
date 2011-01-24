@@ -1,6 +1,5 @@
 <?php
 	namespace Frawst;
-	use \Frawst\Library\Matrix;
 	
 	/**
 	 * Frawst Request Handler

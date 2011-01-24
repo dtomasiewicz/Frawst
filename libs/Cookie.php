@@ -1,6 +1,5 @@
 <?php
-	namespace Frawst\Library;
-	use \Frawst\Library\Matrix;
+	namespace Frawst;
 	
 	/**
 	 * Wrapper class for PHP cookies.

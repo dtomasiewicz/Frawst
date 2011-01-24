@@ -1,7 +1,7 @@
 <?php
 	namespace Frawst\Component;
 	use \Frawst\Component,
-		\Frawst\Library\Cookie as CookieLib;
+		\Frawst\Cookie as CookieLib;
 	
 	/**
 	 * Provides an array-like interface for setting and deleting cookies

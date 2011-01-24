@@ -1,8 +1,8 @@
 <?php
 	namespace Frawst\Helper;
 	use \Frawst\Helper,
-		\Frawst\Library\Sanitize,
-		\Frawst\Library\Inflector;
+		\Frawst\Sanitize,
+		\Frawst\Inflector;
 	
 	/**
 	 * HTML helper. 
