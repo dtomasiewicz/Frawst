@@ -170,11 +170,15 @@
 		public function execute() {
 			if(!isset($this->_Response)) {
 				$this->_Response = new Response($this);
-				$this->_Response->data($this->_Controller->execute());
-				return $this->_Response;
-			} else {
-				throw new \Frawst\Exception('Cannot execute request to '.$this->route().' more than once.');
+				try {
+					$this->_Response->data($this->_Controller->execute());
+				} catch(\Exception $e) {
+					$this->_Response->data('<div class="Frawst-Debug">'.
+						'<h1>A Controller Problem Occurred!</h1>'.
+						'<pre>'.$e.'</pre></div>');
+				}
 			}
+			return $this->_Response;
 		}
 		
 		/**

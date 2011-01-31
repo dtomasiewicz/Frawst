@@ -16,7 +16,10 @@
 	 * pass the name of your Form class in the open() method, and the fields will be (re)populated
 	 * automatically.
 	 */
-	abstract class Form extends Matrix {
+	abstract class Form implements \ArrayAccess {
+		protected $_data;
+		protected $_submitted;
+		
 		protected static $_method = 'POST';
 		
 		/**
@@ -41,12 +44,6 @@
 		protected static $_requiredPresent = array();
 		
 		/**
-		 * Default data for repopulating form fields. Keys should be in expanded format.
-		 * @vara array
-		 */
-		protected $_defaults;
-		
-		/**
 		 * Whether or not to require a token for this form. If the form is vulnerable
 		 * to CSRF, this should be set to true.
 		 * @var bool
@@ -66,21 +63,39 @@
 		 * not specified in $_fields, they are ignored.
 		 * @param array $data
 		 */
-		public function __construct($data = array()) {
-			$this->_defaults = static::$_fields;
-			parent::__construct($data);
+		public function __construct($data = null) {
+			if($data === null) {
+				$this->_submitted = false;
+				$this->_data = new Matrix();
+			} else {
+				$this->_submitted = true;
+				$this->_data = new Matrix($data);
+			}
 		}
 		
-		/**
-		 * Sets default values for this form. These are the values that should be
-		 * used as defaults if no data already exists from an unsuccessful submission.
-		 * Keys should be in dot-path format.
-		 * @param array $defaults
-		 */
-		public function populate($defaults) {
-			foreach($defaults as $key => $value) {
-				Matrix::pathSet($this->_defaults, $key, $value);
-			}
+		public function submitted() {
+			return $this->_submitted;
+		}
+		
+		public function get($offset) {
+			return $this->_data->exists($offset) ? $this->_data->get($offset) : null;
+		}
+		
+		public function exists($offset) {
+			return $this->_data->exists($offset);
+		}
+		
+		public function offsetExists($offset) {
+			return $this->exists($offset);
+		}
+		public function offsetGet($offset) {
+			return $this->get($offset);
+		}
+		public function offsetSet($offset, $value) {
+			
+		}
+		public function offsetUnset($offset) {
+			
 		}
 		
 		/**
@@ -119,20 +134,6 @@
 			return Matrix::pathExists($this->_errors, $field)
 				? Matrix::pathGet($this->_errors, $field)
 				: array();
-		}
-		
-		/**
-		 * If a value does not exist in the form data, use the default
-		 * value instead.
-		 */
-		public function get($field = null) {
-			if(parent::exists($field)) {
-				return parent::get($field);
-			} else {
-				return Matrix::pathExists($this->_defaults, $field)
-					? Matrix::pathGet($this->_defaults, $field)
-					: null;
-			}
 		}
 		
 		/**

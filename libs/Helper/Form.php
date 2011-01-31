@@ -69,21 +69,22 @@
 		}
 		
 		/**
-		 * Populates the form with the given data. Keys should be in
-		 * dot-path format.
-		 * @param array $data
-		 */
-		public function populate($data = array()) {
-			$this->_Form->populate($data);
-		}
-		
-		/**
 		 * Closes the form
 		 * @return string The form closing tag
 		 */
 		public function close() {
 			$this->_Form = null;
 			return '</form>';
+		}
+		
+		public function repopulate($field, $default = null) {
+			if($this->_Form->submitted()) {
+				if(null !== $value = $this->_Form->get($field)) {
+					return $value;
+				}
+			}
+			
+			return $default;
 		}
 		
 		/**
@@ -103,45 +104,46 @@
 			}
 		}
 		
-		public function input($name, $attrs = array()) {
+		protected function _input($name, $default, $attrs = array()) {
 			$attrs['name'] = Matrix::dotToBracket($name);
-			$attrs['value'] = $this->_Form->get($name);
+			$attrs['value'] = $this->repopulate($name, $default);
 			return '<input '.$this->parseAttributes($attrs).'>';
 		}
 		
 		/**
 		 * Hidden
 		 */
-		public function hidden($name, $attrs = array()) {
+		public function hidden($name, $default = '', $attrs = array()) {
 			$attrs['type'] = 'hidden';
-			return $this->input($name, $attrs);
+			return $this->_input($name, $default, $attrs);
 		}
 		
 		/**
 		 * Text
 		 */
-		public function text($name, $attrs = array()) {
+		public function text($name, $default = '', $attrs = array()) {
 			$attrs['type'] = 'text';
-			return $this->input($name, $attrs);
+			return $this->_input($name, $default, $attrs);
 		}
 		
 		/**
 		 * Password
 		 */
-		public function password($name, $attrs = array()) {
+		public function password($name, $default = '', $attrs = array()) {
 			$attrs['type'] = 'password';
-			return $this->input($name, $attrs);
+			return $this->_input($name, $default, $attrs);
 		}
 		
 		/**
 		 * Checkbox
 		 */
-		public function checkbox($name, $attrs = array()) {
+		public function checkbox($name, $defaultChecked = false, $attrs = array()) {
+			if($this->repopulate($name, $defaultChecked)) {
+				$attrs['checked'] = 'checked';
+			}
+			
 			$attrs['name'] = Matrix::dotToBracket($name);
 			$attrs['type'] = 'checkbox';
-			$attrs['checked'] = $this->_Form->get($name) !== null
-				? 'checked'
-				: null;
 			$attrs['value'] = isset($attrs['value']) ? $attrs['value'] : 1;
 			return '<input '.$this->parseAttributes($attrs).'>';
 		}
@@ -149,33 +151,33 @@
 		/**
 		 * Radio
 		 */
-		public function radio($name, $value, $attrs = array()) {
+		public function radio($name, $value, $default = null, $attrs = array()) {
 			$attrs['name'] = Matrix::dotToBracket($name);
 			$attrs['type'] = 'radio';
 			$attrs['value'] = $value;
-			$attrs['checked'] = $value == $this->_Form->get($name)
-				? 'checked'
-				: null;
+			if($value === $this->repopulate($name, $default)) {
+				$attrs['checked'] = 'checked';
+			}
 			return '<input '.$this->parseAttributes($attrs).'>';
 		}
 		
 		/**
 		 * Textarea
 		 */
-		public function textarea($name, $attrs = array()) {
+		public function textarea($name, $default = '', $attrs = array()) {
 			$attrs['name'] = Matrix::dotToBracket($name);
-			$value = $this->_Form->get($name);
+			$value = $this->repopulate($name, $default);
 			return '<textarea '.$this->parseAttributes($attrs).'>'.Sanitize::html($value).'</textarea>';
 		}
 		
 		/**
 		 * Select
 		 */
-		public function select($name, $options, $attrs = array()) {
+		public function select($name, $options, $selected = null, $attrs = array()) {
 			$attrs['name'] = Matrix::dotToBracket($name);
 			$out = '<select '.$this->parseAttributes($attrs).'>';
 			
-			$selected = $this->_Form->get($name);
+			$selected = $this->repopulate($name, $selected);
 			foreach ($options as $value => $content) {
 				$out .= '<option value="'.$value.'"';
 				if ($selected == $value) {
@@ -198,18 +200,18 @@
 		/**
 		 * Select box for 24 hours
 		 */
-		public function selectHour24($name, $attrs = array()) {
+		public function selectHour24($name, $selected = null, $attrs = array()) {
 			$hours = array(
 				0 => '00', 1 => '01', 2 => '02', 3 => '03', 4 => '04', 5 => '05', 6 => '06', 7 => '07', 8 => '08', 9 => '09', 10 => '10', 11 => '11',
 				12 => '12', 13 => '13', 14 => '14', 15 => '15', 16 => '16', 17 => '17', 18 => '18', 19 => '19', 20 => '20', 21 => '21', 22 => '22', 23 => '23'
 			);
-			return $this->select($name, $hours, $attrs);
+			return $this->select($name, $hours, $selected, $attrs);
 		}
 		
 		/**
 		 * Select box for 60 minutes
 		 */
-		public function selectMinute($name, $attrs = array()) {
+		public function selectMinute($name, $selected = null, $attrs = array()) {
 			$minutes = array(
 				0 => '00', 1 => '01', 2 => '02', 3 => '03', 4 => '04', 5 => '05', 6 => '06', 7 => '07', 8 => '08', 9 => '09', 10 => '10', 11 => '11',
 				12 => '12', 13 => '13', 14 => '14', 15 => '15', 16 => '16', 17 => '17', 18 => '18', 19 => '19', 20 => '20', 21 => '21', 22 => '22', 23 => '23',
@@ -217,18 +219,18 @@
 				36 => '36', 37 => '37', 38 => '38', 39 => '39', 40 => '40', 41 => '41', 42 => '42', 43 => '43', 44 => '44', 45 => '45', 46 => '46', 47 => '47',
 				48 => '48', 49 => '49', 50 => '50', 51 => '51', 52 => '52', 53 => '53', 54 => '54', 55 => '55', 56 => '56', 57 => '57', 58 => '58', 59 => '59'
 			);
-			return $this->select($name, $minutes, $attrs);
+			return $this->select($name, $minutes, $selected, $attrs);
 		}
 		
 		/**
 		 * Yes/no select box (returns 1 for yes, 0 for no)
 		 */
-		public function selectYesNo($name, $attrs = array()) {
+		public function selectYesNo($name, $selected = null, $attrs = array()) {
 			$opts = array(
 				0 => 'No',
 				1 => 'Yes'
 			);
-			return $this->select($name, $opts, $attrs);
+			return $this->select($name, $opts, $selected, $attrs);
 		}
 		
 		public function __call($method, $args) {

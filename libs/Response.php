@@ -170,7 +170,11 @@
 		 *                       route, set this to true.
 		 * @return bool false
 		 */
-		public function redirect($to = '', $status = self::STATUS_FOUND, $external = false) {
+		public function redirect($to = null, $status = self::STATUS_FOUND, $external = false) {
+			if($to === null) {
+				$to = $this->Request->route(true);
+			}
+			
 			if (!$external) {
 				$this->_internalRedirect = $to = trim($to, '/');
 				// some browsers (e.g. Firefox) fail to pass non-standard headers to next page
@@ -197,6 +201,15 @@
 		}
 		
 		/**
+		 * Sets the response status to Forbidden
+		 * @return bool false
+		 */
+		public function forbidden() {
+			$this->status(self::STATUS_FORBIDDEN);
+			return false;
+		}
+		
+		/**
 		 * @return bool True if this response must be redirected, false otherwise.
 		 */
 		public function mustRedirect() {
@@ -210,14 +223,22 @@
 		 * @return string The rendered view
 		 */
 		public function render() {
-			if (isset($this->_internalRedirect)) {
-				return $this->_Request->subRequest($this->_internalRedirect, array(), 'GET')->execute()->render();
-			} elseif ($this->mustRedirect()) {
-				throw new \Frawst\Exception('Cannot render a request pending an external redirection.');
-			} else {
-				$class = VIEW_CLASS;
-				$this->_View = new $class($this);
-				return $this->_View->render($this->_data);
+			try {
+				if (isset($this->_internalRedirect)) {
+					return $this->_Request->subRequest($this->_internalRedirect, array(), 'GET')->execute()->render();
+				} elseif ($this->mustRedirect()) {
+					throw new \Frawst\Exception('Cannot render a request pending an external redirection.');
+				} elseif(is_string($this->_data)) {
+					return $this->_data;
+				} else {
+					$class = VIEW_CLASS;
+					$this->_View = new $class($this);
+					return $this->_View->render($this->_data);
+				}
+			} catch(\Exception $e) {
+				return '<div class="Frawst-Debug">'.
+					'<h1>A Rendering Problem Occurred!</h1>'.
+					'<pre>'.$e.'</pre></div>';
 			}
 		}
 		

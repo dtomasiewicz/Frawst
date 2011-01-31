@@ -169,8 +169,7 @@
 		}
 		
 		public function sortBy($property, $direction = 1) {
-			$this->sort(function($a, $b) {
-				global $property, $direction;
+			$this->sort(function($a, $b) use ($property, $direction) {
 				if($a->$property == $b->$property) {
 					return 0;
 				} else {
