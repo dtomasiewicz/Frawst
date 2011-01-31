@@ -6,6 +6,6 @@
 	 * additional functionality to the View object ($this in template
 	 * files).
 	 */
-	class AppView extends \Frawst\View {
+	class MyView extends \Frawst\View {
 		
 	}

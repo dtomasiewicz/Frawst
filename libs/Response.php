@@ -1,6 +1,5 @@
 <?php
 	namespace Frawst;
-	use \Frawst\View\AppView;
 	
    /**
     * Handles a response to a Request. In charge of response headers, redirection,

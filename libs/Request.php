@@ -264,8 +264,10 @@
 		 * @param string $formName The name of the form.
 		 * @return Frawst\Form
 		 */
-		public function form($formName) {
-			if (isset($this->_forms[$formName])) {
+		public function form($formName = null) {
+			if($formName === null) {
+				return \Frawst\Form\MyForm::load($this->_data, true);
+			} elseif (isset($this->_forms[$formName])) {
 				return $this->_forms[$formName];
 			} elseif(class_exists($class = 'Frawst\\Form\\'.$formName) && $class::method() == $this->method()) {
 				return $this->_forms[$formName] = $class::load($this->_data);

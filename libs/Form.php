@@ -11,12 +11,12 @@
 	 * are passed in (as long as you check for compatibility before using the form) and all
 	 * required fields are present. Anti-CSRF form tokens are also implemented and will be
 	 * injected by default for all forms as long as you are using the FORM helper.
-	 * 
+	 * abstract 
 	 * This class is NOT used to output form markup! For that, you can use the Form helper. Simply
 	 * pass the name of your Form class in the open() method, and the fields will be (re)populated
 	 * automatically.
 	 */
-	abstract class Form implements \ArrayAccess {
+	class Form implements \ArrayAccess {
 		protected $_data;
 		protected $_submitted;
 		
@@ -41,7 +41,7 @@
 		 * Field names are in dot-path format.
 		 * @var mixed
 		 */
-		protected static $_requiredPresent = array();
+		protected static $_required = array();
 		
 		/**
 		 * Whether or not to require a token for this form. If the form is vulnerable
@@ -66,10 +66,10 @@
 		public function __construct($data = null) {
 			if($data === null) {
 				$this->_submitted = false;
-				$this->_data = new Matrix();
+				$this->_data = array();
 			} else {
 				$this->_submitted = true;
-				$this->_data = new Matrix($data);
+				$this->_data = $data;
 			}
 		}
 		
@@ -77,8 +77,35 @@
 			return $this->_submitted;
 		}
 		
+		protected static function _generalKey($key) {
+			$gKey = array();
+			foreach(explode('.', $key) as $v) {
+				if(is_numeric($v)) {
+					$gKey[] = '*';
+				} else {
+					$gKey[] = $v;
+				}
+			}
+			return implode('.', $gKey);
+		}
+		
+		protected function _defaultValue($field) {
+			if(array_key_exists($field, static::$_fields)) {
+				return static::$_fields[$field];
+			} else{
+				$gKey = self::_generalKey($field);
+				if(array_key_exists($gKey, static::$_fields)) {
+					return static::$_fields[$gKey];
+				}
+			}
+			
+			return null;
+		}
+		
 		public function get($offset) {
-			return $this->_data->exists($offset) ? $this->_data->get($offset) : null;
+			return Matrix::pathExists($this->_data, $offset)
+				? Matrix::pathGet($this->_data, $offset)
+				: $this->_defaultValue($offset);
 		}
 		
 		public function exists($offset) {
@@ -180,11 +207,21 @@
 		 * @return bool
 		 */
 		public static function compatible($data, $allowExtraFields = false) {
-			$requiredPresent = static::$_requiredPresent === true
-				? array_keys(Matrix::flatten(static::$_fields))
-				: static::$_requiredPresent;
+			if(!$allowExtraFields) {
+				foreach(Matrix::flatten($data) as $key => $value) {
+					if(!array_key_exists($key, static::$_fields)) {
+						if(!array_key_exists(self::_generalKey($key), static::$_fields)) {
+							return false;
+						}
+					}
+				}
+			}
 			
-			foreach($requiredPresent as $field) {
+			$required = static::$_required === true
+				? array_keys(static::$_fields)
+				: static::$_required;
+			
+			foreach($required as $field) {
 				if(!Matrix::pathExists($data, $field)) {
 					return false;
 				}
@@ -198,7 +235,7 @@
 		 * @param array $data The form data
 		 * @return Frawst\Form A form object if the data is valid, otherwise null.
 		 */
-		public static function load($data) {
+		public static function load($data, $allowExtraFields = false) {
 			if(static::$_useToken) {
 				if(!isset($data[static::TOKEN_NAME]) || !static::checkToken($data[static::TOKEN_NAME])) {
 					return null;
@@ -207,7 +244,7 @@
 				}
 			}
 			
-			if(static::compatible($data)) {
+			if(static::compatible($data, $allowExtraFields)) {
 				$c = get_called_class();
 				return new $c($data);
 			} else {

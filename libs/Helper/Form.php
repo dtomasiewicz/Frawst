@@ -78,7 +78,7 @@
 		}
 		
 		public function repopulate($field, $default = null) {
-			if($this->_Form->submitted()) {
+			if($this->_Form && $this->_Form->submitted()) {
 				if(null !== $value = $this->_Form->get($field)) {
 					return $value;
 				}
@@ -92,16 +92,14 @@
 		 * @param string $field The name of the field (dot-path)
 		 */
 		public function errors($field) {
-			$errors = $this->_Form->errors($field);
-			if(count($errors)) {
+			if($this->_Form && count($errors = $this->_Form->errors($field))) {
 				$out = '<ul class="fieldErrors fieldErrors-'.str_replace('.', '-', $field).'">';
 				foreach ($errors as $message) {
 					$out .= '<li>'.$message.'</li>';
 				}
 				return $out.'</ul>';
-			} else {
-				return '';
 			}
+			return '';
 		}
 		
 		protected function _input($name, $default, $attrs = array()) {

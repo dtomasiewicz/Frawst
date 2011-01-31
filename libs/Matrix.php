@@ -25,10 +25,10 @@
 			}
 			
 			$flat = array();
-						
+			
 			foreach ($data as $key => $value) {
 				if (is_array($value)) {
-					$flat += static::flatten($data, $path.$key);
+					$flat += static::flatten($array, $path.$key);
 				} else {
 					$flat[$path.$key] = $value;
 				}

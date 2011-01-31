@@ -48,7 +48,7 @@
 	}
 	
 	if(!defined('Frawst\\VIEW_CLASS')) {
-		define('Frawst\\VIEW_CLASS', 'Frawst\\View\\AppView');
+		define('Frawst\\VIEW_CLASS', 'Frawst\\View\\MyView');
 	}
 	
 	ini_set('display_errors', '1');
