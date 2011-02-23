@@ -4,13 +4,15 @@
 	class View {
 		protected $_helpers;
 		protected $_Response;
-		protected $_layoutData = array();
+		protected $_layoutData;
 		protected $_layout = 'default';
 		
 		protected $_templateDir;
 		
 		public function __construct($response) {
 			$this->_Response = $response;
+			$this->_helpers = array();
+			$this->_layoutData = array();
 			
 			$paths = Loader::getPaths('views');
 			$this->_templateDir = $paths[0];
@@ -24,7 +26,7 @@
 				return $this->_Response;
 			} elseif($name == 'Request') {
 				return $this->_Response->Request;
-			} elseif ($helper = $this->_helper($name)) {
+			} elseif ($helper = $this->helper($name)) {
 				return $helper;
 			} else {
 				throw new Exception('Invalid helper: '.$name);
@@ -32,16 +34,22 @@
  		}
 		
 		public function render($data) {
-			$content = $this->_renderContent($data);
+			$output = $this->_renderContent($data);
 			
 			if (!$this->isAjax() && is_string($this->_layout)) {
-				return $this->_renderFile(
+				$output = $this->_renderFile(
 					'layout/'.$this->_layout,
-					array('content' => $content) + $this->_layoutData
+					array('content' => $output) + $this->_layoutData
 				);
-			} else {
-				return $content;
 			}
+			
+			// teardown all helpers
+			foreach($this->_helpers as $helper) {
+				$helper->teardown();
+			}
+			$this->_helpers = array();
+			
+			return $output;
 		}
 		
 		/**
@@ -53,7 +61,7 @@
 		protected function _renderContent($data) {
 			if(null !== $template = $this->_findTemplate()) {
 				if(!is_array($data)) {
-					$data = array('status' => $data);
+					$data = array('data' => $data);
 				}
 				return $this->_renderFile($template, $data);
 			} else {
@@ -72,14 +80,14 @@
 		protected function _findTemplate() {
 			$status = $this->_Response->status();
 			if($status == Response::STATUS_OK) {
-				if(null !== $this->_templatePath($template = 'controller/'.$this->Request->route())) {
+				if(null !== $this->_templatePath($template = 'controller/'.$this->Request->Route->controller())) {
 					return $template;
 				} else {
 					return null;
 				}
 			} else {
 				// attempt to find an error document to render
-				$dir = 'error/'.$this->Request->route();
+				$dir = 'error/'.$this->Request->Route->controller();
 				
 				$exhausted = false;
 				while(!$exhausted) {
@@ -104,7 +112,7 @@
 		 * @return string the absolute path to the file, or null if it does not exist
 		 */
 		protected function _templatePath($file) {
-			if(file_exists($path = $this->_templateDir.DIRECTORY_SEPARATOR.str_replace('/', DIRECTORY_SEPARATOR, $file).'.php')) {
+			if(file_exists($path = $this->_templateDir.str_replace('/', DIRECTORY_SEPARATOR, $file).'.php')) {
 				return $path;
 			} else {
 				return null;
@@ -131,7 +139,11 @@
 		}
 		
 		public function path($route = null) {
-			return $this->_Response->Request->path($route);
+			if($route === null) {
+				return $this->_Response->Request->Route->path();
+			} else {
+				return Route::getPath($route);
+			}
 		}
 		
 		public function webroot($resource = '') {
@@ -143,7 +155,7 @@
 			foreach ($changes + $this->_Response->Request->get() as $key => $value) {
 				$qs .= $key.'='.$value.'&';
 			}
-			return rtrim($this->_Response->Request->route(true).$qs, '?&');
+			return rtrim($this->_Response->Request->Route->resolved().$qs, '?&');
 		}
 
 		public function ajax($route, $data = array(), $method = 'GET') {
@@ -151,11 +163,14 @@
 			return $request->execute()->render();
 		}
  		
- 		protected function _helper($name) {
+ 		public function helper($name) {
  			if (!isset($this->_helpers[$name])) {
- 				$this->_helpers[$name] = class_exists($class = '\\Frawst\\Helper\\'.$name)
- 					? new $class($this)
- 					: false;
+ 				if(class_exists($class = '\\Frawst\\Helper\\'.$name)) {
+ 					$this->_helpers[$name] = new $class($this);
+ 					$this->_helpers[$name]->setup();
+ 				} else {
+ 					$this->_helpers[$name] = false;
+ 				}
  			}
  			return $this->_helpers[$name];
  		}
