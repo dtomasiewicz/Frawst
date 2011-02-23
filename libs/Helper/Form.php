@@ -42,15 +42,15 @@
 		 * @param array $attrs Any additional attributes/values for the FORM tag
 		 * @return string HTML for the form opening
 		 */
-		public function open($formName, $action = null, $attrs = array()) {
+		public function open($formName, $attrs = array()) {
 			if (!($form = $this->_View->Response->Request->form($formName))) {
 				$class = 'Frawst\\Form\\'.$formName;
 				$form = new $class();
 			}
 			$this->_Form = $form;
 			
-			$attrs['action'] = $this->_View->path($action);
-			$attrs['method'] = $this->_Form->method();
+			$attrs['action'] = isset($attrs['action']) ? $attrs['action'] : $this->_View->path();
+			$attrs['method'] = isset($attrs['method']) ? $attrs['method'] : $this->_Form->method();
 			
 			$out = '<form '.$this->parseAttributes($attrs).'>';
 			
@@ -233,5 +233,17 @@
 		
 		public function __call($method, $args) {
 			return call_user_func_array(array($this->_Form, $method), $args);
+		}
+		
+		public static function parseAttributes($attrs) {
+			$str = '';
+			if(is_array($attrs)) {
+				foreach ($attrs as $attr => $value) {
+					if ($value !== null) {
+						$str .= $attr.'="'.Sanitize::html($value).'" ';
+					}
+				}
+			}
+			return trim($str);
 		}
 	}

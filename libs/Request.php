@@ -9,6 +9,11 @@
 	 */
 	class Request {
 		
+		const METHOD_GET = 'GET';
+		const METHOD_POST = 'POST';
+		const METHOD_DELETE = 'DELETE';
+		const METHOD_PUT = 'PUT';
+		
 		/**
 		 * @var float The time at which the request was first invoked.
 		 */
@@ -51,13 +56,6 @@
 		protected $_forms;
 		
 		/**
-		 * The response object for this request
-		 * @access public-read
-		 * @var Frawst\Response
-		 */
-		protected $_Response;
-		
-		/**
 		 * Persistent data to be sent to sub-requests.
 		 */
 		protected $_persist;
@@ -70,7 +68,7 @@
 		 * @param array $headers
 		 * @param array $persist
 		 */
-		public function __construct($route, $data = array(), $method = 'GET', $headers = array(), $persist = array()) {
+		public function __construct($route, $data = array(), $method = self::METHOD_GET, $headers = array(), $persist = array()) {
 			$this->_startTime = microtime(true);
 		  	
 			$this->_data = $data;
@@ -81,9 +79,8 @@
 			$this->_Route = $route instanceof Route
 				? $route
 				: new Route($route);
-			
-			$controllerClass = $this->_Route->controllerClass();
-			$this->_Controller = new $controllerClass($this);
+				
+			$this->_Controller = null;
 		}
 		
 		/**
@@ -93,8 +90,6 @@
 		 */
 		public function __get($name) {
 			switch ($name) {
-				case 'Response':
-					return $this->_Response;
 				case 'Route':
 					return $this->_Route;
 				default:
@@ -130,27 +125,6 @@
 		}
 		
 		/**
-		 * Returns the full path from the web root to the given route
-		 * @param string $route If null, will use the current route with parameters
-		 * @return string The path relative to the web root
-		 */
-		public function path($route = null) {
-			if (is_null($route)) {
-				$route = $this->_Route->reconstruct();
-			}
-			return URL_REWRITE ? WEB_ROOT.$route : WEB_ROOT.'index.php/'.$route;
-		}
-		
-		/**
-		 * Returns the resolved route of the current request.
-		 * @param bool $params If true, request parameters will also be appended
-		 * @return string The resolved route
-		 */
-		public function route($params = false) {
-			return $this->_Route->reconstruct($params);
-		}
-		
-		/**
 		 * Creates a sub-request with the same persistent data and headers as this request,
 		 * in AJAX mode.
 		 * @param string $route
@@ -168,17 +142,22 @@
 		 * @return mixed The response object for this Request
 		 */
 		public function execute() {
-			if(!isset($this->_Response)) {
-				$this->_Response = new Response($this);
-				try {
-					$this->_Response->data($this->_Controller->execute());
-				} catch(\Exception $e) {
-					$this->_Response->data('<div class="Frawst-Debug">'.
-						'<h1>A Controller Problem Occurred!</h1>'.
-						'<pre>'.$e.'</pre></div>');
-				}
+			$response = new Response($this);
+			
+			$controllerClass = '\\Frawst\\Controller\\'.str_replace('/', '\\', $this->_Route->controller());
+			$this->_Controller = new $controllerClass($this, $response);
+			
+			try {
+				$response->data($this->_Controller->execute());
+			} catch(\Exception $e) {
+				$response->data('<div class="Frawst-Debug">'.
+					'<h1>A Controller Problem Occurred!</h1>'.
+					'<pre>'.$e.'</pre></div>');
 			}
-			return $this->_Response;
+			
+			$this->_Controller = null;
+			
+			return $response;
 		}
 		
 		/**
@@ -203,7 +182,7 @@
 		 * @return array
 		 */
 		public function get($key = null, $default = null) {
-			return $this->_method == 'GET'
+			return $this->_method == self::METHOD_GET
 				? $this->data($key, $default)
 				: null;
 		}
@@ -215,7 +194,7 @@
 		 * @return array
 		 */
 		public function post($key = null, $default = null) {
-			return $this->_method == 'POST'
+			return $this->_method == self::METHOD_POST
 				? $this->data($key, $default)
 				: null;
 		}
@@ -227,7 +206,7 @@
 		 * @return array
 		 */
 		public function put($key = null, $default = null) {
-			return $this->_method == 'PUT'
+			return $this->_method == self::METHOD_PUT
 				? $this->data($key, $default)
 				: null;
 		}
@@ -239,7 +218,7 @@
 		 * @return array
 		 */
 		public function delete($key = null, $default = null) {
-			return $this->_method == 'DELETE'
+			return $this->_method == self::METHOD_DELETE
 				? $this->data($key, $default)
 				: null;
 		}

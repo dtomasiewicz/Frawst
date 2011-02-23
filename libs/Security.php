@@ -25,6 +25,14 @@
 			return sha1($salt.$string);			
 		}
 		
+		public static function randomAscii($length) {
+			$str = '';
+			for($i = 0; $i < $length; $i++) {
+				$str .= chr(mt_rand(0,255));
+			}
+			return $str;
+		}
+		
 		/**
 		 * Creates a general-purpose security token associated with the client's session
 		 * ID and the current microtime. This token can be used to protect against CSRF,

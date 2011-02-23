@@ -10,11 +10,7 @@
 		 *   
 		 * @var array
 		 */
-		protected static $_paths = array(
-			'priority' => array(),
-			'app' => array(),
-			'core' => array()
-		);
+		protected static $_paths = array();
 		
 		/**
 		 * Adds a path to the loader.
@@ -23,16 +19,15 @@
 		 * @param string $pathType The namespace covered by the path, * = global namespace
 		 * @param string $scope The loading priority of the path.
 		 */
-		public static function addPath($path, $pathType = '*', $scope = 'priority') {
-			if (!isset(self::$_paths[$scope][$pathType])) {
-				self::$_paths[$scope][$pathType] = array();
+		public static function addPath($path, $pathType = '*') {
+			if (!isset(self::$_paths[$pathType])) {
+				self::$_paths[$pathType] = array();
 			}
 			
-			if(substr($path, -1) != DIRECTORY_SEPARATOR) {
-				$path .= DIRECTORY_SEPARATOR;
-			}
-			
-			self::$_paths[$scope][$pathType][] = $path;
+			array_unshift(
+				self::$_paths[$pathType],
+				rtrim($path, DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR
+			);
 		}
 		
 		/**
@@ -53,32 +48,23 @@
 		 * @param scope The scope to check. If null, all scopes will be checked.
 		 * @return The path to the requested library if it is found, or null.
 		 */
-		public static function importPath($class, $scope = null) {
-			if (is_null($scope)) {
-				// scope not set, try all of them
-				foreach (array_keys(self::$_paths) as $scope) {
-					if (null !== $path = self::importPath($class, $scope)) {
-						return $path;
-					}
-				}
-			} else {
-				$parts = explode('\\', trim($class, '\\'));
-				$base = array();
+		public static function importPath($class) {
+			$parts = explode('\\', trim($class, '\\'));
+			$base = array();
+			
+			while (count($parts) > 0) {
+				array_unshift($base, array_pop($parts));
+				$pathType = implode('\\', $parts);
+				$subPath = implode(DIRECTORY_SEPARATOR, $base);
 				
-				while (count($parts) > 0) {
-					array_unshift($base, array_pop($parts));
-					$pathType = implode('\\', $parts);
-					$subPath = implode(DIRECTORY_SEPARATOR, $base);
-					
-					if ($pathType == '') {
-						$pathType = '*';
-					}
-					
-					if (isset(self::$_paths[$scope][$pathType])) {
-						foreach (self::$_paths[$scope][$pathType] as $rootPath) {
-							if (file_exists($file = $rootPath.DIRECTORY_SEPARATOR.$subPath.'.php')) {
-								return $file;
-							}
+				if ($pathType == '') {
+					$pathType = '*';
+				}
+				
+				if (isset(self::$_paths[$pathType])) {
+					foreach (self::$_paths[$pathType] as $rootPath) {
+						if (file_exists($file = $rootPath.DIRECTORY_SEPARATOR.$subPath.'.php')) {
+							return $file;
 						}
 					}
 				}
@@ -94,8 +80,8 @@
 		 * @param string $scope The scope to look in. If null, all scopes will be checked.
 		 * @return True if the library exists and is loaded, false otherwise.
 		 */
-		public static function import($class, $scope = null) {
-			if (null !== $path = self::importPath($class, $scope)) {
+		public static function import($class) {
+			if (null !== $path = self::importPath($class)) {
 				require $path;
 				return true;
 			} else {
@@ -111,38 +97,32 @@
 		 * @return array Array of loader paths for the given namespace, in the order they will
 		 *               be checked
 		 */
-		public static function getPaths($name = '*', $scope = null) {
+		public static function getPaths($name = '*') {
 			$paths = array();
 			
-			if(is_null($scope)) {
-				foreach(self::$_paths as $s => $p) {
-					$paths = array_merge($paths, self::getPaths($name, $s));
-				}
-			} else {
-				$prefix = $name == '*'
-					? array()
-					: explode('\\', trim($name, '\\'));
-				$subDir = '';
+			$prefix = $name == '*'
+				? array()
+				: explode('\\', trim($name, '\\'));
+			$subDir = '';
+			
+			$finished = false;
+			while(!$finished) {
+				$type = count($prefix)
+					? implode('\\', $prefix)
+					: '*';
 				
-				$finished = false;
-				while(!$finished) {
-					$type = count($prefix)
-						? implode('\\', $prefix)
-						: '*';
-					
-					if(isset(self::$_paths[$scope][$type])) {
-						foreach(self::$_paths[$scope][$type] as $path) {
-							if(file_exists($full = $path.$subDir)) {
-								$paths[] = $full;
-							}
+				if(isset(self::$_paths[$type])) {
+					foreach(self::$_paths[$type] as $path) {
+						if(file_exists($full = $path.$subDir)) {
+							$paths[] = $full;
 						}
 					}
-					
-					if(count($prefix)) {
-						$subDir = array_pop($prefix).$subDir.DIRECTORY_SEPARATOR;
-					} else {
-						$finished = true;
-					}
+				}
+				
+				if(count($prefix)) {
+					$subDir = array_pop($prefix).$subDir.DIRECTORY_SEPARATOR;
+				} else {
+					$finished = true;
 				}
 			}
 			

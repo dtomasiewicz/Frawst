@@ -47,10 +47,6 @@
 		}
 	}
 	
-	if(!defined('Frawst\\VIEW_CLASS')) {
-		define('Frawst\\VIEW_CLASS', 'Frawst\\View\\MyView');
-	}
-	
 	ini_set('display_errors', '1');
 	error_reporting(E_ALL | E_STRICT);
 	
@@ -62,15 +58,15 @@
 	});
 	
 	// Paths in which libraries can be held.
-	Loader::addPath(ROOT.'libs'.DIRECTORY_SEPARATOR, 'Frawst', 'core');
-	Loader::addPath(ROOT.'vendors'.DIRECTORY_SEPARATOR, '*', 'core');
-	Loader::addPath(ROOT.'configs'.DIRECTORY_SEPARATOR, 'configs', 'core');
-	Loader::addPath(ROOT.'views'.DIRECTORY_SEPARATOR, 'views', 'core');
+	Loader::addPath(ROOT.'libs'.DIRECTORY_SEPARATOR, 'Frawst');
+	Loader::addPath(ROOT.'vendors'.DIRECTORY_SEPARATOR, '*');
+	Loader::addPath(ROOT.'configs'.DIRECTORY_SEPARATOR, 'configs');
+	Loader::addPath(ROOT.'views'.DIRECTORY_SEPARATOR, 'views');
 	
-	Loader::addPath(APP_ROOT.'libs'.DIRECTORY_SEPARATOR, 'Frawst', 'app');
-	Loader::addPath(APP_ROOT.'vendors'.DIRECTORY_SEPARATOR, '*', 'app');
-	Loader::addPath(APP_ROOT.'configs'.DIRECTORY_SEPARATOR, 'configs', 'app');
-	Loader::addPath(APP_ROOT.'views'.DIRECTORY_SEPARATOR, 'views', 'app');
+	Loader::addPath(APP_ROOT.'libs'.DIRECTORY_SEPARATOR, 'Frawst');
+	Loader::addPath(APP_ROOT.'vendors'.DIRECTORY_SEPARATOR, '*');
+	Loader::addPath(APP_ROOT.'configs'.DIRECTORY_SEPARATOR, 'configs');
+	Loader::addPath(APP_ROOT.'views'.DIRECTORY_SEPARATOR, 'views');
 	
 	// Additional bootstrapping
 	if(file_exists($bs = APP_ROOT.'bootstrap.php')) {

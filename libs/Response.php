@@ -1,5 +1,6 @@
 <?php
 	namespace Frawst;
+	use \Frawst\View\MyView;
 	
    /**
     * Handles a response to a Request. In charge of response headers, redirection,
@@ -88,6 +89,7 @@
 		public function __construct($request) {
 			$this->_Request = $request;
 			$this->_status = self::STATUS_OK;
+			$this->_View = null;
 		}
 		
 		/**
@@ -131,13 +133,17 @@
 		 * @return string The response header value or null if not set
 		 */
 		public function header($name, $value = null) {
-			if (null !== $value) {
+			if(is_array($name)) {
+				foreach($name as $key => $val) {
+					$this->header($key, $val);
+				}
+			} elseif(null !== $value) {
 				$this->_headers[$name] = $value;
+			} else {
+				return isset($this->_headers[$name])
+					? $this->_headers[$name]
+					: null;
 			}
-			
-			return isset($this->_headers[$name])
-				? $this->_headers[$name]
-				: null;
 		}
 		
 		/**
@@ -171,7 +177,7 @@
 		 */
 		public function redirect($to = null, $status = self::STATUS_FOUND, $external = false) {
 			if($to === null) {
-				$to = $this->Request->route(true);
+				$to = $this->Request->Route->resolved();
 			}
 			
 			if (!$external) {
@@ -188,6 +194,10 @@
 			$this->header('Location', $to);
 			
 			return false;
+		}
+		
+		public function contentType($setTo = null) {
+			return $this->header('Content-Type', $setTo);
 		}
 		
 		/**
@@ -218,21 +228,24 @@
 		}
 		
 		/**
-		 * Renders the view. If internally redirected, will render a sub-request.
+		 * Renders the view. If internally redirected, will create a request
+		 * to the redirected page and render it.
 		 * @return string The rendered view
 		 */
 		public function render() {
 			try {
 				if (isset($this->_internalRedirect)) {
-					return $this->_Request->subRequest($this->_internalRedirect, array(), 'GET')->execute()->render();
+					$req = new Request($this->_internalRedirect, array(), 'GET', $this->_Request->headers());
+					return $req->execute()->render();
 				} elseif ($this->mustRedirect()) {
 					throw new \Frawst\Exception('Cannot render a request pending an external redirection.');
 				} elseif(is_string($this->_data)) {
 					return $this->_data;
 				} else {
-					$class = VIEW_CLASS;
-					$this->_View = new $class($this);
-					return $this->_View->render($this->_data);
+					$this->_View = new MyView($this);
+					$r = $this->_View->render($this->_data);
+					$this->_View = null;
+					return $r;
 				}
 			} catch(\Exception $e) {
 				return '<div class="Frawst-Debug">'.
@@ -252,6 +265,10 @@
 		 * @param strint $viewClass The name of the class to use for rendering the view
 		 */
 		public function send() {
+			if($this->_data instanceof File && !$this->_data->exists()) {
+				$this->status(self::STATUS_NOT_FOUND);
+			}
+			
 			if($this->_status != self::STATUS_OK) {
 				$statusHeader = 'HTTP/1.0 '.$this->_status;
 				if(isset(static::$_statusMessages[$this->_status])) {
@@ -263,16 +280,38 @@
 					header('Location: '.$redirect);
 					exit;
 				}
+			} elseif($this->_data instanceof File) {
+				if($this->header('Content-Type') === null) {
+					// no Content-Type set, transfer as attachment
+					$this->header(array(
+						'Content-Type'              => 'application/octet-stream',
+						'Content-Description'       => 'File Transfer',
+						'Content-Disposition'       => 'attachment; filename='.$this->_data->transferName(),
+						'Content-Transfer-Encoding' => 'Binary',
+						'Expires'                   => '0',
+						'Cache-Control'             => 'must-revalidate, post-check=0, pre-check=0',
+						'Pragma'                    => 'public'
+					));
+				}
+				
+				$this->header('Content-Length', $this->_data->size());
+				$this->__sendHeaders();
+				ob_clean();
+				flush();
+				$this->_data->read(true);
+				exit;
+			} else {
+				$out = $this->render();
+				$this->__sendHeaders();
+				echo $out;
+			
+				exit;
 			}
-			
-			$out = $this->render();
-			
+		}
+		
+		private function __sendHeaders() {
 			foreach ($this->_headers as $name => $value) {
 				header($name.': '.$value);
 			}
-			
-			echo $out;
-			// do not combine with above line, in case the rendering is an integer
-			exit;
 		}
 	}

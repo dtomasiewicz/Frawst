@@ -38,4 +38,16 @@
 			return Sanitize::paragraphs($string);
 		}
 		
+		public static function parseAttributes($attrs) {
+			$str = '';
+			if(is_array($attrs)) {
+				foreach ($attrs as $attr => $value) {
+					if ($value !== null) {
+						$str .= $attr.'="'.Sanitize::html($value).'" ';
+					}
+				}
+			}
+			return trim($str);
+		}
+		
 	}

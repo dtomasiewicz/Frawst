@@ -6,7 +6,6 @@
 		
 		public function __construct($view) {
 			$this->_View = $view;
-			$this->_init();
 		}
 		
 		public function __get($name) {
@@ -17,17 +16,11 @@
 			}
 		}
 		
-		protected function _init() {
+		public function setup() {
 			
 		}
 		
-		public static function parseAttributes($attrs) {
-			$str = '';
-			foreach ($attrs as $attr => $value) {
-				if ($value !== null) {
-					$str .= $attr.'="'.Sanitize::html($value).'" ';
-				}
-			}
-			return trim($str);
+		public function teardown() {
+			
 		}
 	}

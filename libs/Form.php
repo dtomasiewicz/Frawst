@@ -109,7 +109,7 @@
 		}
 		
 		public function exists($offset) {
-			return $this->_data->exists($offset);
+			return Matrix::pathExists($this->_data, $offset) || $this->_defaultValue($offset) !== null;
 		}
 		
 		public function offsetExists($offset) {
@@ -138,8 +138,12 @@
 		 * @param string $field
 		 * @param array $errors
 		 */
-		public function addErrors($field, $errors) {
-			if (count($errors)) {
+		public function addErrors($field, $errors = array()) {
+			if(is_array($field)) {
+				foreach($field as $f => $e) {
+					$this->addErrors($f, $e);
+				}
+			} elseif(count($errors)) {
 				if (!Matrix::pathExists($this->_errors, $field)) {
 					Matrix::pathSet($this->_errors, $field, $errors);
 				} else {

@@ -3,7 +3,7 @@
 	use \Serializable;
 	
 	class Matrix implements \ArrayAccess {
-		protected $_data = array();
+		private $___data = array();
 		
 		public function __construct($data = array()) {
 			foreach ($data as $key => $value) {
@@ -213,26 +213,26 @@
 		}
 		
 		public function get($index = null) {
-			return static::pathGet($this->_data, $index);
+			return static::pathGet($this->__data, $index);
 		}
 		
 		public function set($index, $value) {
-			static::pathSet($this->_data, $index, $value);
+			static::pathSet($this->__data, $index, $value);
 		}
 		
 		public function exists($index) {
-			return static::pathExists($this->_data, $index);
+			return static::pathExists($this->__data, $index);
 		}
 		
 		public function remove($index) {
-			static::pathUnset($this->_data, $index);
+			static::pathUnset($this->__data, $index);
 		}
 		
 		public function push($index, $value) {
-			static::pathPush($this->_data, $index, $value);
+			static::pathPush($this->__data, $index, $value);
 		}
 		
 		public function merge($index, $array, $recursive = false) {
-			static::pathMerge($this->_data, $index, $array, $recursive);
+			static::pathMerge($this->__data, $index, $array, $recursive);
 		}
 	}

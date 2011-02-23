@@ -12,7 +12,6 @@
 		
 		public function __construct($controller) {
 			$this->_Controller = $controller;
-			$this->_init();
 		}
 		
 		/**
@@ -28,10 +27,11 @@
 			}
 		}
 		
-		/**
-		 * Dummy initialization function. Will be called after construction.
-		 */
-		protected function _init() {
+		public function setup() {
+			
+		}
+		
+		public function teardown() {
 			
 		}
 	}

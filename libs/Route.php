@@ -9,7 +9,7 @@
 		 * @var string The original route supplied to this class in the constructor,
 		 *             before custom routing rules are applied.
 		 */
-		protected $_originalRoute;
+		protected $_original;
 		
 		/**
 		 * @var string The resolved route after custom routing rules are applied.
@@ -19,12 +19,7 @@
 		/**
 		 * @var array The stack of controller names represented by the route.
 		 */
-		protected $_controllers;
-		
-		/**
-		 * @var string The classname of the bottom-level controller in this route.
-		 */
-		protected $_controllerClass;
+		protected $_controller;
 		
 		/**
 		 * @var array Array of parameters defined by this route.
@@ -43,7 +38,7 @@
 		 *                          any specified custom routing rules.
 		 */
 		public function __construct($route, $customRoute = false) {
-			$this->_originalRoute = $route;
+			$this->_original = $route;
 
 			if($customRoute) {
 				$this->_routeCustom();
@@ -51,7 +46,7 @@
 				$this->_route = $route;
 			}
 			
-			$this->_dispatch();
+			$this->_resolve();
 		}
 
 		/**
@@ -63,13 +58,13 @@
 		protected function _routeCustom() {
 			if(is_array($rules = Config::read('Routing.rules'))) {
 				foreach($rules as $pattern => $newRoute) {
-					if($this->_matchRoute($pattern, $this->_originalRoute, $newRoute)) {
+					if($this->_matchRoute($pattern, $this->_original, $newRoute)) {
 						return;
 					}
 				}
 			}
 			
-			$this->_route = $this->_originalRoute;
+			$this->_route = $this->_original;
 			$this->_options = array();
 		}
 
@@ -133,7 +128,7 @@
 		 * Determines the controller and parameters based on the route.
 		 * @param string $route
 		 */
-		protected function _dispatch() {
+		protected function _resolve() {
 			$route = explode('/', trim($this->_route, '/'));
 			
 			// ignore blank route segments
@@ -145,12 +140,12 @@
 			}
 			
 			$class = 'Frawst\\Controller';
-			$this->_controllers = array();
+			$this->_controller = '';
 			$exists = true;
 			while($exists && count($route)) {
 				$name = ucfirst(strtolower($route[0]));
-				if(class_exists($c = $class.'\\'.$name)) {
-					$this->_controllers[] = $name;
+				if(class_exists($c = $class.'\\'.$name) || class_exists($c .= 'Controller')) {
+					$this->_controller .= '/'.$name;
 					array_shift($route); 
 					$class = $c;
 				} else {
@@ -158,24 +153,21 @@
 				}
 			}
 			
-			$reflection = count($this->_controllers)
+			$reflection = strlen($this->_controller)
 				? new \ReflectionClass($class)
 				: false;
 			
 			if(!$reflection || $reflection->isAbstract()) {
-				$this->_controllers[] = 'Index';
+				$this->_controller .= '/Index';
 				$class .= '\\Index';
 			}
 			
-			$this->_controllerClass = $class;
+			$this->_controller = ltrim($this->_controller, '/');
 			$this->_params = $route;
 		}
 		
-		/**
-		 * @return string Class name of the bottom-level controller
-		 */
-		public function controllerClass() {
-			return $this->_controllerClass;
+		public function controller() {
+			return $this->_controller;
 		}
 		
 		/**
@@ -201,16 +193,23 @@
 			}
 		}
 		
-		/**
-		 * Reconstructs the route with the full controller stack.
-		 * @param bool $params Whether or not to append the parameters to the route
-		 * @return string The reconstructed route
-		 */
-		public function reconstruct($params = true) {
-			$route = implode('/', $this->_controllers);
+		public function original() {
+			return $this->_original;
+		}
+		
+		public function resolved($params = true) {
+			$route = $this->_controller;
 			if($params && count($this->_params)) {
 				$route .= '/'.implode('/', $this->_params);
 			}
 			return $route;
+		}
+		
+		public static function getPath($route) {
+			return URL_REWRITE ? WEB_ROOT.$route : WEB_ROOT.'index.php/'.$route;
+		}
+		
+		public function path() {
+			return self::getPath($this->resolved());
 		}
 	}
