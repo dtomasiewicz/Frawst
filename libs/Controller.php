@@ -27,7 +27,7 @@
 		 * Constructor.
 		 * @param Frawst\Request The request using the controller
 		 */
-		public function __construct($request, $response) {
+		public function __construct(RequestInterface $request, ResponseInterface $response) {
 			$this->_Request = $request;
 			$this->_Response = $response;
 			$this->_components = array();
@@ -39,15 +39,19 @@
 		 * @return mixed
 		 */
 		public function __get($name) {
-			if ($name == 'Request') {
-				return $this->_Request;
-			} elseif ($name == 'Response') {
-				return $this->_Response;
-			} elseif ($c = $this->component($name)) {
+			if ($c = $this->component($name)) {
 				return $c;
 			} else {
-				throw new ControllerException('Invalid controller property: '.$name);
+				throw new ControllerException('Invalid component: '.$name);
 			}
+		}
+		
+		public function request() {
+			return $this->_Request;
+		}
+		
+		public function response() {
+			return $this->_Response;
 		}
 		
 		/**
@@ -92,8 +96,8 @@
 		 */
 		public function execute() {
 			if(false !== $data = $this->_before()) {
-				if(method_exists($this, $method = strtolower($this->Request->method()))) {
-					$data = call_user_func_array(array($this, $method), $this->Request->param());
+				if(method_exists($this, $method = strtolower($this->request()->method()))) {
+					$data = call_user_func_array(array($this, $method), $this->request()->param());
 				}
 			}
 			

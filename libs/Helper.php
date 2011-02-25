@@ -8,12 +8,8 @@
 			$this->_View = $view;
 		}
 		
-		public function __get($name) {
-			if ($name == 'View') {
-				return $this->_View;
-			} else {
-				throw new Exception('Invalid View property: '.$name);
-			}
+		public function view() {
+			return $this->_View;
 		}
 		
 		public function setup() {

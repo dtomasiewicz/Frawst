@@ -14,24 +14,15 @@
 			$this->_Controller = $controller;
 		}
 		
-		/**
-		 * Immitates read-only properties.
-		 * @param string $name
-		 * @return mixed
-		 */
-		public function __get($name) {
-			if ($name == 'Controller') {
-				return $this->_Controller;
-			} else {
-				throw new Exception('Invalid Component property: '.$name);
-			}
-		}
-		
 		public function setup() {
 			
 		}
 		
 		public function teardown() {
 			
+		}
+		
+		public function controller() {
+			return $this->_Controller;
 		}
 	}

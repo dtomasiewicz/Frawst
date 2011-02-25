@@ -1,27 +1,37 @@
 <?php
 	namespace Frawst;
 	
-	class View {
+	class View implements ViewInterface {
 		protected $_helpers;
 		protected $_Response;
 		protected $_layoutData;
 		protected $_layout = 'default';
 		
-		public function __construct($response) {
+		private $__injected;
+		
+		public function __construct(ResponseInterface $response) {
 			$this->_Response = $response;
 			$this->_helpers = array();
 			$this->_layoutData = array();
+			
+			$this->__injected = new Injector(array(
+				'routeClass' => Injector::defaultClass('Frawst\RouteInterface')
+			));
+		}
+		
+		public function response() {
+			return $this->_Response;
+		}
+		
+		public function request() {
+			return $this->response()->request();
 		}
 		
 		/**
 		 * Attempt to load Helpers on-demand
 		 */
 		public function __get($name) {
-			if ($name == 'Response') {
-				return $this->_Response;
-			} elseif($name == 'Request') {
-				return $this->_Response->Request;
-			} elseif ($helper = $this->helper($name)) {
+			if ($helper = $this->helper($name)) {
 				return $helper;
 			} else {
 				throw new Exception('Invalid helper: '.$name);
@@ -74,15 +84,15 @@
 		 */
 		protected function _findTemplate() {
 			$status = $this->_Response->status();
-			if($status == Response::STATUS_OK) {
-				if(null !== $this->_templatePath($template = 'controller/'.$this->Request->Route->controller())) {
+			if($this->_Response->isOk()) {
+				if(null !== $this->_templatePath($template = 'controller/'.$this->request()->route()->controller())) {
 					return $template;
 				} else {
 					return null;
 				}
 			} else {
 				// attempt to find an error document to render
-				$dir = 'error/'.$this->Request->Route->controller();
+				$dir = 'error/'.$this->request()->route()->controller();
 				
 				$exhausted = false;
 				while(!$exhausted) {
@@ -126,14 +136,15 @@
 		}
 
 		public function isAjax() {
-			return $this->_Response->Request->isAjax();
+			return $this->_Response->request()->isAjax();
 		}
 		
 		public function path($route = null) {
 			if($route === null) {
-				return $this->_Response->Request->Route->path();
+				return $this->_Response->request()->route()->path();
 			} else {
-				return Route::getPath($route);
+				$c = $this->__injected->routeClass;
+				return $c::getPath($route);
 			}
 		}
 		
@@ -143,14 +154,19 @@
 		
 		public function modGet($changes = array()) {
 			$qs = '?';
-			foreach ($changes + $this->_Response->Request->get() as $key => $value) {
+			foreach ($changes + $this->_Response->request()->get() as $key => $value) {
 				$qs .= $key.'='.$value.'&';
 			}
-			return rtrim($this->_Response->Request->Route->resolved().$qs, '?&');
+			return rtrim($this->_Response->request()->route()->resolved().$qs, '?&');
 		}
 
 		public function ajax($route, $data = array(), $method = 'GET') {
-			$request = $this->_Response->Request->subRequest($route, $data, $method);
+			if(!($route instanceof RouteInterface)) {
+				$routeClass = $this->__injected->routeClass;
+				$route = new $routeClass($route);
+			}
+			
+			$request = $this->_Response->request()->subRequest($route, $data, $method);
 			return $request->execute()->render();
 		}
  		

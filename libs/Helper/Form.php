@@ -22,15 +22,8 @@
 		 */
 		protected $_Form;
 		
-		/**
-		 * Immitate read-only properties
-		 */
-		public function __get($name) {
-			if ($name == 'Form') {
-				return $this->_Form;
-			} else {
-				return parent::__get($name);
-			}
+		public function object() {
+			return $this->_Form;
 		}
 		
 		/**
@@ -43,7 +36,7 @@
 		 * @return string HTML for the form opening
 		 */
 		public function open($formName, $attrs = array()) {
-			if (!($form = $this->_View->Response->Request->form($formName))) {
+			if (!($form = $this->_View->response()->request()->form($formName))) {
 				$class = 'Frawst\\Form\\'.$formName;
 				$form = new $class();
 			}

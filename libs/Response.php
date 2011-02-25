@@ -6,7 +6,7 @@
     * Handles a response to a Request. In charge of response headers, redirection,
     * and rendering of a View if necessary.
     */
-	class Response {
+	class Response implements ResponseInterface {
 		const STATUS_OK = 200;
 		
 		const STATUS_FOUND = 302;
@@ -82,28 +82,30 @@
 		 */
 		protected $_status;
 		
+		private $__injected;
+		
 		/**
 		 * Constructor.
 		 * @param Frawst\Request Request that is being responded to
 		 */
-		public function __construct($request) {
+		public function __construct(RequestInterface $request) {
 			$this->_Request = $request;
 			$this->_status = self::STATUS_OK;
 			$this->_View = null;
+			
+			$this->__injected = new Injector(array(
+				'requestClass' => Injector::defaultClass('Frawst\RequestInterface'),
+				'viewClass' => Injector::defaultClass('Frawst\ViewInterface'),
+				'routeClass' => Injector::defaultClass('Frawst\RouteInterface')
+			));
 		}
 		
-		/**
-		 * Read-only immitation.
-		 * @param string $name
-		 * @return mixed
-		 */
-		public function __get($name) {
-			switch ($name) {
-				case 'Request':
-					return $this->_Request;
-				default:
-					throw new \Frawst\Exception('Invalid Response property: '.$name);
-			}
+		public function request() {
+			return $this->_Request;
+		}
+		
+		public function inject($dependencies) {
+			$this->__injected->inject($dependencies);
 		}
 		
 		/**
@@ -158,6 +160,10 @@
 			return $this->_status;
 		}
 		
+		public function isOk() {
+			return $this->_status == static::STATUS_OK;
+		}
+		
 		/**
 		 * Queues the Response for redirection. Will NOT occur immediately, so
 		 * it is important to break or return in the calling context if further
@@ -177,7 +183,7 @@
 		 */
 		public function redirect($to = null, $status = self::STATUS_FOUND, $external = false) {
 			if($to === null) {
-				$to = $this->Request->Route->resolved();
+				$to = $this->request()->route()->resolved();
 			}
 			
 			if (!$external) {
@@ -236,7 +242,9 @@
 			try {
 				if(!is_string($this->_data)) {
 					if(isset($this->_internalRedirect)) {
-						$req = new Request($this->_internalRedirect, array(), 'GET', $this->_Request->headers());
+						$reqClass = $this->__injected->requestClass;
+						$routeClass = $this->__injected->routeClass;
+						$req = new $reqClass(new $routeClass($this->_internalRedirect), array(), 'GET', $this->_Request->headers());
 						$this->_data = $req->execute()->render();
 					} elseif($this->mustRedirect()) {
 						throw new \Frawst\Exception('Cannot render a request pending an external redirection.');
@@ -244,7 +252,8 @@
 						if(!is_array($this->_data)) {
 							$this->_data = array($this->_data);
 						}
-						$this->_View = new MyView($this);
+						$viewClass = $this->__injected->viewClass;
+						$this->_View = new $viewClass($this);
 						$this->_data = $this->_View->render($this->_data);
 						$this->_View = null;
 					}

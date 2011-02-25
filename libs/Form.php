@@ -16,7 +16,7 @@
 	 * pass the name of your Form class in the open() method, and the fields will be (re)populated
 	 * automatically.
 	 */
-	class Form implements \ArrayAccess {
+	class Form implements FormInterface, \ArrayAccess {
 		protected $_data;
 		protected $_submitted;
 		

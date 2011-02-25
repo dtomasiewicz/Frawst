@@ -4,7 +4,7 @@
 	/**
 	 * Frawst routing class.
 	 */
-	class Route {
+	class Route implements RouteInterface {
 		/**
 		 * @var string The original route supplied to this class in the constructor,
 		 *             before custom routing rules are applied.

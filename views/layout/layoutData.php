@@ -1,1 +1,1 @@
-<?php $this->Response->header('Content-Type', 'application/json'); echo json_encode($___data);
+<?php $this->response()->header('Content-Type', 'application/json'); echo json_encode($___data);

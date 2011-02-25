@@ -7,7 +7,7 @@
 	 * A Request object simulates an HTTP request to a particular route in your
 	 * application.
 	 */
-	class Request {
+	class Request implements RequestInterface {
 		
 		const METHOD_GET = 'GET';
 		const METHOD_POST = 'POST';
@@ -59,6 +59,8 @@
 		 * Persistent data to be sent to sub-requests.
 		 */
 		protected $_persist;
+		
+		private $__injected;
 	
 		/**
 		 * Constructor
@@ -68,33 +70,26 @@
 		 * @param array $headers
 		 * @param array $persist
 		 */
-		public function __construct($route, $data = array(), $method = self::METHOD_GET, $headers = array(), $persist = array()) {
+		public function __construct(RouteInterface $route, $data = array(), $method = self::METHOD_GET, $headers = array(), $persist = array()) {
 			$this->_startTime = microtime(true);
 		  	
 			$this->_data = $data;
 		  	$this->_method = strtoupper($method);
 		  	$this->_headers = $headers;
 			$this->_persist = $persist;
-			
-			$this->_Route = $route instanceof Route
-				? $route
-				: new Route($route);
+			$this->_Route = $route;
 				
 			$this->_Controller = null;
+			
+			$this->__injected = new Injector(array(
+				'subRequestClass' => Injector::defaultClass('Frawst\RequestInterface'),
+				'responseClass' => Injector::defaultClass('Frawst\ResponseInterface'),
+				'formClass' => Injector::defaultClass('Frawst\FormInterface')
+			));
 		}
 		
-		/**
-		 * Hacked to give the illusion of public readonly properties
-		 * @param string $name
-		 * @return object A read-only property
-		 */
-		public function __get($name) {
-			switch ($name) {
-				case 'Route':
-					return $this->_Route;
-				default:
-					throw new \Frawst\Exception('Trying to access undeclared property Request::$'.$name);
-			}
+		public function inject($dependencies) {
+			$this->__injected->inject($dependencies);
 		}
 		
 		/**
@@ -130,10 +125,11 @@
 		 * @param string $route
 		 * @return Frawst\Request The sub-request object
 		 */
-		public function subRequest($route, $data = array(), $method = 'GET') {
+		public function subRequest(RouteInterface $route, $data = array(), $method = 'GET') {
 			$headers = $this->_headers;
 			$headers['X-Requested-With'] = 'XMLHttpRequest';
-			return new Request($route, $data, $method, $headers, $this->_persist);
+			$reqClass = $this->__injected->subRequestClass;
+			return new $reqClass($route, $data, $method, $headers, $this->_persist);
 		}
 		
 		/**
@@ -142,7 +138,8 @@
 		 * @return mixed The response object for this Request
 		 */
 		public function execute() {
-			$response = new Response($this);
+			$resClass = $this->__injected->responseClass;
+			$response = new $resClass($this);
 			
 			$controllerClass = '\\Frawst\\Controller\\'.str_replace('/', '\\', $this->_Route->controller());
 			$this->_Controller = new $controllerClass($this, $response);
@@ -167,12 +164,12 @@
 			return $this->_method;
 		}
 		
-		public function param($param = null) {
-			return $this->_Route->param($param);
+		public function param($index = null) {
+			return $this->_Route->param($index);
 		}
 
-		public function option($option = null) {
-			return $this->_Route->option($option);
+		public function option($name = null) {
+			return $this->_Route->option($name);
 		}
 		
 		/**
@@ -245,7 +242,8 @@
 		 */
 		public function form($formName = null) {
 			if($formName === null) {
-				return \Frawst\Form\MyForm::load($this->_data, true);
+				$formClass = $this->__injected->formClass;
+				return $formClass::load($this->_data, true);
 			} elseif (isset($this->_forms[$formName])) {
 				return $this->_forms[$formName];
 			} elseif(class_exists($class = 'Frawst\\Form\\'.$formName) && $class::method() == $this->method()) {
@@ -276,5 +274,9 @@
 		 */
 		public function getRuntime() {
 			return microtime(true) - $this->_startTime;
+		}
+		
+		public function route() {
+			return $this->_Route;
 		}
 	}
