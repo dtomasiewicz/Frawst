@@ -7,15 +7,10 @@
 		protected $_layoutData;
 		protected $_layout = 'default';
 		
-		protected $_templateDir;
-		
 		public function __construct($response) {
 			$this->_Response = $response;
 			$this->_helpers = array();
 			$this->_layoutData = array();
-			
-			$paths = Loader::getPaths('views');
-			$this->_templateDir = $paths[0];
 		}
 		
 		/**
@@ -112,11 +107,7 @@
 		 * @return string the absolute path to the file, or null if it does not exist
 		 */
 		protected function _templatePath($file) {
-			if(file_exists($path = $this->_templateDir.str_replace('/', DIRECTORY_SEPARATOR, $file).'.php')) {
-				return $path;
-			} else {
-				return null;
-			}
+			return Loader::loadPath('views/'.$file);
 		}
 		
 		protected function _renderFile($___file, $___data) {

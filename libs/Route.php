@@ -56,7 +56,7 @@
 		 *         user/6 --> user/view/6
 		 */
 		protected function _routeCustom() {
-			if(is_array($rules = Config::read('Routing.rules'))) {
+			if(is_array($rules = Config::read('Routing', 'rules'))) {
 				foreach($rules as $pattern => $newRoute) {
 					if($this->_matchRoute($pattern, $this->_original, $newRoute)) {
 						return;

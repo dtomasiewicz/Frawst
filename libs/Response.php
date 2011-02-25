@@ -234,19 +234,22 @@
 		 */
 		public function render() {
 			try {
-				if (isset($this->_internalRedirect)) {
-					$req = new Request($this->_internalRedirect, array(), 'GET', $this->_Request->headers());
-					return $req->execute()->render();
-				} elseif ($this->mustRedirect()) {
-					throw new \Frawst\Exception('Cannot render a request pending an external redirection.');
-				} elseif(is_string($this->_data)) {
-					return $this->_data;
-				} else {
-					$this->_View = new MyView($this);
-					$r = $this->_View->render($this->_data);
-					$this->_View = null;
-					return $r;
+				if(!is_string($this->_data)) {
+					if(isset($this->_internalRedirect)) {
+						$req = new Request($this->_internalRedirect, array(), 'GET', $this->_Request->headers());
+						$this->_data = $req->execute()->render();
+					} elseif($this->mustRedirect()) {
+						throw new \Frawst\Exception('Cannot render a request pending an external redirection.');
+					} else {
+						if(!is_array($this->_data)) {
+							$this->_data = array($this->_data);
+						}
+						$this->_View = new MyView($this);
+						$this->_data = $this->_View->render($this->_data);
+						$this->_View = null;
+					}
 				}
+				return $this->_data;
 			} catch(\Exception $e) {
 				return '<div class="Frawst-Debug">'.
 					'<h1>A Rendering Problem Occurred!</h1>'.

@@ -10,18 +10,18 @@
 	abstract class Config {
 		protected static $_data = array();
 		
-		public static function read($dotPath) {
-			$segs = explode('.', $dotPath);
-			if (!array_key_exists($segs[0], self::$_data)) {
-				if ($path = Loader::importPath('configs\\'.$segs[0])) {
+		public static function read($file, $value = null) {
+			if (!array_key_exists($file, self::$_data)) {
+				if ($path = Loader::loadPath('configs/'.$file)) {
 					$cfg = array();
 					require($path);
-					self::$_data[$segs[0]] = $cfg;
+					self::$_data[$file] = $cfg;
+					return Matrix::pathExists(self::$_data[$file], $value)
+						? Matrix::pathGet(self::$_data[$file], $value)
+						: null;
 				} else {
-					return self::$_data[$segs[0]] = null;
+					return self::$_data[$file] = null;
 				}
 			}
-			
-			return Matrix::pathGet(self::$_data, $dotPath);
 		}
 	}

@@ -19,7 +19,7 @@
 		 */
 		public static function hash($string, $salt = null) {
 			if (!isset($salt)) {
-				$salt = Config::read('Frawst.salt');
+				$salt = Config::read('Frawst', 'salt');
 			}
 			
 			return sha1($salt.$string);			

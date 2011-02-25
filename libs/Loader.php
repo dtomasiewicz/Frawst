@@ -19,15 +19,23 @@
 		 * @param string $pathType The namespace covered by the path, * = global namespace
 		 * @param string $scope The loading priority of the path.
 		 */
-		public static function addPath($path, $pathType = '*') {
-			if (!isset(self::$_paths[$pathType])) {
-				self::$_paths[$pathType] = array();
-			}
+		public static function addPath($path, $resourceType = '*') {
+			if(is_dir($path)) {
+				$resourceType = trim($resourceType, '/');
+				
+				if (!isset(self::$_paths[$resourceType])) {
+					self::$_paths[$resourceType] = array();
+				}
 			
-			array_unshift(
-				self::$_paths[$pathType],
-				rtrim($path, DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR
-			);
+				array_unshift(self::$_paths[$resourceType], $path);
+			}
+		}
+		
+		public static function addClassPath($path, $namespace = '\\') {
+			$resType = $namespace == '\\'
+				? '*'
+				: str_replace('\\', '/', $namespace);
+			self::addPath($path, $resType);
 		}
 		
 		/**
@@ -48,21 +56,21 @@
 		 * @param scope The scope to check. If null, all scopes will be checked.
 		 * @return The path to the requested library if it is found, or null.
 		 */
-		public static function importPath($class) {
-			$parts = explode('\\', trim($class, '\\'));
+		public static function loadPath($resource) {
+			$parts = explode('/', trim($resource, '/'));
 			$base = array();
 			
 			while (count($parts) > 0) {
 				array_unshift($base, array_pop($parts));
-				$pathType = implode('\\', $parts);
+				$resourceType = implode('/', $parts);
 				$subPath = implode(DIRECTORY_SEPARATOR, $base);
 				
-				if ($pathType == '') {
-					$pathType = '*';
+				if ($resourceType == '') {
+					$resourceType = '*';
 				}
 				
-				if (isset(self::$_paths[$pathType])) {
-					foreach (self::$_paths[$pathType] as $rootPath) {
+				if (isset(self::$_paths[$resourceType])) {
+					foreach (self::$_paths[$resourceType] as $rootPath) {
 						if (file_exists($file = $rootPath.DIRECTORY_SEPARATOR.$subPath.'.php')) {
 							return $file;
 						}
@@ -80,13 +88,17 @@
 		 * @param string $scope The scope to look in. If null, all scopes will be checked.
 		 * @return True if the library exists and is loaded, false otherwise.
 		 */
-		public static function import($class) {
-			if (null !== $path = self::importPath($class)) {
+		public static function load($resource) {
+			if (null !== $path = self::loadPath($resource)) {
 				require $path;
 				return true;
 			} else {
 				return false;
 			}
+		}
+		
+		public static function loadClass($class) {
+			return self::load(str_replace('\\', '/', $class));
 		}
 		
 		/**
@@ -127,5 +139,17 @@
 			}
 			
 			return $paths;
+		}
+		
+		public static function addBasePath($path) {
+			self::addClassPath($path.'libs'.DIRECTORY_SEPARATOR, 'Frawst');
+			self::addClassPath($path.'vendors'.DIRECTORY_SEPARATOR, '*');
+			self::addPath($path.'configs'.DIRECTORY_SEPARATOR, 'configs');
+			self::addPath($path.'views'.DIRECTORY_SEPARATOR, 'views');
+		}
+		
+		public static function addPlugin($pluginName) {
+			self::addBasePath(ROOT.'plugins'.DIRECTORY_SEPARATOR.$pluginName.DIRECTORY_SEPARATOR);
+			self::addBasePath(APP_ROOT.'plugins'.DIRECTORY_SEPARATOR.$pluginName.DIRECTORY_SEPARATOR);
 		}
 	}
