@@ -81,15 +81,11 @@
 				
 			$this->_Controller = null;
 			
-			$this->__injected = new Injector(array(
-				'subRequestClass' => Injector::defaultClass('Frawst\RequestInterface'),
-				'responseClass' => Injector::defaultClass('Frawst\ResponseInterface'),
-				'formClass' => Injector::defaultClass('Frawst\FormInterface')
-			));
+			$this->__injected = new Injector();
 		}
 		
-		public function inject($dependencies) {
-			$this->__injected->inject($dependencies);
+		public function inject($key, $value) {
+			$this->__injected->set($key, $value);
 		}
 		
 		/**
@@ -128,7 +124,7 @@
 		public function subRequest(RouteInterface $route, $data = array(), $method = 'GET') {
 			$headers = $this->_headers;
 			$headers['X-Requested-With'] = 'XMLHttpRequest';
-			$reqClass = $this->__injected->subRequestClass;
+			$reqClass = $this->__injected->get('Frawst\RequestInterface');
 			return new $reqClass($route, $data, $method, $headers, $this->_persist);
 		}
 		
@@ -138,10 +134,10 @@
 		 * @return mixed The response object for this Request
 		 */
 		public function execute() {
-			$resClass = $this->__injected->responseClass;
+			$resClass = $this->__injected->get('Frawst\ResponseInterface');
 			$response = new $resClass($this);
 			
-			$controllerClass = '\\Frawst\\Controller\\'.str_replace('/', '\\', $this->_Route->controller());
+			$controllerClass = $this->__injected->get('controllerNamespace').'\\'.str_replace('/', '\\', $this->_Route->controller());
 			$this->_Controller = new $controllerClass($this, $response);
 			
 			try {
@@ -242,12 +238,12 @@
 		 */
 		public function form($formName = null) {
 			if($formName === null) {
-				$formClass = $this->__injected->formClass;
+				$formClass = $this->__injected->get('Frawst\FormInterface');
 				return $formClass::load($this->_data, true);
 			} elseif (isset($this->_forms[$formName])) {
 				return $this->_forms[$formName];
-			} elseif(class_exists($class = 'Frawst\\Form\\'.$formName) && $class::method() == $this->method()) {
-				return $this->_forms[$formName] = $class::load($this->_data);
+			} elseif(class_exists($formName) && $formName::method() == $this->method()) {
+				return $this->_forms[$formName] = $formName::load($this->_data);
 			} else {
 				return null;
 			}

@@ -37,8 +37,7 @@
 		 */
 		public function open($formName, $attrs = array()) {
 			if (!($form = $this->_View->response()->request()->form($formName))) {
-				$class = 'Frawst\\Form\\'.$formName;
-				$form = new $class();
+				$form = new $formName();
 			}
 			$this->_Form = $form;
 			

@@ -93,19 +93,15 @@
 			$this->_status = self::STATUS_OK;
 			$this->_View = null;
 			
-			$this->__injected = new Injector(array(
-				'requestClass' => Injector::defaultClass('Frawst\RequestInterface'),
-				'viewClass' => Injector::defaultClass('Frawst\ViewInterface'),
-				'routeClass' => Injector::defaultClass('Frawst\RouteInterface')
-			));
+			$this->__injected = new Injector();
+		}
+		
+		public function inject($key, $value) {
+			$this->__injected->set($key, $value);
 		}
 		
 		public function request() {
 			return $this->_Request;
-		}
-		
-		public function inject($dependencies) {
-			$this->__injected->inject($dependencies);
 		}
 		
 		/**
@@ -242,8 +238,8 @@
 			try {
 				if(!is_string($this->_data)) {
 					if(isset($this->_internalRedirect)) {
-						$reqClass = $this->__injected->requestClass;
-						$routeClass = $this->__injected->routeClass;
+						$reqClass = $this->__injected->get('Frawst\RequestInterface');
+						$routeClass = $this->__injected->get('Frawst\RouteInterface');
 						$req = new $reqClass(new $routeClass($this->_internalRedirect), array(), 'GET', $this->_Request->headers());
 						$this->_data = $req->execute()->render();
 					} elseif($this->mustRedirect()) {
@@ -252,7 +248,7 @@
 						if(!is_array($this->_data)) {
 							$this->_data = array($this->_data);
 						}
-						$viewClass = $this->__injected->viewClass;
+						$viewClass = $this->__injected->get('Frawst\ViewInterface');
 						$this->_View = new $viewClass($this);
 						$this->_data = $this->_View->render($this->_data);
 						$this->_View = null;

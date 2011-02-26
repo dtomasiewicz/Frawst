@@ -14,9 +14,11 @@
 			$this->_helpers = array();
 			$this->_layoutData = array();
 			
-			$this->__injected = new Injector(array(
-				'routeClass' => Injector::defaultClass('Frawst\RouteInterface')
-			));
+			$this->__injected = new Injector();
+		}
+		
+		public function inject($key, $value) {
+			$this->__injected->set($key, $value);
 		}
 		
 		public function response() {
@@ -26,17 +28,6 @@
 		public function request() {
 			return $this->response()->request();
 		}
-		
-		/**
-		 * Attempt to load Helpers on-demand
-		 */
-		public function __get($name) {
-			if ($helper = $this->helper($name)) {
-				return $helper;
-			} else {
-				throw new Exception('Invalid helper: '.$name);
-			}
- 		}
 		
 		public function render($data) {
 			$output = $this->_renderContent($data);
@@ -143,7 +134,7 @@
 			if($route === null) {
 				return $this->_Response->request()->route()->path();
 			} else {
-				$c = $this->__injected->routeClass;
+				$c = $this->__injected->get('Frawst\RouteInterface');
 				return $c::getPath($route);
 			}
 		}
@@ -162,7 +153,7 @@
 
 		public function ajax($route, $data = array(), $method = 'GET') {
 			if(!($route instanceof RouteInterface)) {
-				$routeClass = $this->__injected->routeClass;
+				$routeClass = $this->__injected->get('Frawst\RouteInterface');
 				$route = new $routeClass($route);
 			}
 			
@@ -172,8 +163,8 @@
  		
  		public function helper($name) {
  			if (!isset($this->_helpers[$name])) {
- 				if(class_exists($class = '\\Frawst\\Helper\\'.$name)) {
- 					$this->_helpers[$name] = new $class($this);
+ 				if(class_exists($name)) {
+ 					$this->_helpers[$name] = new $name($this);
  					$this->_helpers[$name]->setup();
  				} else {
  					$this->_helpers[$name] = false;

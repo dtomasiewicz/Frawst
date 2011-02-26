@@ -7,10 +7,10 @@
 	 * Components are modular extensions of controller (business) logic. Components are
 	 * instantiated on-demand and each controller instance has its own set of components.
 	 */
-	abstract class Component {
+	abstract class Component implements ComponentInterface {
 		protected $_Controller;
 		
-		public function __construct($controller) {
+		public function __construct(ControllerInterface $controller) {
 			$this->_Controller = $controller;
 		}
 		

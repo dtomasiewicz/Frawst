@@ -4,7 +4,7 @@
 	/**
 	 * Base Controller class for the Frawst framework.
 	 */
-	abstract class Controller {
+	abstract class Controller implements ControllerInterface {
 		
 		/**
 		 * @var array The component objects in use by the controller
@@ -31,19 +31,6 @@
 			$this->_Request = $request;
 			$this->_Response = $response;
 			$this->_components = array();
-		}
-		
-		/**
-		 * Read-only immitation.
-		 * @param string $name
-		 * @return mixed
-		 */
-		public function __get($name) {
-			if ($c = $this->component($name)) {
-				return $c;
-			} else {
-				throw new ControllerException('Invalid component: '.$name);
-			}
 		}
 		
 		public function request() {
@@ -79,8 +66,8 @@
 		 */
 		public function component($name) {
 			if (!isset($this->_components[$name])) {
-				if(class_exists($class = 'Frawst\\Component\\'.$name)) {
-					$this->_components[$name] = new $class($this);
+				if(class_exists($name)) {
+					$this->_components[$name] = new $name($this);
 					$this->_components[$name]->setup();
 				} else {
 					$this->_components[$name] = false;

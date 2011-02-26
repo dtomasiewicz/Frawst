@@ -1,10 +1,10 @@
 <?php
 	namespace Frawst;
 	
-	abstract class Helper {
+	abstract class Helper implements HelperInterface {
 		protected $_View;
 		
-		public function __construct($view) {
+		public function __construct(ViewInterface $view) {
 			$this->_View = $view;
 		}
 		

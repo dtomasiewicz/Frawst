@@ -2,38 +2,37 @@
 	namespace Frawst;
 	
 	class Injector {
-		private $__deps;
+		
 		private static $__defaults = array(
 			'Frawst\RouteInterface' => 'Frawst\Route',
 			'Frawst\RequestInterface' => 'Frawst\Request',
 			'Frawst\ResponseInterface' => 'Frawst\Response',
 			'Frawst\ViewInterface' => 'Frawst\View',
-			'Frawst\FormInterface' => 'Frawst\Form'
+			'Frawst\FormInterface' => 'Frawst\Form',
+			'controllerNamespace' => 'Frawst\Controller'
 		);
 		
-		public function __construct($deps = array()) {
-			$this->__deps = (array) $deps;
+		private $__data;
+		
+		public function __construct() {
+			$this->__data = array();
 		}
 		
-		public function __set($dep, $value) {
-			$this->__deps[$dep] = $value;
+		public function set($key, $value) {
+			$this->__data[$key] = $value;
 		}
 		
-		public function __get($dep) {
-			return array_key_exists($dep, $this->__deps)
-				? $this->__deps[$dep]
-				: null;
+		public function get($key) {
+			if(array_key_exists($key, $this->__data)) {
+				return $this->__data[$key];
+			} else {
+				return array_key_exists($key, self::$__defaults)
+					? self::$__defaults[$key]
+					: null;
+			}
 		}
 		
-		public function inject($deps) {
-			$this->__deps = (array)$deps + $this->__deps;
-		}
-		
-		public static function registerDefault($interface, $class) {
-			self::$__defaults[$interface] = $class;
-		}
-		
-		public static function defaultClass($interface) {
-			return isset(self::$__defaults[$interface]) ? self::$__defaults[$interface] : null;
+		public static function register($key, $value) {
+			self::$__defaults[$key] = $value;
 		}
 	}
