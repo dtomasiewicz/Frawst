@@ -162,7 +162,7 @@
 			usort($this->__data, $callback);
 		}
 		
-		private function sortComparable() {
+		public function sortComparable() {
 			usort($this->__data, function($a, $b) {
 				return $a->compareTo($b);
 			});

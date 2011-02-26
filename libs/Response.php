@@ -26,7 +26,7 @@
 		const STATUS_SERVICE_UNAVAILABLE = 503;
 		const STATUS_GATEWAY_TIMEOUT = 504;
 		
-		protected static $_statusMessages = array(
+		private static $__statusMessages = array(
 			self::STATUS_OK => 'OK',
 			
 			self::STATUS_FOUND => 'Found',
@@ -51,36 +51,36 @@
 		 * The Request object to which this Response is responding to.
 		 * @var Request
 		 */
-		protected $_Request;
+		private $__Request;
 		
 		/**
 		 * @var array Response data, most likely the return value of the Request's
 		 * controller's execute() method.
 		 */
-		protected $_data;
+		private $__data;
 		
 		/**
 		 * @var array Associative array of response headers. Never sent if the response
 		 * is simply "rendered" (as a sub-request).
 		 */
-		protected $_headers = array();
+		private $__headers = array();
 		
 		/**
 		 * @var string For internal redirects only, used if trying to render a redirected
 		 * request
 		 */
-		protected $_internalRedirect;
+		private $__internalRedirect;
 		
 		/**
 		 * @var Frawst\View View object. Should be able to render() the response data into an
 		 * information string.
 		 */
-		protected $_View;
+		private $__View;
 		
 		/**
 		 * @var int HTTP status code (200 for "ok", 404 for "not found", etc.)
 		 */
-		protected $_status;
+		private $__status;
 		
 		private $__injected;
 		
@@ -89,9 +89,9 @@
 		 * @param Frawst\Request Request that is being responded to
 		 */
 		public function __construct(RequestInterface $request) {
-			$this->_Request = $request;
-			$this->_status = self::STATUS_OK;
-			$this->_View = null;
+			$this->__Request = $request;
+			$this->__status = self::STATUS_OK;
+			$this->__View = null;
 			
 			$this->__injected = new Injector();
 		}
@@ -101,7 +101,7 @@
 		}
 		
 		public function request() {
-			return $this->_Request;
+			return $this->__Request;
 		}
 		
 		/**
@@ -111,16 +111,16 @@
 		 */
 		public function data($data = null) {
 			if (!is_null($data)) {
-				$this->_data = $data;
+				$this->__data = $data;
 			}
-			return $this->_data;
+			return $this->__data;
 		}
 		
 		/**
 		 * @return array Associative array of response headers
 		 */
 		public function headers() {
-			return $this->_headers;
+			return $this->__headers;
 		}
 		
 		/**
@@ -136,10 +136,10 @@
 					$this->header($key, $val);
 				}
 			} elseif(null !== $value) {
-				$this->_headers[$name] = $value;
+				$this->__headers[$name] = $value;
 			} else {
-				return isset($this->_headers[$name])
-					? $this->_headers[$name]
+				return isset($this->__headers[$name])
+					? $this->__headers[$name]
 					: null;
 			}
 		}
@@ -150,14 +150,14 @@
 		 */
 		public function status($status = null) {
 			if(null !== $status) {
-				$this->_status = $status;
+				$this->__status = $status;
 			}
 			
-			return $this->_status;
+			return $this->__status;
 		}
 		
 		public function isOk() {
-			return $this->_status == static::STATUS_OK;
+			return $this->__status == static::STATUS_OK;
 		}
 		
 		/**
@@ -183,10 +183,10 @@
 			}
 			
 			if (!$external) {
-				$this->_internalRedirect = $to = trim($to, '/');
+				$this->__internalRedirect = $to = trim($to, '/');
 				// some browsers (e.g. Firefox) fail to pass non-standard headers to next page
 				// this is somewhat of a hack to get it to work
-				if ($this->_Request->isAjax()) {
+				if ($this->__Request->isAjax()) {
 					$to .= AJAX_SUFFIX;
 				}
 				$to = URL_REWRITE ? WEB_ROOT.$to : WEB_ROOT.'index.php/'.$to;
@@ -224,7 +224,7 @@
 		 * @return bool True if this response must be redirected, false otherwise.
 		 */
 		public function mustRedirect() {
-			return $this->_status >= 300 && $this->_status < 400
+			return $this->__status >= 300 && $this->__status < 400
 				? true
 				: false;
 		}
@@ -236,25 +236,25 @@
 		 */
 		public function render() {
 			try {
-				if(!is_string($this->_data)) {
-					if(isset($this->_internalRedirect)) {
+				if(!is_string($this->__data)) {
+					if(isset($this->__internalRedirect)) {
 						$reqClass = $this->__injected->get('Frawst\RequestInterface');
 						$routeClass = $this->__injected->get('Frawst\RouteInterface');
-						$req = new $reqClass(new $routeClass($this->_internalRedirect), array(), 'GET', $this->_Request->headers());
-						$this->_data = $req->execute()->render();
+						$req = new $reqClass(new $routeClass($this->__internalRedirect), array(), 'GET', $this->__Request->headers());
+						$this->__data = $req->execute()->render();
 					} elseif($this->mustRedirect()) {
 						throw new \Frawst\Exception('Cannot render a request pending an external redirection.');
 					} else {
-						if(!is_array($this->_data)) {
-							$this->_data = array($this->_data);
+						if(!is_array($this->__data)) {
+							$this->__data = array($this->__data);
 						}
 						$viewClass = $this->__injected->get('Frawst\ViewInterface');
-						$this->_View = new $viewClass($this);
-						$this->_data = $this->_View->render($this->_data);
-						$this->_View = null;
+						$this->__View = new $viewClass($this);
+						$this->__data = $this->__View->render($this->__data);
+						$this->__View = null;
 					}
 				}
-				return $this->_data;
+				return $this->__data;
 			} catch(\Exception $e) {
 				return '<div class="Frawst-Debug">'.
 					'<h1>A Rendering Problem Occurred!</h1>'.
@@ -273,14 +273,14 @@
 		 * @param strint $viewClass The name of the class to use for rendering the view
 		 */
 		public function send() {
-			if($this->_data instanceof File && !$this->_data->exists()) {
+			if($this->__data instanceof File && !$this->__data->exists()) {
 				$this->status(self::STATUS_NOT_FOUND);
 			}
 			
-			if($this->_status != self::STATUS_OK) {
-				$statusHeader = 'HTTP/1.0 '.$this->_status;
-				if(isset(static::$_statusMessages[$this->_status])) {
-					$statusHeader .= ' '.static::$_statusMessages[$this->_status];
+			if($this->__status != self::STATUS_OK) {
+				$statusHeader = 'HTTP/1.0 '.$this->__status;
+				if(isset(self::$__statusMessages[$this->__status])) {
+					$statusHeader .= ' '.self::$__statusMessages[$this->__status];
 				}
 				header($statusHeader);
 				
@@ -288,13 +288,13 @@
 					header('Location: '.$redirect);
 					exit;
 				}
-			} elseif($this->_data instanceof File) {
+			} elseif($this->__data instanceof File) {
 				if($this->header('Content-Type') === null) {
 					// no Content-Type set, transfer as attachment
 					$this->header(array(
 						'Content-Type'              => 'application/octet-stream',
 						'Content-Description'       => 'File Transfer',
-						'Content-Disposition'       => 'attachment; filename='.$this->_data->transferName(),
+						'Content-Disposition'       => 'attachment; filename='.$this->__data->transferName(),
 						'Content-Transfer-Encoding' => 'Binary',
 						'Expires'                   => '0',
 						'Cache-Control'             => 'must-revalidate, post-check=0, pre-check=0',
@@ -302,11 +302,11 @@
 					));
 				}
 				
-				$this->header('Content-Length', $this->_data->size());
+				$this->header('Content-Length', $this->__data->size());
 				$this->__sendHeaders();
 				ob_clean();
 				flush();
-				$this->_data->read(true);
+				$this->__data->read(true);
 				exit;
 			} else {
 				$out = $this->render();
@@ -318,7 +318,7 @@
 		}
 		
 		private function __sendHeaders() {
-			foreach ($this->_headers as $name => $value) {
+			foreach ($this->__headers as $name => $value) {
 				header($name.': '.$value);
 			}
 		}

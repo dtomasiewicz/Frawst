@@ -3,14 +3,14 @@
 	
 	class Session {
 		const COOKIE_NAME = 'Session';
-		protected static $_id;
+		private static $__id;
 		
 		public static function start() {
 			if(Cookie::exists(self::COOKIE_NAME.'.SESSID')) {
-				self::$_id = Cookie::get(self::COOKIE_NAME.'.SESSID');
+				self::$__id = Cookie::get(self::COOKIE_NAME.'.SESSID');
 			} else {
-				self::$_id = Security::hash(microtime(true));
-				Cookie::set(self::COOKIE_NAME.'.SESSID', self::$_id);
+				self::$__id = Security::hash(microtime(true));
+				Cookie::set(self::COOKIE_NAME.'.SESSID', self::$__id);
 			}
 		}
 		
@@ -20,15 +20,15 @@
 		}
 		
 		public static function id() {
-			if(!isset(self::$_id)) {
+			if(!isset(self::$__id)) {
 				self::start();
 			}
 			
-			return self::$_id;
+			return self::$__id;
 		}
 		
 		public static function set($name, $value) {
-			if(!isset(self::$_id)) {
+			if(!isset(self::$__id)) {
 				self::start();
 			}
 			
@@ -40,7 +40,7 @@
 		}
 		
 		public static function delete($name) {
-			if(!isset(self::$_id)) {
+			if(!isset(self::$__id)) {
 				self::start();
 			}
 			

@@ -9,21 +9,21 @@
 	 */
 	class Html extends Helper {
 		
-		protected $_tags = array(
+		private $__tags = array(
 			'image' => '<img src="%s" %s>',
 			'link' => '<a href="%s" %s>%s</a>'
 		);
 		
 		public function image($path, $attrs = array()) {
-			return sprintf($this->_tags['image'], $this->_View->webroot('public/images/'.$path), $this->parseAttributes($attrs));
+			return sprintf($this->__tags['image'], $this->view()->webroot('public/images/'.$path), $this->parseAttributes($attrs));
 		}
 		
 		public function link($uri, $content, $attrs = array()) {
-			return sprintf($this->_tags['link'], $uri, $this->parseAttributes($attrs), $content);
+			return sprintf($this->__tags['link'], $uri, $this->parseAttributes($attrs), $content);
 		}
 		
 		public function appLink($route, $content, $attrs = array()) {
-			return $this->link($this->_View->path($route), $content, $attrs);
+			return $this->link($this->view()->path($route), $content, $attrs);
 		}
 		
 		public function sanitize($string) {

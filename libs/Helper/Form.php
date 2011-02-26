@@ -20,10 +20,10 @@
 		/**
 		 * @var Frawst\Form An instance of the form definition
 		 */
-		protected $_Form;
+		private $__Form;
 		
 		public function object() {
-			return $this->_Form;
+			return $this->__Form;
 		}
 		
 		/**
@@ -36,13 +36,13 @@
 		 * @return string HTML for the form opening
 		 */
 		public function open($formName, $attrs = array()) {
-			if (!($form = $this->_View->response()->request()->form($formName))) {
+			if (!($form = $this->view()->response()->request()->form($formName))) {
 				$form = new $formName();
 			}
-			$this->_Form = $form;
+			$this->__Form = $form;
 			
-			$attrs['action'] = isset($attrs['action']) ? $attrs['action'] : $this->_View->path();
-			$attrs['method'] = isset($attrs['method']) ? $attrs['method'] : $this->_Form->method();
+			$attrs['action'] = isset($attrs['action']) ? $attrs['action'] : $this->view()->path();
+			$attrs['method'] = isset($attrs['method']) ? $attrs['method'] : $this->__Form->method();
 			
 			$out = '<form '.$this->parseAttributes($attrs).'>';
 			
@@ -52,8 +52,8 @@
 				$out .= '<input type="hidden" name="___METHOD" value="'.$attrs['method'].'">';
 			}
 			
-			if($token = $this->_Form->makeToken()) {
-				$class = get_class($this->_Form);
+			if($token = $this->__Form->makeToken()) {
+				$class = get_class($this->__Form);
 				$out .= '<input type="hidden" name="'.$class::TOKEN_NAME.'" value="'.$token.'">';
 			}
 			
@@ -65,13 +65,13 @@
 		 * @return string The form closing tag
 		 */
 		public function close() {
-			$this->_Form = null;
+			$this->__Form = null;
 			return '</form>';
 		}
 		
 		public function repopulate($field, $default = null) {
-			if($this->_Form && $this->_Form->submitted()) {
-				if(null !== $value = $this->_Form->get($field)) {
+			if($this->__Form && $this->__Form->submitted()) {
+				if(null !== $value = $this->__Form->get($field)) {
 					return $value;
 				}
 			}
@@ -84,7 +84,7 @@
 		 * @param string $field The name of the field (dot-path)
 		 */
 		public function errors($field) {
-			if($this->_Form && count($errors = $this->_Form->errors($field))) {
+			if($this->__Form && count($errors = $this->__Form->errors($field))) {
 				$out = '<ul class="fieldErrors fieldErrors-'.str_replace('.', '-', $field).'">';
 				foreach ($errors as $message) {
 					$out .= '<li>'.$message.'</li>';
@@ -224,7 +224,7 @@
 		}
 		
 		public function __call($method, $args) {
-			return call_user_func_array(array($this->_Form, $method), $args);
+			return call_user_func_array(array($this->__Form, $method), $args);
 		}
 		
 		public static function parseAttributes($attrs) {

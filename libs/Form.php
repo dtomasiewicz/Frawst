@@ -17,8 +17,8 @@
 	 * automatically.
 	 */
 	class Form implements FormInterface, \ArrayAccess {
-		protected $_data;
-		protected $_submitted;
+		private $__data;
+		private $__submitted;
 		
 		protected static $_method = 'POST';
 		
@@ -56,7 +56,7 @@
 		 * in dot-path format and the values are arrays of error messages.
 		 * @var array
 		 */
-		protected $_errors = array();
+		private $__errors = array();
 		
 		/**
 		 * Instantiates the form object with the given data. If the data contains fields
@@ -65,19 +65,19 @@
 		 */
 		public function __construct($data = null) {
 			if($data === null) {
-				$this->_submitted = false;
-				$this->_data = array();
+				$this->__submitted = false;
+				$this->__data = array();
 			} else {
-				$this->_submitted = true;
-				$this->_data = $data;
+				$this->__submitted = true;
+				$this->__data = $data;
 			}
 		}
 		
 		public function submitted() {
-			return $this->_submitted;
+			return $this->__submitted;
 		}
 		
-		protected static function _generalKey($key) {
+		private static function __generalKey($key) {
 			$gKey = array();
 			foreach(explode('.', $key) as $v) {
 				if(is_numeric($v)) {
@@ -89,11 +89,11 @@
 			return implode('.', $gKey);
 		}
 		
-		protected function _defaultValue($field) {
+		public function defaultValue($field) {
 			if(array_key_exists($field, static::$_fields)) {
 				return static::$_fields[$field];
 			} else{
-				$gKey = self::_generalKey($field);
+				$gKey = self::__generalKey($field);
 				if(array_key_exists($gKey, static::$_fields)) {
 					return static::$_fields[$gKey];
 				}
@@ -103,13 +103,13 @@
 		}
 		
 		public function get($offset) {
-			return Matrix::pathExists($this->_data, $offset)
-				? Matrix::pathGet($this->_data, $offset)
-				: $this->_defaultValue($offset);
+			return Matrix::pathExists($this->__data, $offset)
+				? Matrix::pathGet($this->__data, $offset)
+				: $this->defaultValue($offset);
 		}
 		
 		public function exists($offset) {
-			return Matrix::pathExists($this->_data, $offset) || $this->_defaultValue($offset) !== null;
+			return Matrix::pathExists($this->__data, $offset) || $this->defaultValue($offset) !== null;
 		}
 		
 		public function offsetExists($offset) {
@@ -130,7 +130,7 @@
 		 * @param array $errors
 		 */
 		public function setErrors($errors) {
-			$this->_errors = $errors;
+			$this->__errors = $errors;
 		}
 		
 		/**
@@ -144,10 +144,10 @@
 					$this->addErrors($f, $e);
 				}
 			} elseif(count($errors)) {
-				if (!Matrix::pathExists($this->_errors, $field)) {
-					Matrix::pathSet($this->_errors, $field, $errors);
+				if (!Matrix::pathExists($this->__errors, $field)) {
+					Matrix::pathSet($this->__errors, $field, $errors);
 				} else {
-					Matrix::pathMerge($this->_errors, $field, $errors);
+					Matrix::pathMerge($this->__errors, $field, $errors);
 				}
 			}
 		}
@@ -162,8 +162,8 @@
 		 * @param string $field
 		 */
 		public function errors($field = null) {
-			return Matrix::pathExists($this->_errors, $field)
-				? Matrix::pathGet($this->_errors, $field)
+			return Matrix::pathExists($this->__errors, $field)
+				? Matrix::pathGet($this->__errors, $field)
 				: array();
 		}
 		
@@ -177,10 +177,10 @@
 			$this->_errors = array();
 			foreach (static::$_validate as $field => $rules) {
 				if (count($errors = Validator::check($this[$field], $rules, $this))) {
-					Matrix::pathSet($this->_errors, $field, $errors);
+					Matrix::pathSet($this->__errors, $field, $errors);
 				}
 			}
-			return count($this->_errors) == 0;
+			return count($this->__errors) == 0;
 		}
 		
 		/**
@@ -190,8 +190,8 @@
 		 * @return bool True if errors exist
 		 */
 		public function valid($field = null) {
-			return Matrix::pathExists($this->_errors, field)
-				? (bool) (count(Matrix::pathGet($this->_errors, $field)) == 0)
+			return Matrix::pathExists($this->__errors, field)
+				? (bool) (count(Matrix::pathGet($this->__errors, $field)) == 0)
 				: true;
 		}
 		
@@ -214,7 +214,7 @@
 			if(!$allowExtraFields) {
 				foreach(Matrix::flatten($data) as $key => $value) {
 					if(!array_key_exists($key, static::$_fields)) {
-						if(!array_key_exists(self::_generalKey($key), static::$_fields)) {
+						if(!array_key_exists(self::__generalKey($key), static::$_fields)) {
 							return false;
 						}
 					}

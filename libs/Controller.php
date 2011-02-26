@@ -9,36 +9,36 @@
 		/**
 		 * @var array The component objects in use by the controller
 		 */
-		protected $_components;
+		private $__components;
 		
 		/**
 		 * @var array An associative array of data used internally by the controller
 		 */
-		protected $_data;
+		private $__data;
 		
 		/**
 		 * @var Frawst\Request The request using the controller
 		 */
-		protected $_Request;
+		private $__Request;
 		
-		protected $_Response;
+		private $__Response;
 		
 		/**
 		 * Constructor.
 		 * @param Frawst\Request The request using the controller
 		 */
 		public function __construct(RequestInterface $request, ResponseInterface $response) {
-			$this->_Request = $request;
-			$this->_Response = $response;
-			$this->_components = array();
+			$this->__Request = $request;
+			$this->__Response = $response;
+			$this->__components = array();
 		}
 		
 		public function request() {
-			return $this->_Request;
+			return $this->__Request;
 		}
 		
 		public function response() {
-			return $this->_Response;
+			return $this->__Response;
 		}
 		
 		/**
@@ -65,15 +65,15 @@
 		 * @return mixed The component object, or false if the component does not exist
 		 */
 		public function component($name) {
-			if (!isset($this->_components[$name])) {
+			if (!isset($this->__components[$name])) {
 				if(class_exists($name)) {
-					$this->_components[$name] = new $name($this);
-					$this->_components[$name]->setup();
+					$this->__components[$name] = new $name($this);
+					$this->__components[$name]->setup();
 				} else {
-					$this->_components[$name] = false;
+					$this->__components[$name] = false;
 				}
 			}
-			return $this->_components[$name];
+			return $this->__components[$name];
 		}
 		
 		/**
@@ -83,18 +83,18 @@
 		 */
 		public function execute() {
 			if(false !== $data = $this->_before()) {
-				if(method_exists($this, $method = strtolower($this->request()->method()))) {
-					$data = call_user_func_array(array($this, $method), $this->request()->param());
+				if(method_exists($this, $method = strtolower($this->__Request->method()))) {
+					$data = call_user_func_array(array($this, $method), $this->__Request->param());
 				}
 			}
 			
 			$data = $this->_after($data);
 			
 			// teardown components
-			foreach($this->_components as $component) {
+			foreach($this->__components as $component) {
 				$component->teardown();
 			}
-			$this->_components = array();
+			$this->__components = array();
 			
 			return $data;
 		}

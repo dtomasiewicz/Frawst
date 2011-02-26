@@ -2,21 +2,21 @@
 	namespace Frawst;
 	
 	class FileHandle {
-		protected $_handle;
+		private $__handle;
 		
 		public function __construct($handle) {
-			$this->_handle = $handle;
+			$this->__handle = $handle;
 		}
 		
 		public function eof() {
-			return feof($this->_handle);
+			return feof($this->__handle);
 		}
 		
 		public function read($length) {
-			return fread($this->_handle, $length);
+			return fread($this->__handle, $length);
 		}
 		
 		public function close() {
-			fclose($this->_handle);
+			fclose($this->__handle);
 		}
 	}

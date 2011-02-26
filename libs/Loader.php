@@ -10,7 +10,7 @@
 		 *   
 		 * @var array
 		 */
-		protected static $_paths = array();
+		private static $__paths = array();
 		
 		/**
 		 * Adds a path to the loader.
@@ -23,11 +23,11 @@
 			if(is_dir($path)) {
 				$resourceType = trim($resourceType, '/');
 				
-				if (!isset(self::$_paths[$resourceType])) {
-					self::$_paths[$resourceType] = array();
+				if (!isset(self::$__paths[$resourceType])) {
+					self::$__paths[$resourceType] = array();
 				}
 			
-				array_unshift(self::$_paths[$resourceType], $path);
+				array_unshift(self::$__paths[$resourceType], $path);
 			}
 		}
 		
@@ -69,8 +69,8 @@
 					$resourceType = '*';
 				}
 				
-				if (isset(self::$_paths[$resourceType])) {
-					foreach (self::$_paths[$resourceType] as $rootPath) {
+				if (isset(self::$__paths[$resourceType])) {
+					foreach (self::$__paths[$resourceType] as $rootPath) {
 						if (file_exists($file = $rootPath.DIRECTORY_SEPARATOR.$subPath.'.php')) {
 							return $file;
 						}
@@ -123,8 +123,8 @@
 					? implode('\\', $prefix)
 					: '*';
 				
-				if(isset(self::$_paths[$type])) {
-					foreach(self::$_paths[$type] as $path) {
+				if(isset(self::$__paths[$type])) {
+					foreach(self::$__paths[$type] as $path) {
 						if(file_exists($full = $path.$subDir)) {
 							$paths[] = $full;
 						}
