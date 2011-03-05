@@ -3,72 +3,36 @@
 	 * Frawst Framework Version 0.1 (development)
 	 * Author: Daniel Tomasiewicz < www.fourstaples.com >
 	 * 
-	 * This is the main bootstrap file, in which environment variables are set,
-	 * the autoloader is registered, and the top-level HTTP request is handled.
+	 * This file will setup, execute, and send a Frawst request/response
+	 * sequence for the HTTP request in which it was included.
 	 */
 	
 	namespace Frawst;
 	
-	define('Frawst\\VERSION', '0.1-dev');
+	require 'bootstrap.php';
+	require 'libs/Frawst/Loader.php';
 	
-	if(!defined('Frawst\\SCRIPT_START')) {
-		define('Frawst\\SCRIPT_START', microtime(true));
-	}
-	
-	if(!defined('Frawst\\APP_NAME')) {
-		define('Frawst\\APP_NAME', basename(dirname(dirname($_SERVER['SCRIPT_FILENAME']))));
-	}
-	
-	if(!defined('Frawst\\DOMAIN')) {
-		define('Frawst\\DOMAIN', $_SERVER['HTTP_HOST']);
-	}
-	
-	if(!defined('Frawst\\ROOT')) {
-		define('Frawst\\ROOT', dirname(__FILE__).DIRECTORY_SEPARATOR);
-	}
-		
-	if(!defined('Frawst\\APP_ROOT')) {
-		define('Frawst\\APP_ROOT', dirname(ROOT).DIRECTORY_SEPARATOR.APP_NAME.DIRECTORY_SEPARATOR);
-	}
-	
-	if(!defined('Frawst\\WEB_ROOT')) {
-		define('Frawst\\WEB_ROOT', rtrim(dirname($_SERVER['SCRIPT_NAME']), '/').'/');
-	}
-	
-	if(!defined('Frawst\\AJAX_SUFFIX')) {
-		define('Frawst\\AJAX_SUFFIX', '___AJAX___');
-	}
-	
-	if(!defined('Frawst\\URL_REWRITE')) {
-		if(function_exists('apache_get_modules') && in_array('mod_rewrite', apache_get_modules())) {
-			define('Frawst\\URL_REWRITE', true);
-		} else {
-			define('Frawst\\URL_REWRITE', false);
-		}
-	}
-	
-	ini_set('display_errors', '1');
-	error_reporting(E_ALL | E_STRICT);
-	
-	require 'libs/Loader.php';
 	spl_autoload_register(array('Frawst\\Loader', 'loadClass'));
-	
 	set_error_handler(function($code, $message, $file, $line) {
 		throw new LanguageException($message, 0, $code, $file, $line);
 	});
 	
-	// Paths in which libraries can be held.
 	Loader::addBasePath(ROOT);
 	Loader::addBasePath(APP_ROOT);
+	
+	ini_set('display_errors', '1');
+	error_reporting(E_ALL | E_STRICT);
+	date_default_timezone_set(Config::read('Frawst', 'timezone'));
+	setlocale(LC_ALL, Config::read('Frawst', 'locale'));
 	
 	// Additional bootstrapping
 	if(file_exists($bs = APP_ROOT.'bootstrap.php')) {
 		require $bs;
 	}
 	
-	date_default_timezone_set(Config::read('Frawst', 'timezone'));
-	setlocale(LC_ALL, Config::read('Frawst', 'locale'));
-	
+	/**
+	 * HANDLE HTTP REQUEST
+	 */
 	$method = $_SERVER['REQUEST_METHOD'];
 	if ($method == 'GET') {
 		$data = $_GET;
