@@ -1,7 +1,7 @@
 <?php
 	namespace Frawst;
 	
-	abstract class Validator extends Object {
+	abstract class Validator extends Base {
 		const BLANK = '/^\s*$/';
 		const VALID_INTEGER = '/^[-+]?\d+$/';
 		const VALID_FLOAT = '/^[-+]?\d*\.?\d+$/';

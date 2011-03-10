@@ -4,7 +4,7 @@
 	/**
 	 * Frawst routing class.
 	 */
-	class Route extends Object implements RouteInterface {
+	class Route extends Base implements RouteInterface {
 		/**
 		 * @var string The original route supplied to this class in the constructor,
 		 *             before custom routing rules are applied.
@@ -139,7 +139,7 @@
 				}
 			}
 			
-			$class = 'Frawst\\Controller';
+			$class = 'Frawst\Controller';
 			$this->__controller = '';
 			$exists = true;
 			while($exists && count($route)) {
@@ -159,7 +159,7 @@
 			
 			if(!$reflection || $reflection->isAbstract()) {
 				$this->__controller .= '/Index';
-				$class .= '\\Index';
+				$class .= '\Index';
 			}
 			
 			$this->__controller = ltrim($this->__controller, '/');

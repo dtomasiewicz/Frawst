@@ -1,7 +1,10 @@
 <?php
 	namespace Frawst;
 	
-	class Security extends Object {
+	class Security extends Base {
+		const CSRF_COOKIE_NAME = 'CSRF';
+		private static $__requireCookie = true;
+		
 		/**
 		 * @return a unique identifier
 		 */
@@ -43,30 +46,38 @@
 		 *                     a token, it ensures the token was not from a different form.
 		 * @return string
 		 */
-		public static function makeToken($salt = '') {
+		public static function makeToken($xid = '') {
 			$time = microtime(true);
-			return substr(self::hash(Session::id().$salt.$time), 0, 20).'-'.$time;
+			$token = substr(self::hash($time, $xid), 0, 16);
+			Cookie::set(self::CSRF_COOKIE_NAME.'.'.$token, $time);
+			return $token.'-'.$time;
 		}
 		
 		/**
 		 * Checks a security token for validity.
 		 * @param string $token
-		 * @param string $salt The salt string that was used to make the token
+		 * @param string $xid The salt string that was used to make the token
 		 * @param int $timeframe The timeframe for which the token is valid after being
-		 *                       created. If 0 (default), tokens will not expire until the
-		 *                       session does. 
+		 *                       created. If 0 (default), tokens will last forever or
+		 *                       until cookies are deleted by the user.
 		 * @return bool True if the token is valid, false if not
 		 */
-		public static function checkToken($token, $salt = '', $timeframe = null) {
+		public static function checkToken($token, $xid = '', $timeframe = 0) {
 			$parts = explode('-', $token);
-			if(count($parts) != 2 || !is_numeric($parts[1])) {
-				return false;
-			} else {
-				if($timeframe && microtime(true) > $parts[1]+$timeframe) {
-					// token is expired
-					return false;
+			if(count($parts) == 2 && is_numeric($parts[1])) {
+				if($timeframe <= 0 || microtime(true) <= $parts[1]+$timeframe) {
+					$reconstruct = substr(self::hash($parts[1], $xid), 0, 16);
+					if($reconstruct == $parts[0]) {
+						if(!self::$__requireCookie) {
+							return true;
+						} elseif(Cookie::exists($c = self::CSRF_COOKIE_NAME.'.'.$reconstruct)) {
+							Cookie::delete($c);
+							return true;
+						}
+					}
 				}
-				return (bool) (substr(self::hash(Session::id().$salt.$parts[1]), 0, 20) == $parts[0]);
 			}
+			
+			return false;
 		}
 	}

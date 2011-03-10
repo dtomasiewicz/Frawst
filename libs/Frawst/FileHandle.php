@@ -1,7 +1,7 @@
 <?php
 	namespace Frawst;
 	
-	class FileHandle extends Object {
+	class FileHandle extends Base {
 		private $__handle;
 		
 		public function __construct($handle) {

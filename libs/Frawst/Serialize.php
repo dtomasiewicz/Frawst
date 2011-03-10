@@ -4,7 +4,7 @@
 	/**
 	 * This houses any serialization-oriented methods.
 	 */
-	class Serialize extends Object {
+	class Serialize extends Base {
 		/**
 		 * Safely determines the type or classname of a serialized entity without
 		 * unserializing (or instantiating) it.

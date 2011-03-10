@@ -10,9 +10,10 @@
 	namespace Frawst;
 	
 	require 'bootstrap.php';
+	require 'libs/Frawst/Base.php';
 	require 'libs/Frawst/Loader.php';
 	
-	spl_autoload_register(array('Frawst\\Loader', 'loadClass'));
+	spl_autoload_register(array('Frawst\Loader', 'loadClass'));
 	set_error_handler(function($code, $message, $file, $line) {
 		throw new LanguageException($message, 0, $code, $file, $line);
 	});
@@ -44,16 +45,17 @@
 	
 	// REST hack for browsers that don't support all methods. only works if the
 	// originating script passes this magic parameter, of course
-	if (isset($data['___METHOD']) && in_array($m = strtoupper($data['___METHOD']), array('GET', 'POST', 'PUT', 'DELETE'))) {
+	$allowedMethods = array('GET', 'POST', 'PUT', 'DELETE');
+	if ($method == 'POST' && isset($data['___METHOD']) && in_array($m = strtoupper($data['___METHOD']), $allowedMethods)) {
 		$method = $m;
 		unset($data['___METHOD']);
 	}
 	
-	// I HATE YOU MAGIC QUOTES
+	// I HATE YOU, MAGIC QUOTES
 	if (function_exists('get_magic_quotes_gpc') && get_magic_quotes_gpc()) {
 	 	function stripslashes_deep($value) {
 			$value = (is_array($value)) ?
-				array_map('Frawst\\stripslashes_deep', $value) :
+				array_map('Frawst\stripslashes_deep', $value) :
 				stripslashes($value);
 			return $value;
 		}

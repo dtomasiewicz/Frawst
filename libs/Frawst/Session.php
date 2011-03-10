@@ -1,7 +1,7 @@
 <?php
 	namespace Frawst;
 	
-	class Session extends Object {
+	class Session extends Base {
 		const COOKIE_NAME = 'Session';
 		private static $__id;
 		

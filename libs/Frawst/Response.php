@@ -11,7 +11,7 @@
 	*   Frawst\ViewInterface    (Frawst\View)
 	*   Frawst\RouteInterface   (Frawst\Route)
     */
-	class Response extends Object implements ResponseInterface {
+	class Response extends Base implements ResponseInterface {
 		const STATUS_OK = 200;
 		
 		const STATUS_FOUND = 302;

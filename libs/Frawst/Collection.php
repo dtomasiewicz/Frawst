@@ -5,7 +5,7 @@
 	 * Similar to an ArrayList, but all objects stored must be instances of
 	 * a common base class.
 	 */
-	class Collection extends Object implements \ArrayAccess, \Iterator, \Countable, JSONEncodable {
+	class Collection extends Base implements \ArrayAccess, \Iterator, \Countable, JSONEncodable {
 		private $__type;
 		private $__data;
 		

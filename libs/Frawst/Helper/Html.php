@@ -14,6 +14,9 @@
 			'link' => '<a href="%s" %s>%s</a>'
 		);
 		
+		private $__js = array();
+		private $__css = array();
+		
 		public function image($path, $attrs = array()) {
 			return sprintf($this->__tags['image'], $this->view()->webroot('public/images/'.$path), $this->parseAttributes($attrs));
 		}
@@ -40,6 +43,22 @@
 				}
 			}
 			return trim($str);
+		}
+		
+		public function addJs($file) {
+			$this->__js[$file] = $file;
+		}
+		
+		public function js() {
+			return $this->__js;
+		}
+		
+		public function addCss($file) {
+			$this->__css[$file] = $file;
+		}
+		
+		public function css() {
+			return $this->__css;
 		}
 		
 	}

@@ -4,7 +4,7 @@
 	/**
 	 * Base Controller class for the Frawst framework.
 	 */
-	abstract class Controller extends Object implements ControllerInterface {
+	abstract class Controller extends Base implements ControllerInterface {
 		
 		/**
 		 * @var array The component objects in use by the controller
@@ -65,6 +65,7 @@
 		 * @return mixed The component object, or false if the component does not exist
 		 */
 		public function component($name) {
+			$name = $this->getImplementation('ns:Frawst\ComponentInterface').'\\'.$name;
 			if (!isset($this->__components[$name])) {
 				if(class_exists($name)) {
 					$this->__components[$name] = new $name($this);
@@ -85,6 +86,8 @@
 			if(false !== $data = $this->_before()) {
 				if(method_exists($this, $method = strtolower($this->__Request->method()))) {
 					$data = call_user_func_array(array($this, $method), $this->__Request->param());
+				} else {
+					$data = $this->__Response->forbidden();
 				}
 			}
 			
@@ -97,5 +100,17 @@
 			$this->__components = array();
 			
 			return $data;
+		}
+		
+		public function __get($name) {
+			if($name == 'Request') {
+				return $this->__Request;
+			} elseif($name == 'Response') {
+				return $this->__Response;
+			} elseif($c = $this->component($name)) {
+				return $c;
+			} else {
+				throw new Exception('Invalid controller property: '.$name);
+			}
 		}
 	}

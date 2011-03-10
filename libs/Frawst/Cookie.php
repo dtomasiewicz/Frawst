@@ -4,7 +4,7 @@
 	/**
 	 * Wrapper class for PHP cookies.
 	 */
-	class Cookie extends Object {
+	class Cookie extends Base {
 		
 		public static function get($name) {
 			return Matrix::pathGet($_COOKIE, $name);

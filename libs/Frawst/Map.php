@@ -1,7 +1,7 @@
 <?php
 	namespace Frawst;
 	
-	class Map extends Object implements \ArrayAccess, \Countable, \JSONEncodable {
+	class Map extends Base implements \ArrayAccess, \Countable, \JSONEncodable {
 		private $__type;
 		private $__data;
 		

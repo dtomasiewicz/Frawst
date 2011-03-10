@@ -11,10 +11,10 @@
 	 *   Frawst\RequestInterface  (Frawst\Request)
 	 *   Frawst\ResponseInterface (Frawst\Response)
 	 *   Frawst\FormInterface     (Frawst\Form)
-	 *   ns:Frawst\Controller     (Frawst\Controller)
+	 *   ns:Frawst\ControllerInterface     (Frawst\Controller)
 	 *     Namespace prefix for controllers.
 	 */
-	class Request extends Object implements RequestInterface {
+	class Request extends Base implements RequestInterface {
 		
 		const METHOD_GET = 'GET';
 		const METHOD_POST = 'POST';
@@ -136,7 +136,7 @@
 			$resClass = $this->getImplementation('Frawst\ResponseInterface');
 			$response = new $resClass($this);
 			
-			$controllerClass = $this->getImplementation('ns:Frawst\Controller').'\\'.str_replace('/', '\\', $this->__Route->controller());
+			$controllerClass = $this->getImplementation('ns:Frawst\ControllerInterface').'\\'.str_replace('/', '\\', $this->__Route->controller());
 			$this->__Controller = new $controllerClass($this, $response);
 			
 			try {
@@ -239,12 +239,15 @@
 			if($formName === null) {
 				$formClass = $this->getImplementation('Frawst\FormInterface');
 				return $formClass::load($this->__data, true);
-			} elseif (isset($this->__forms[$formName])) {
-				return $this->__forms[$formName];
-			} elseif(class_exists($formName) && $formName::method() == $this->method()) {
-				return $this->__forms[$formName] = $formName::load($this->__data);
 			} else {
-				return null;
+				$formName = $this->getImplementation('ns:Frawst\FormInterface').'\\'.$formName;
+				if (isset($this->__forms[$formName])) {
+					return $this->__forms[$formName];
+				} elseif(class_exists($formName) && $formName::method() == $this->method()) {
+					return $this->__forms[$formName] = $formName::load($this->__data);
+				} else {
+					return null;
+				}
 			}
 		}
 		
@@ -273,5 +276,13 @@
 		
 		public function route() {
 			return $this->__Route;
+		}
+		
+		public function __get($name) {
+			if($name == 'Route') {
+				return $this->__Route;
+			} else {
+				throw new Exception('Invalid request property: '.$name);
+			}
 		}
 	}

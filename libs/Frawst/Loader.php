@@ -1,7 +1,7 @@
 <?php
 	namespace Frawst;
 	
-	class Loader extends Object {
+	class Loader extends Base {
 		
 		/**
 		 * A multidimensional array of paths in the format:

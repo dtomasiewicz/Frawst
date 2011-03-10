@@ -16,7 +16,7 @@
 	 * pass the name of your Form class in the open() method, and the fields will be (re)populated
 	 * automatically.
 	 */
-	class Form extends Object implements FormInterface, \ArrayAccess {
+	class Form extends Base implements FormInterface, \ArrayAccess {
 		private $__data;
 		private $__submitted;
 		

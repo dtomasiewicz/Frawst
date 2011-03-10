@@ -1,17 +1,20 @@
 <?php
 	namespace Frawst;
 	
-	class Object {
+	class Base {
 		private $__impls = array();
 		
 		private static $__defaultImpls = array(
-			'Frawst\Object' => array(
+			'Frawst\Base' => array(
 				'Frawst\RequestInterface' => 'Frawst\Request',
 				'Frawst\ResponseInterface' => 'Frawst\Response',
 				'Frawst\FormInterface' => 'Frawst\Form',
 				'Frawst\ViewInterface' => 'Frawst\View',
 				'Frawst\RouteInterface' => 'Frawst\Route',
-				'ns:Frawst\Controller' => 'Frawst\Controller',
+				'ns:Frawst\ControllerInterface' => 'Frawst\Controller',
+				'ns:Frawst\ComponentInterface' => 'Frawst\Component',
+				'ns:Frawst\HelperInterface' => 'Frawst\Helper',
+				'ns:Frawst\FormInterface' => 'Frawst\Form',
 				'configRead' => array('Frawst\Config', 'read')
 			)
 		);

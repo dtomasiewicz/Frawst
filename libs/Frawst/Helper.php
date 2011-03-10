@@ -1,7 +1,7 @@
 <?php
 	namespace Frawst;
 	
-	abstract class Helper extends Object implements HelperInterface {
+	abstract class Helper extends Base implements HelperInterface {
 		private $__View;
 		
 		public function __construct(ViewInterface $view) {

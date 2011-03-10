@@ -2,7 +2,7 @@
 	namespace Frawst;
 	use \Serializable;
 	
-	class Matrix extends Object implements \ArrayAccess, JSONEncodable {
+	class Matrix extends Base implements \ArrayAccess, JSONEncodable {
 		private $___data = array();
 		
 		public function __construct($data = array()) {

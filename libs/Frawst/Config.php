@@ -7,7 +7,7 @@
 	 * Reads variables from configuration files.
 	 * @todo Make this instantiable
 	 */	
-	abstract class Config extends Object {
+	abstract class Config extends Base {
 		private static $__data = array();
 		
 		public static function read($file, $value = null) {

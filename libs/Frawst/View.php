@@ -5,16 +5,17 @@
 	 * Interface Dependencies:
 	 *   Frawst\RouteInterface (Frawst\Route)
 	 */
-	class View extends Object implements ViewInterface {
+	class View extends Base implements ViewInterface {
 		private $__helpers;
 		private $__Response;
 		private $__data;
-		private $__layout = 'default';
+		private $__layout;
 		
 		public function __construct(ResponseInterface $response) {
 			$this->__Response = $response;
 			$this->__helpers = array();
 			$this->__data = array();
+			$this->__layout = 'default';
 		}
 		
 		public function exists($key) {
@@ -93,6 +94,7 @@
 		 */
 		protected function __findTemplate() {
 			$status = $this->__Response->status();
+			
 			if($this->__Response->isOk()) {
 				if(null !== $this->__templatePath($template = 'controller/'.$this->request()->route()->controller())) {
 					return $template;
@@ -180,6 +182,7 @@
 		}
  		
  		public function helper($name) {
+ 			$name = $this->getImplementation('ns:Frawst\HelperInterface').'\\'.$name;
  			if (!isset($this->__helpers[$name])) {
  				if(class_exists($name)) {
  					$this->__helpers[$name] = new $name($this);
@@ -192,9 +195,21 @@
  		}
  		
  		public function layout($layout = null) {
- 			if (!is_null($layout)) {
+ 			if ($layout !== null) {
  				$this->__layout = $layout;
  			}
  			return $this->__layout;
  		}
+		
+		public function __get($name) {
+			if($name == 'Request') {
+				return $this->__Response->request();
+			} elseif($name == 'Response') {
+				return $this->__Response;
+			} elseif($h = $this->helper($name)) {
+				return $h;
+			} else {
+				throw new Exception('Invalid view property: '.$name);
+			}
+		}
 	}

@@ -1,7 +1,7 @@
 <?php
 	namespace Frawst;
 	
-	class File extends Object {
+	class File extends Base {
 		private $__name;
 		private $__transferName;
 		

@@ -1,29 +1,104 @@
 <?php
-	namespace Frawst;
+	namespace Frawst\Test;
 	
 	class Stub {
-		private static $__seedsStatic;
+		private static $__classSeeds = array();
 		private $__seeds;
 		
 		public function __construct() {
 			$this->__seeds = array();
 		}
-		private static function __addMethodSeed(&$seeds, $method, $return, $args) {
+		
+		public function seedReturn($method, $return, $args = null) {
+			self::__addSeed($this->__seeds, $method, array('return' => $return, 'args' => $args));
+		}
+		
+		public static function seedClassReturn($method, $return, $args = null) {
+			self::__addClassSeed(get_called_class(), $method, array('return' => $return, 'args' => $args));
+		}
+		
+		public function seedImplementation($method, $impl) {
+			self::__addSeed($this->__seeds, $method, array('impl' => $impl, 'args' => null));
+		}
+		
+		public static function seedClassImplementation($method, $impl) {
+			self::__addClassSeed(get_called_class(), $method, array('impl' => $impl, 'args' => null));
+		}
+		
+		public function clearSeeds($method = null) {
+			if($method === null) {
+				$this->__seeds = array();
+			} elseif(isset($this->__seeds[$method])) {
+				unset($this->__seeds[$method]);
+			}
+		}
+		
+		public static function clearClassSeeds($method = null) {
+			$cc = get_called_class();
+			if($cc === __CLASS__) {
+				self::$__classSeeds = array();
+			} elseif(isset(self::$__classSeeds[$cc])) {
+				if($method === null) {
+					unset(self::$__classSeeds[$cc]);
+				} elseif(isset(self::$__classSeeds[$cc][$method])) {
+					unset(self::$__classSeeds[$cc][$method]);
+				}
+			}
+		}
+		
+		private static function __addSeed(&$seeds, $method, $seed) {
 			if(!isset($seeds[$method])) {
 				$seeds[$method] = array();
 			}
 			
-			$seeds[$method][] = array(
-				'args' => $args,
-				'return' => $return
-			);
+			$seeds[$method][] = $seed;
 		}
-		private static function __getMethodSeed(&$seeds, $method, $args) {
+		
+		private static function __addClassSeed($class, $method, $seed) {
+			if(!isset(self::$__classSeeds[$class])) {
+				self::$__classSeeds[$class] = array();
+			}
+			self::__addSeed(self::$__classSeeds[$class], $method, $seed);
+		}
+		
+		public static function getClassSeed($method, $args = null) {
+			$cc = get_called_class();
+			if(isset(self::$__classSeeds[$cc])
+			  && $seed = self::__getSeed(self::$__classSeeds[$cc], $method, $args)) {
+				return self::__evalSeed($seed, $args);
+			} else {
+				self::__seedNotFound($cc, $method, $args);
+			}
+		}
+		
+		public function getSeed($method, $args = null) {
+			if($seed = self::__getSeed($this->__seeds, $method, $args)) {
+				return self::__evalSeed($seed, $args);
+			} else {
+				return static::getClassSeed($method, $args);
+			}
+		}
+		
+		public function __call($method, $args) {
+			return $this->getSeed($method, $args);
+		}
+		
+		public static function __callStatic($method, $args) {
+			return static::getClassSeed($method, $args);
+		}
+		
+		/**
+		 * Get a seed based on method and arguments.
+		 *   seeded return > seeded implementation
+		 */
+		private static function __getSeed(&$seeds, $method, $args) {
+			$matchSeed = null;
 			if(isset($seeds[$method])) {
-				$matchSeed = null;
 				foreach($seeds[$method] as &$seed) {
 					if($seed['args'] === null) {
-						$matchSeed = $seed;
+						if($matchSeed === null || array_key_exists('impl', $matchSeed)) {
+							$matchSeed = $seed;
+						}
 					} elseif(is_array($args)) {
 						if(count($args) == count($seed['args'])) {
 							$match = true;
@@ -38,11 +113,19 @@
 						}
 					}
 				}
-				if($matchSeed) {
-					return $matchSeed['return'];
-				}
 			}
-			
+			return $matchSeed;
+		}
+		
+		private static function __evalSeed(&$seed, $args) {
+			if(isset($seed['impl'])) {
+				return call_user_func_array($seed['impl'], $args);
+			} else {
+				return $seed['return'];
+			}
+		}
+		
+		private static function __seedNotFound($class, $method, $args) {
 			if($args === null) {
 				$argsType = 'a null argument set';
 			} elseif(is_array($args)) {
@@ -56,24 +139,7 @@
 				}
 				$argsType = '('.implode(',', $argsType).')'; 
 			}
-			throw new \Exception(get_called_class().'::'.$method.'() was not seeded for '.$argsType);
+			throw new \Exception($class.'::'.$method.'() was not seeded for '.$argsType);
 		}
-		public function seedMethod($method, $return, $args = null) {
-			static::__addMethodSeed($this->__seeds, $method, $return, $args);
-		}
-		public static function seedMethodStatic($method, $return, $args = null) {
-			static::__addMethodSeed(self::$__seedsStatic, $method, $return, $args);
-		}
-		protected function _getSeed($method, $args = null) {
-			return static::__getMethodSeed($this->__seeds, $method, $args);
-		}
-		protected static function _getSeedStatic($method, $args = null) {
-			return static::__getMethodSeed(self::$__seedsStatic, $method, $args);
-		}
-		public function __call($method, $args) {
-			return static::__getMethodSeed($this->__seeds, $method, $args);
-		}
-		public static function __callStatic($method, $args) {
-			return static::__getMethodSeed(self::$__seedsStatic, $method, $args);
-		}
+		
 	}
