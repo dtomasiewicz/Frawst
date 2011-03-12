@@ -9,7 +9,7 @@
 	
 	namespace Frawst;
 	
-	require 'bootstrap.php';
+	require 'definitions.php';
 	require 'libs/Frawst/Base.php';
 	require 'libs/Frawst/Loader.php';
 	
