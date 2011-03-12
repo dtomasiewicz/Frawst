@@ -20,10 +20,10 @@
 		/**
 		 * @var Frawst\Form An instance of the form definition
 		 */
-		private $__Form;
+		private $Form;
 		
 		public function object() {
-			return $this->__Form;
+			return $this->Form;
 		}
 		
 		/**
@@ -39,10 +39,10 @@
 			if (!($form = $this->view()->response()->request()->form($formName))) {
 				$form = new $formName();
 			}
-			$this->__Form = $form;
+			$this->Form = $form;
 			
 			$attrs['action'] = isset($attrs['action']) ? $attrs['action'] : $this->view()->path();
-			$attrs['method'] = isset($attrs['method']) ? $attrs['method'] : $this->__Form->method();
+			$attrs['method'] = isset($attrs['method']) ? $attrs['method'] : $this->Form->method();
 			
 			$out = '<form '.$this->parseAttributes($attrs).'>';
 			
@@ -52,8 +52,8 @@
 				$out .= '<input type="hidden" name="___METHOD" value="'.$attrs['method'].'">';
 			}
 			
-			if($token = $this->__Form->makeToken()) {
-				$class = get_class($this->__Form);
+			if($token = $this->Form->makeToken()) {
+				$class = get_class($this->Form);
 				$out .= '<input type="hidden" name="'.$class::TOKEN_NAME.'" value="'.$token.'">';
 			}
 			
@@ -65,13 +65,13 @@
 		 * @return string The form closing tag
 		 */
 		public function close() {
-			$this->__Form = null;
+			$this->Form = null;
 			return '</form>';
 		}
 		
 		public function repopulate($field, $default = null) {
-			if($this->__Form && $this->__Form->submitted()) {
-				if(null !== $value = $this->__Form->get($field)) {
+			if($this->Form && $this->Form->submitted()) {
+				if(null !== $value = $this->Form->get($field)) {
 					return $value;
 				}
 			}
@@ -84,7 +84,7 @@
 		 * @param string $field The name of the field (dot-path)
 		 */
 		public function errors($field) {
-			if($this->__Form && count($errors = $this->__Form->errors($field))) {
+			if($this->Form && count($errors = $this->Form->errors($field))) {
 				$out = '<ul class="fieldErrors fieldErrors-'.str_replace('.', '-', $field).'">';
 				foreach ($errors as $message) {
 					$out .= '<li>'.$message.'</li>';
@@ -94,7 +94,7 @@
 			return '';
 		}
 		
-		protected function _input($name, $default, $attrs = array()) {
+		protected function input($name, $default, $attrs = array()) {
 			$attrs['name'] = Matrix::dotToBracket($name);
 			$attrs['value'] = $this->repopulate($name, $default);
 			return '<input '.$this->parseAttributes($attrs).'>';
@@ -105,7 +105,7 @@
 		 */
 		public function hidden($name, $default = '', $attrs = array()) {
 			$attrs['type'] = 'hidden';
-			return $this->_input($name, $default, $attrs);
+			return $this->input($name, $default, $attrs);
 		}
 		
 		/**
@@ -113,7 +113,7 @@
 		 */
 		public function text($name, $default = '', $attrs = array()) {
 			$attrs['type'] = 'text';
-			return $this->_input($name, $default, $attrs);
+			return $this->input($name, $default, $attrs);
 		}
 		
 		/**
@@ -121,7 +121,7 @@
 		 */
 		public function password($name, $default = '', $attrs = array()) {
 			$attrs['type'] = 'password';
-			return $this->_input($name, $default, $attrs);
+			return $this->input($name, $default, $attrs);
 		}
 		
 		/**
@@ -224,7 +224,7 @@
 		}
 		
 		public function __call($method, $args) {
-			return call_user_func_array(array($this->__Form, $method), $args);
+			return call_user_func_array(array($this->Form, $method), $args);
 		}
 		
 		public static function parseAttributes($attrs) {

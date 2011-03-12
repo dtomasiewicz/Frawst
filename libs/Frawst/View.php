@@ -6,24 +6,24 @@
 	 *   Frawst\RouteInterface (Frawst\Route)
 	 */
 	class View extends Base implements ViewInterface {
-		private $__helpers;
-		private $__Response;
-		private $__data;
-		private $__layout;
+		private $helpers;
+		private $Response;
+		private $data;
+		private $layout;
 		
 		public function __construct(ResponseInterface $response) {
-			$this->__Response = $response;
-			$this->__helpers = array();
-			$this->__data = array();
-			$this->__layout = 'default';
+			$this->Response = $response;
+			$this->helpers = array();
+			$this->data = array();
+			$this->layout = 'default';
 		}
 		
 		public function exists($key) {
-			return Matrix::pathExists($this->__data, $key);
+			return Matrix::pathExists($this->data, $key);
 		}
 		
 		public function get($key) {
-			return Matrix::pathGet($this->__data, $key);
+			return Matrix::pathGet($this->data, $key);
 		}
 		
 		public function set($key, $value = null) {
@@ -32,37 +32,37 @@
 					$this->set($k, $v);
 				}
 			} else {
-				Matrix::pathSet($this->__data, $key, $value);
+				Matrix::pathSet($this->data, $key, $value);
 			}
 		}
 		
 		public function remove($key) {
-			Matrix::pathUnset($this->__data, $key);
+			Matrix::pathUnset($this->data, $key);
 		}
 		
 		public function response() {
-			return $this->__Response;
+			return $this->Response;
 		}
 		
 		public function request() {
-			return $this->__Response->request();
+			return $this->Response->request();
 		}
 		
 		public function render($data) {
-			$output = $this->_renderContent($data);
+			$output = $this->renderContent($data);
 			
-			if (!$this->isAjax() && is_string($this->__layout)) {
-				$output = $this->_renderFile(
-					'layout/'.$this->__layout,
+			if (!$this->isAjax() && is_string($this->layout)) {
+				$output = $this->renderFile(
+					'layout/'.$this->layout,
 					array('content' => $output)
 				);
 			}
 			
 			// teardown all helpers
-			foreach($this->__helpers as $helper) {
+			foreach($this->helpers as $helper) {
 				$helper->teardown();
 			}
-			$this->__helpers = array();
+			$this->helpers = array();
 			
 			return $output;
 		}
@@ -73,16 +73,16 @@
 		 * a layout.
 		 * @return string
 		 */
-		protected function _renderContent($data) {
-			if(null !== $template = $this->__findTemplate()) {
+		protected function renderContent($data) {
+			if(null !== $template = $this->findTemplate()) {
 				if(!is_array($data)) {
 					$data = array('data' => $data);
 				}
-				return $this->_renderFile($template, $data);
+				return $this->renderFile($template, $data);
 			} else {
 				// if the template does not exist, send as JSON
-				$this->__layout = null;
-				$this->__Response->header('Content-Type', 'application/json');
+				$this->layout = null;
+				$this->Response->header('Content-Type', 'application/json');
 				return Serialize::tojSON($data);
 			}
 		}
@@ -92,11 +92,11 @@
 		 * the request route and the response status.
 		 * @return string The path to the template, relative to the views direcetory
 		 */
-		protected function __findTemplate() {
-			$status = $this->__Response->status();
+		protected function findTemplate() {
+			$status = $this->Response->status();
 			
-			if($this->__Response->isOk()) {
-				if(null !== $this->__templatePath($template = 'controller/'.$this->request()->route()->controller())) {
+			if($this->Response->isOk()) {
+				if(null !== $this->templatePath($template = 'controller/'.$this->request()->route()->controller())) {
 					return $template;
 				} else {
 					return null;
@@ -107,7 +107,7 @@
 				
 				$exhausted = false;
 				while(!$exhausted) {
-					if(null !== $this->__templatePath($template = $dir.'/'.$status)) {
+					if(null !== $this->templatePath($template = $dir.'/'.$status)) {
 						return $template;
 					} else {
 						if(false !== $pos = strrpos($dir, '/')) {
@@ -127,32 +127,32 @@
 		 * @param string $file
 		 * @return string the absolute path to the file, or null if it does not exist
 		 */
-		protected function __templatePath($file) {
+		protected function templatePath($file) {
 			return Loader::loadPath('views/'.$file);
 		}
 		
-		protected function _renderFile($___file, $___data) {
-			if(null !== $___file = $this->__templatePath($___file)) {
-				extract($___data);
+		protected function renderFile($file, $data) {
+			if(null !== $file = $this->templatePath($file)) {
+				extract($data);
 				ob_start();
-				require($___file);
+				require($file);
 				return ob_get_clean();
 			} else {
-				throw new Exception('Non-existent view template: '.$___file);
+				throw new Exception('Non-existent view template: '.$file);
 			}
 		}
 		
 		public function partial($partial, $data = array()) {
-			return $this->_renderFile('partial/'.$partial, $data);
+			return $this->renderFile('partial/'.$partial, $data);
 		}
 
 		public function isAjax() {
-			return $this->__Response->request()->isAjax();
+			return $this->Response->request()->isAjax();
 		}
 		
 		public function path($route = null) {
 			if($route === null) {
-				return $this->__Response->request()->route()->path();
+				return $this->Response->request()->route()->path();
 			} else {
 				$c = $this->getImplementation('Frawst\RouteInterface');
 				return $c::getPath($route);
@@ -165,10 +165,10 @@
 		
 		public function modGet($changes = array()) {
 			$qs = '?';
-			foreach ($changes + $this->__Response->request()->get() as $key => $value) {
+			foreach ($changes + $this->Response->request()->get() as $key => $value) {
 				$qs .= $key.'='.$value.'&';
 			}
-			return rtrim($this->__Response->request()->route()->resolved().$qs, '?&');
+			return rtrim($this->Response->request()->route()->resolved().$qs, '?&');
 		}
 
 		public function ajax($route, $data = array(), $method = 'GET') {
@@ -177,35 +177,35 @@
 				$route = new $routeClass($route);
 			}
 			
-			$request = $this->__Response->request()->subRequest($route, $data, $method);
+			$request = $this->Response->request()->subRequest($route, $data, $method);
 			return $request->execute()->render();
 		}
  		
  		public function helper($name) {
  			$name = $this->getImplementation('ns:Frawst\HelperInterface').'\\'.$name;
- 			if (!isset($this->__helpers[$name])) {
+ 			if (!isset($this->helpers[$name])) {
  				if(class_exists($name)) {
- 					$this->__helpers[$name] = new $name($this);
- 					$this->__helpers[$name]->setup();
+ 					$this->helpers[$name] = new $name($this);
+ 					$this->helpers[$name]->setup();
  				} else {
  					return null;
  				}
  			}
- 			return $this->__helpers[$name];
+ 			return $this->helpers[$name];
  		}
  		
  		public function layout($layout = null) {
  			if ($layout !== null) {
- 				$this->__layout = $layout;
+ 				$this->layout = $layout;
  			}
- 			return $this->__layout;
+ 			return $this->layout;
  		}
 		
 		public function __get($name) {
 			if($name == 'Request') {
-				return $this->__Response->request();
+				return $this->Response->request();
 			} elseif($name == 'Response') {
-				return $this->__Response;
+				return $this->Response;
 			} elseif($h = $this->helper($name)) {
 				return $h;
 			} else {

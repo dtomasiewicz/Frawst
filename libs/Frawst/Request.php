@@ -24,48 +24,48 @@
 		/**
 		 * @var float The time at which the request was first invoked.
 		 */
-		private $__startTime;
+		private $startTime;
 		
 		/**
 		 * The request controller
 		 * @var Frawst\Controller
 		 */
-		private $__Controller;
+		private $Controller;
 		
 		/**
 		 * @var Frawst\Root Request route
 		 */
-		private $__Route;
+		private $Route;
 		
 		/**
 		 * Associative array of headers sent to this request
 		 * @var array
 		 */
-		private $__headers;
+		private $headers;
 		
 		/**
 		 * The method through which this request was performed
 		 * @example 'POST'
 		 * @var string
 		 */
-		private $__method;
+		private $method;
 		
 		/**
 		 * Associative array of data sent to this request
 		 * @example form data from a POST request, querystring data from GET
 		 * @var array
 		 */
-		private $__data;
+		private $data;
 		
 		/**
 		 * @var array An array of forms submitted to the request
 		 */
-		private $__forms;
+		private $forms;
 		
 		/**
 		 * Persistent data to be sent to sub-requests.
 		 */
-		private $__persist;
+		private $persist;
 	
 		/**
 		 * Constructor
@@ -76,22 +76,22 @@
 		 * @param array $persist
 		 */
 		public function __construct(RouteInterface $route, $data = array(), $method = self::METHOD_GET, $headers = array(), $persist = array()) {
-			$this->__startTime = microtime(true);
+			$this->startTime = microtime(true);
 		  	
-			$this->__data = $data;
-		  	$this->__method = strtoupper($method);
-		  	$this->__headers = $headers;
-			$this->__persist = $persist;
-			$this->__Route = $route;
+			$this->data = $data;
+		  	$this->method = strtoupper($method);
+		  	$this->headers = $headers;
+			$this->persist = $persist;
+			$this->Route = $route;
 				
-			$this->__Controller = null;
+			$this->Controller = null;
 		}
 		
 		/**
 		 * @return array Associative array of request headers
 		 */
 		public function headers() {
-			return $this->__headers;
+			return $this->headers;
 		}
 		
 		/**
@@ -100,8 +100,8 @@
 		 * @return string The value of the request header, or null if not set
 		 */
 		public function header($name) {
-			return isset($this->__headers[$name])
-				? $this->__headers[$name]
+			return isset($this->headers[$name])
+				? $this->headers[$name]
 				: null;
 		}
 		
@@ -110,8 +110,8 @@
 		 * @return bool
 		 */
 		public function isAjax() {
-			return (bool) (isset($this->__headers['X-Requested-With']) &&
-				strtolower($this->__headers['X-Requested-With']) == 'xmlhttprequest'); 
+			return (bool) (isset($this->headers['X-Requested-With']) &&
+				strtolower($this->headers['X-Requested-With']) == 'xmlhttprequest'); 
 		}
 		
 		/**
@@ -121,10 +121,10 @@
 		 * @return Frawst\Request The sub-request object
 		 */
 		public function subRequest(RouteInterface $route, $data = array(), $method = 'GET') {
-			$headers = $this->__headers;
+			$headers = $this->headers;
 			$headers['X-Requested-With'] = 'XMLHttpRequest';
 			$reqClass = $this->getImplementation('Frawst\RequestInterface');
-			return new $reqClass($route, $data, $method, $headers, $this->__persist);
+			return new $reqClass($route, $data, $method, $headers, $this->persist);
 		}
 		
 		/**
@@ -136,18 +136,18 @@
 			$resClass = $this->getImplementation('Frawst\ResponseInterface');
 			$response = new $resClass($this);
 			
-			$controllerClass = $this->getImplementation('ns:Frawst\ControllerInterface').'\\'.str_replace('/', '\\', $this->__Route->controller());
-			$this->__Controller = new $controllerClass($this, $response);
+			$controllerClass = $this->getImplementation('ns:Frawst\ControllerInterface').'\\'.str_replace('/', '\\', $this->Route->controller());
+			$this->Controller = new $controllerClass($this, $response);
 			
 			try {
-				$response->data($this->__Controller->execute());
+				$response->data($this->Controller->execute());
 			} catch(\Exception $e) {
 				$response->data('<div class="Frawst-Debug">'.
 					'<h1>A Controller Problem Occurred!</h1>'.
 					'<pre>'.$e.'</pre></div>');
 			}
 			
-			$this->__Controller = null;
+			$this->Controller = null;
 			
 			return $response;
 		}
@@ -156,15 +156,15 @@
 		 * @return string The request method (POST, GET, etc.)
 		 */
 		public function method() {
-			return $this->__method;
+			return $this->method;
 		}
 		
 		public function param($index = null) {
-			return $this->__Route->param($index);
+			return $this->Route->param($index);
 		}
 
 		public function option($name = null) {
-			return $this->__Route->option($name);
+			return $this->Route->option($name);
 		}
 		
 		/**
@@ -174,7 +174,7 @@
 		 * @return array
 		 */
 		public function get($key = null, $default = null) {
-			return $this->__method == self::METHOD_GET
+			return $this->method == self::METHOD_GET
 				? $this->data($key, $default)
 				: null;
 		}
@@ -186,7 +186,7 @@
 		 * @return array
 		 */
 		public function post($key = null, $default = null) {
-			return $this->__method == self::METHOD_POST
+			return $this->method == self::METHOD_POST
 				? $this->data($key, $default)
 				: null;
 		}
@@ -198,7 +198,7 @@
 		 * @return array
 		 */
 		public function put($key = null, $default = null) {
-			return $this->__method == self::METHOD_PUT
+			return $this->method == self::METHOD_PUT
 				? $this->data($key, $default)
 				: null;
 		}
@@ -210,7 +210,7 @@
 		 * @return array
 		 */
 		public function delete($key = null, $default = null) {
-			return $this->__method == self::METHOD_DELETE
+			return $this->method == self::METHOD_DELETE
 				? $this->data($key, $default)
 				: null;
 		}
@@ -223,8 +223,8 @@
 		 * @return mixed
 		 */
 		public function data($key = null, $default = null) {
-			if (Matrix::pathExists($this->__data, $key)) {
-				return Matrix::pathGet($this->__data, $key);
+			if (Matrix::pathExists($this->data, $key)) {
+				return Matrix::pathGet($this->data, $key);
 			} else {
 				return $default;
 			}
@@ -238,13 +238,13 @@
 		public function form($formName = null) {
 			if($formName === null) {
 				$formClass = $this->getImplementation('Frawst\FormInterface');
-				return $formClass::load($this->__data, true);
+				return $formClass::load($this->data, true);
 			} else {
 				$formName = $this->getImplementation('ns:Frawst\FormInterface').'\\'.$formName;
-				if (isset($this->__forms[$formName])) {
-					return $this->__forms[$formName];
+				if (isset($this->forms[$formName])) {
+					return $this->forms[$formName];
 				} elseif(class_exists($formName) && $formName::method() == $this->method()) {
-					return $this->__forms[$formName] = $formName::load($this->__data);
+					return $this->forms[$formName] = $formName::load($this->data);
 				} else {
 					return null;
 				}
@@ -259,11 +259,11 @@
 		 */
 		public function persist($key, $value = null) {
 			if (!is_null($value)) {
-				$this->__persist[$key] = $value;
+				$this->persist[$key] = $value;
 			}
 			
-			return array_key_exists($key, $this->__persist)
-				? $this->__persist[$key]
+			return array_key_exists($key, $this->persist)
+				? $this->persist[$key]
 				: null;
 		}
 		
@@ -271,16 +271,16 @@
 		 * @return float The runtime elapsed for this request.
 		 */
 		public function getRuntime() {
-			return microtime(true) - $this->__startTime;
+			return microtime(true) - $this->startTime;
 		}
 		
 		public function route() {
-			return $this->__Route;
+			return $this->Route;
 		}
 		
 		public function __get($name) {
 			if($name == 'Route') {
-				return $this->__Route;
+				return $this->Route;
 			} else {
 				throw new Exception('Invalid request property: '.$name);
 			}

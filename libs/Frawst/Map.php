@@ -2,11 +2,11 @@
 	namespace Frawst;
 	
 	class Map extends Base implements \ArrayAccess, \Countable, \JSONEncodable {
-		private $__type;
-		private $__data;
+		private $type;
+		private $data;
 		
 		public function __construct($type, $data = null) {
-			$this->__type = $type;
+			$this->type = $type;
 			if($data !== null) {
 				$this->merge($data);
 			}
@@ -21,18 +21,18 @@
 		}
 		
 		public function exists($key) {
-			return array_key_exists((string)$key, $this->__data);
+			return array_key_exists((string)$key, $this->data);
 		}
 		
 		public function put($key, $item) {
-			if($item instanceof $this->__type) {
-				$this->__data[(string)$key] = $item;
+			if($item instanceof $this->type) {
+				$this->data[(string)$key] = $item;
 			}
 		}
 		
 		public function get($key) {
 			if($this->exists($key)) {
-				return $this->__data[(string)$key];
+				return $this->data[(string)$key];
 			} else {
 				return null;
 			}
@@ -40,12 +40,12 @@
 		
 		public function remove($key) {
 			$item = $this->get($key);
-			unset($this->__data[(string)$key]);
+			unset($this->data[(string)$key]);
 			return $item;
 		}
 		
 		public function count() {
-			return count($this->__data);
+			return count($this->data);
 		}
 		
 		public function offsetExists($key) {
@@ -62,6 +62,6 @@
 		}
 		
 		public function toJSON() {
-			return Serialize::toJSON($this->__data, \JSON_FORCE_OBJECT, false);
+			return Serialize::toJSON($this->data, \JSON_FORCE_OBJECT, false);
 		}
 	}

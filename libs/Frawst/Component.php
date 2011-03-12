@@ -8,10 +8,10 @@
 	 * instantiated on-demand and each controller instance has its own set of components.
 	 */
 	abstract class Component extends Base implements ComponentInterface {
-		private $__Controller;
+		private $Controller;
 		
 		public function __construct(ControllerInterface $controller) {
-			$this->__Controller = $controller;
+			$this->Controller = $controller;
 		}
 		
 		public function setup() {
@@ -23,6 +23,6 @@
 		}
 		
 		public function controller() {
-			return $this->_Controller;
+			return $this->Controller;
 		}
 	}

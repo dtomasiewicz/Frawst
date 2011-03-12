@@ -3,14 +3,14 @@
 	
 	class Session extends Base {
 		const COOKIE_NAME = 'Session';
-		private static $__id;
+		private static $id;
 		
 		public static function start() {
 			if(Cookie::exists(self::COOKIE_NAME.'.SESSID')) {
-				self::$__id = Cookie::get(self::COOKIE_NAME.'.SESSID');
+				self::$id = Cookie::get(self::COOKIE_NAME.'.SESSID');
 			} else {
-				self::$__id = Security::hash(microtime(true));
-				Cookie::set(self::COOKIE_NAME.'.SESSID', self::$__id);
+				self::$id = Security::hash(microtime(true));
+				Cookie::set(self::COOKIE_NAME.'.SESSID', self::$id);
 			}
 		}
 		
@@ -20,15 +20,15 @@
 		}
 		
 		public static function id() {
-			if(!isset(self::$__id)) {
+			if(!isset(self::$id)) {
 				self::start();
 			}
 			
-			return self::$__id;
+			return self::$id;
 		}
 		
 		public static function set($name, $value) {
-			if(!isset(self::$__id)) {
+			if(!isset(self::$id)) {
 				self::start();
 			}
 			
@@ -40,7 +40,7 @@
 		}
 		
 		public static function delete($name) {
-			if(!isset(self::$__id)) {
+			if(!isset(self::$id)) {
 				self::start();
 			}
 			

@@ -3,7 +3,7 @@
 	use \Serializable;
 	
 	class Matrix extends Base implements \ArrayAccess, JSONEncodable {
-		private $___data = array();
+		private $data = array();
 		
 		public function __construct($data = array()) {
 			foreach ($data as $key => $value) {
@@ -213,30 +213,30 @@
 		}
 		
 		public function get($index = null) {
-			return static::pathGet($this->__data, $index);
+			return static::pathGet($this->data, $index);
 		}
 		
 		public function set($index, $value) {
-			static::pathSet($this->__data, $index, $value);
+			static::pathSet($this->data, $index, $value);
 		}
 		
 		public function exists($index) {
-			return static::pathExists($this->__data, $index);
+			return static::pathExists($this->data, $index);
 		}
 		
 		public function remove($index) {
-			static::pathUnset($this->__data, $index);
+			static::pathUnset($this->data, $index);
 		}
 		
 		public function push($index, $value) {
-			static::pathPush($this->__data, $index, $value);
+			static::pathPush($this->data, $index, $value);
 		}
 		
 		public function merge($index, $array, $recursive = false) {
-			static::pathMerge($this->__data, $index, $array, $recursive);
+			static::pathMerge($this->data, $index, $array, $recursive);
 		}
 		
 		public function toJSON() {
-			return Serialize::toJSON($this->__data, \JSON_FORCE_OBJECT, false);
+			return Serialize::toJSON($this->data, \JSON_FORCE_OBJECT, false);
 		}
 	}

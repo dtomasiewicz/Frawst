@@ -9,43 +9,43 @@
 		/**
 		 * @var array The component objects in use by the controller
 		 */
-		private $__components;
+		private $components;
 		
 		/**
 		 * @var array An associative array of data used internally by the controller
 		 */
-		private $__data;
+		private $data;
 		
 		/**
 		 * @var Frawst\Request The request using the controller
 		 */
-		private $__Request;
+		private $Request;
 		
-		private $__Response;
+		private $Response;
 		
 		/**
 		 * Constructor.
 		 * @param Frawst\Request The request using the controller
 		 */
 		public function __construct(RequestInterface $request, ResponseInterface $response) {
-			$this->__Request = $request;
-			$this->__Response = $response;
-			$this->__components = array();
+			$this->Request = $request;
+			$this->Response = $response;
+			$this->components = array();
 		}
 		
 		public function request() {
-			return $this->__Request;
+			return $this->Request;
 		}
 		
 		public function response() {
-			return $this->__Response;
+			return $this->Response;
 		}
 		
 		/**
 		 * Invoked before execution.
 		 * @return bool false if execution should not proceed, true otherwise
 		 */
-		protected function _before() {
+		protected function before() {
 			return true;
 		}
 		
@@ -54,7 +54,7 @@
 		 * @param mixed $data The value returned from execution
 		 * @return mixed The data that should be stored in the Response
 		 */
-		protected function _after($data) {
+		protected function after($data) {
 			return $data;
 		}
 		
@@ -66,15 +66,15 @@
 		 */
 		public function component($name) {
 			$name = $this->getImplementation('ns:Frawst\ComponentInterface').'\\'.$name;
-			if (!isset($this->__components[$name])) {
+			if (!isset($this->components[$name])) {
 				if(class_exists($name)) {
-					$this->__components[$name] = new $name($this);
-					$this->__components[$name]->setup();
+					$this->components[$name] = new $name($this);
+					$this->components[$name]->setup();
 				} else {
-					$this->__components[$name] = false;
+					$this->components[$name] = false;
 				}
 			}
-			return $this->__components[$name];
+			return $this->components[$name];
 		}
 		
 		/**
@@ -83,30 +83,30 @@
 		 * @return mixed The data to be sent in the Response
 		 */
 		public function execute() {
-			if(false !== $data = $this->_before()) {
-				if(method_exists($this, $method = strtolower($this->__Request->method()))) {
-					$data = call_user_func_array(array($this, $method), $this->__Request->param());
+			if(false !== $data = $this->before()) {
+				if(method_exists($this, $method = strtolower($this->Request->method()))) {
+					$data = call_user_func_array(array($this, $method), $this->Request->param());
 				} else {
-					$data = $this->__Response->forbidden();
+					$data = $this->Response->forbidden();
 				}
 			}
 			
-			$data = $this->_after($data);
+			$data = $this->after($data);
 			
 			// teardown components
-			foreach($this->__components as $component) {
+			foreach($this->components as $component) {
 				$component->teardown();
 			}
-			$this->__components = array();
+			$this->components = array();
 			
 			return $data;
 		}
 		
 		public function __get($name) {
 			if($name == 'Request') {
-				return $this->__Request;
+				return $this->Request;
 			} elseif($name == 'Response') {
-				return $this->__Response;
+				return $this->Response;
 			} elseif($c = $this->component($name)) {
 				return $c;
 			} else {

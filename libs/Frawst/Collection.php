@@ -6,8 +6,8 @@
 	 * a common base class.
 	 */
 	class Collection extends Base implements \ArrayAccess, \Iterator, \Countable, JSONEncodable {
-		private $__type;
-		private $__data;
+		private $type;
+		private $data;
 		
 		/**
 		 * @param string $type The name of the class which all members of this
@@ -15,8 +15,8 @@
 		 * @para array|Iterator $data Members to add to the collection upon creation
 		 */
 		public function __construct($type, $data = null) {
-			$this->__type = $type;
-			$this->__data = array();
+			$this->type = $type;
+			$this->data = array();
 			if(is_array($data) || $data instanceof \Iterator) {
 				foreach($data as $item) {
 					$this->push($item);
@@ -25,28 +25,28 @@
 		}
 		
 		public function get($index) {
-			if((int)$index <= count($this->__data)) {
-				return $this->__data[$index];
+			if((int)$index <= count($this->data)) {
+				return $this->data[$index];
 			} else {
 				return null;
 			}
 		}
 		
 		public function set($index, $item) {
-			if((int)$index <= count($this->__data) && $item instanceof $this->__type) {
-				$this->__data[(int)$index] = $item;
+			if((int)$index <= count($this->data) && $item instanceof $this->type) {
+				$this->data[(int)$index] = $item;
 			}
 		}
 		
 		public function insert($index, $item) {
-			if((int)$index <= count($this->__data) && $item instanceof $this->__type) {
-				$this->__data = array_splice($this->__data, (int)$index, 0, array($item));
+			if((int)$index <= count($this->data) && $item instanceof $this->type) {
+				$this->data = array_splice($this->data, (int)$index, 0, array($item));
 			}
 		}
 		
 		public function remove($index) {
-			if((int)$index <= count($this->__data)) {
-				$splice = array_splice($this->__data, (int)$index, 1);
+			if((int)$index <= count($this->data)) {
+				$splice = array_splice($this->data, (int)$index, 1);
 				return array_pop($splice);
 			} else {
 				return null;
@@ -54,24 +54,24 @@
 		}
 		
 		public function push($item) {
-			if($item instanceof $this->__type) {
-				array_push($this->__data, $item);
+			if($item instanceof $this->type) {
+				array_push($this->data, $item);
 			}
 		}
 		public function pop() {
-			return array_pop($this->__data);
+			return array_pop($this->data);
 		}
 		public function shift() {
-			return array_shift($this->__data);
+			return array_shift($this->data);
 		}
 		public function unshift($item) {
-			if($item instanceof $this->__type) {
-				array_unshift($this->__data, $item);
+			if($item instanceof $this->type) {
+				array_unshift($this->data, $item);
 			}
 		}
 		
 		public function type() {
-			return $this->__type;
+			return $this->type;
 		}
 		
 		/**
@@ -82,7 +82,7 @@
 		 */
 		public function getAll($property) {
 			$values = array();
-			foreach($this->__data as $item) {
+			foreach($this->data as $item) {
 				$values[] = $item->$property;
 			}
 			return $values;
@@ -99,7 +99,7 @@
 		 * @param mixed $value Value to set
 		 */
 		public function setAll($property, $value) {
-			foreach($this->__data as $item) {
+			foreach($this->data as $item) {
 				$item->$property = $value;
 			}
 		}
@@ -114,7 +114,7 @@
 		 */
 		public function invokeAll($method, $args) {
 			$results = array();
-			foreach($this->__data as $item) {
+			foreach($this->data as $item) {
 				$results[] = call_user_func_array(array($item, $method), $args);
 			}
 			return $results;
@@ -142,8 +142,8 @@
 		 * @return Map
 		 */
 		public function mapBy($property, $preserveLast = true) {
-			$map = new Map($this->__type);
-			foreach($this->__data as $item) {
+			$map = new Map($this->type);
+			foreach($this->data as $item) {
 				$key = $item->$property;
 				if($preserveLast || !$map->exists($key)) {
 					$map->put($key, $item);
@@ -159,11 +159,11 @@
 		 *                                  this parameter to allow compareTo to handle sorting.
 		 */
 		public function sort($callback = null) {
-			usort($this->__data, $callback);
+			usort($this->data, $callback);
 		}
 		
 		public function sortComparable() {
-			usort($this->__data, function($a, $b) {
+			usort($this->data, function($a, $b) {
 				return $a->compareTo($b);
 			});
 		}
@@ -182,33 +182,33 @@
 		 * Iterator methods
 		 */
 		public function current() {
-			return current($this->__data);
+			return current($this->data);
 		}
 		public function rewind() {
-			return reset($this->__data);
+			return reset($this->data);
 		}	
 		public function key() {
-			return key($this->__data);
+			return key($this->data);
 		}
 		public function next() {
-			return next($this->__data);
+			return next($this->data);
 		}	
 		public function valid() {
-			return key($this->__data) !== null;
+			return key($this->data) !== null;
 		}
 		
 		/**
 		 * Countable method
 		 */
 		public function count() {
-			return count($this->__data);
+			return count($this->data);
 		}
 		
 		/**
 		 * ArrayAccess methods
 		 */
 		public function offsetExists($offset) {
-			return (int)$offset <= count($this->__data);
+			return (int)$offset <= count($this->data);
 		}
 		public function offsetGet($offset = null) {
 			return $this->get($offset);
@@ -229,10 +229,10 @@
 		 * to be castable as strings).
 		 */
 		public function implode($glue) {
-			return implode($glue, $this->__data);
+			return implode($glue, $this->data);
 		}
 		public function explode($glue) {
-			return explode($glue, $this->__data);
+			return explode($glue, $this->data);
 		}
 		
 		/**
@@ -240,6 +240,6 @@
 		 * @return string JSON-encodable data
 		 */
 		public function toJSON() {
-			return Serialize::toJSON($this->__data, 0, false);
+			return Serialize::toJSON($this->data, 0, false);
 		}
 	}

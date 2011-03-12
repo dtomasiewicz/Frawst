@@ -9,27 +9,27 @@
 		 * @var string The original route supplied to this class in the constructor,
 		 *             before custom routing rules are applied.
 		 */
-		private $__original;
+		private $original;
 		
 		/**
 		 * @var string The route after custom routing rules are applied.
 		 */
-		private $__route;
+		private $route;
 		
 		/**
 		 * @var array The stack of controller names represented by the route.
 		 */
-		private $__controller;
+		private $controller;
 		
 		/**
 		 * @var array Array of parameters defined by this route.
 		 */
-		private $__params;
+		private $params;
 
 		/**
 		 * @var array Array of named parameters (options) parsed from custom routing rules.
 		 */
-		private $__options;
+		private $options;
 		
 		/**
 		 * Constructor.
@@ -38,15 +38,15 @@
 		 *                          any specified custom routing rules.
 		 */
 		public function __construct($route, $customRoute = false) {
-			$this->__original = $route;
+			$this->original = $route;
 
 			if($customRoute) {
-				$this->__routeCustom();
+				$this->routeCustom();
 			} else {
-				$this->__route = $route;
+				$this->route = $route;
 			}
 			
-			$this->__resolve();
+			$this->resolve();
 		}
 
 		/**
@@ -55,20 +55,20 @@
 		 *     'user/^[0-9]+$:id' => 'user/view/:id'
 		 *         user/6 --> user/view/6
 		 */
-		protected function __routeCustom() {
+		protected function routeCustom() {
 			if(is_array($rules = $this->callImplementation('configRead', 'Routing', 'rules'))) {
 				foreach($rules as $pattern => $newRoute) {
-					if($this->__matchRoute($pattern, $this->__original, $newRoute)) {
+					if($this->matchRoute($pattern, $this->original, $newRoute)) {
 						return;
 					}
 				}
 			}
 			
-			$this->__route = $this->__original;
-			$this->__options = array();
+			$this->route = $this->original;
+			$this->options = array();
 		}
 
-		private function __matchRoute($pattern, $route, $newRoute) {
+		private function matchRoute($pattern, $route, $newRoute) {
 			$r = explode('/', $route);
 			$p = explode('/', $pattern);
 
@@ -118,8 +118,8 @@
 				}
 			}
 
-			$this->__route = implode('/', $new);
-			$this->__options = $opts;
+			$this->route = implode('/', $new);
+			$this->options = $opts;
 
 			return true;
 		}
@@ -128,8 +128,8 @@
 		 * Determines the controller and parameters based on the route.
 		 * @param string $route
 		 */
-		protected function __resolve() {
-			$route = explode('/', trim($this->__route, '/'));
+		protected function resolve() {
+			$route = explode('/', trim($this->route, '/'));
 			
 			// ignore blank route segments
 			foreach($route as $key => $segment) {
@@ -140,12 +140,12 @@
 			}
 			
 			$class = 'Frawst\Controller';
-			$this->__controller = '';
+			$this->controller = '';
 			$exists = true;
 			while($exists && count($route)) {
 				$name = ucfirst(strtolower($route[0]));
 				if(class_exists($c = $class.'\\'.$name) || class_exists($c .= 'Controller')) {
-					$this->__controller .= '/'.$name;
+					$this->controller .= '/'.$name;
 					array_shift($route); 
 					$class = $c;
 				} else {
@@ -153,21 +153,21 @@
 				}
 			}
 			
-			$reflection = strlen($this->__controller)
+			$reflection = strlen($this->controller)
 				? new \ReflectionClass($class)
 				: false;
 			
 			if(!$reflection || $reflection->isAbstract()) {
-				$this->__controller .= '/Index';
+				$this->controller .= '/Index';
 				$class .= '\Index';
 			}
 			
-			$this->__controller = ltrim($this->__controller, '/');
-			$this->__params = $route;
+			$this->controller = ltrim($this->controller, '/');
+			$this->params = $route;
 		}
 		
 		public function controller() {
-			return $this->__controller;
+			return $this->controller;
 		}
 		
 		/**
@@ -175,9 +175,9 @@
 		 */
 		public function param($param = null) {
 			if($param === null) {
-				return $this->__params;
-			} elseif(isset($this->__params[$param])) {
-				return $this->__params[$param];
+				return $this->params;
+			} elseif(isset($this->params[$param])) {
+				return $this->params[$param];
 			} else {
 				return null;
 			}
@@ -185,22 +185,22 @@
 
 		public function option($option = null) {
 			if($option === null) {
-				return $this->__options;
-			} elseif(isset($this->__options[$option])) {
-				return $this->__options[$option];
+				return $this->options;
+			} elseif(isset($this->options[$option])) {
+				return $this->options[$option];
 			} else {
 				return null;
 			}
 		}
 		
 		public function original() {
-			return $this->__original;
+			return $this->original;
 		}
 		
 		public function resolved($params = true) {
-			$route = $this->__controller;
-			if($params && count($this->__params)) {
-				$route .= '/'.implode('/', $this->__params);
+			$route = $this->controller;
+			if($params && count($this->params)) {
+				$route .= '/'.implode('/', $this->params);
 			}
 			return $route;
 		}

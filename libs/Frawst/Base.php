@@ -2,9 +2,9 @@
 	namespace Frawst;
 	
 	class Base {
-		private $__impls = array();
+		private $impls = array();
 		
-		private static $__defaultImpls = array(
+		private static $defaultImpls = array(
 			'Frawst\Base' => array(
 				'Frawst\RequestInterface' => 'Frawst\Request',
 				'Frawst\ResponseInterface' => 'Frawst\Response',
@@ -21,21 +21,21 @@
 		
 		public static function setDefaultImplementation($interface, $implementation) {
 			$class = get_called_class();
-			if(!array_key_exists($class, self::$__defaultImpls)) {
-				self::$__defaultImpls[$class] = array();
+			if(!array_key_exists($class, self::$defaultImpls)) {
+				self::$defaultImpls[$class] = array();
 			}
-			self::$__defaultImpls[$class][$interface] = $implementation;
+			self::$defaultImpls[$class][$interface] = $implementation;
 		}
 		
 		public function setImplementation($interface, $implementation) {
-			$this->__impls[$interface] = $implementation;
+			$this->impls[$interface] = $implementation;
 		}
 		
 		public static function getDefaultImplementation($interface) {
 			$class = get_called_class();
 			while($class !== false) {
-				if(array_key_exists($class, self::$__defaultImpls) && array_key_exists($interface, self::$__defaultImpls[$class])) {
-					return self::$__defaultImpls[$class][$interface];
+				if(array_key_exists($class, self::$defaultImpls) && array_key_exists($interface, self::$defaultImpls[$class])) {
+					return self::$defaultImpls[$class][$interface];
 				} else {
 					$class = get_parent_class($class);
 				}
@@ -43,8 +43,8 @@
 		}
 		
 		public function getImplementation($interface) {
-			return array_key_exists($interface, $this->__impls)
-				? $this->__impls[$interface]
+			return array_key_exists($interface, $this->impls)
+				? $this->impls[$interface]
 				: static::getDefaultImplementation($interface);
 		}
 		

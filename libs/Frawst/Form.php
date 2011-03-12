@@ -17,23 +17,23 @@
 	 * automatically.
 	 */
 	class Form extends Base implements FormInterface, \ArrayAccess {
-		private $__data;
-		private $__submitted;
+		private $data;
+		private $submitted;
 		
-		protected static $_method = 'POST';
+		protected static $method = 'POST';
 		
 		/**
 		 * An associative array of fields for this form.
 		 * @var array
 		 */
-		protected static $_fields = array();
+		protected static $fields = array();
 		
 		/**
 		 * An array of key/value pairs where the keys are form fields in dot-path form
 		 * and the values are validation rules.
 		 * @var array
 		 */
-		protected static $_validate = array();
+		protected static $validate = array();
 		
 		/**
 		 * A list of fields that MUST exist for a set of data to be compatible
@@ -41,14 +41,14 @@
 		 * Field names are in dot-path format.
 		 * @var mixed
 		 */
-		protected static $_required = array();
+		protected static $required = array();
 		
 		/**
 		 * Whether or not to require a token for this form. If the form is vulnerable
 		 * to CSRF, this should be set to true.
 		 * @var bool
 		 */
-		protected static $_useToken = true;
+		protected static $useToken = true;
 		const TOKEN_NAME = '__TOKEN';
 		
 		/**
@@ -56,28 +56,28 @@
 		 * in dot-path format and the values are arrays of error messages.
 		 * @var array
 		 */
-		private $__errors = array();
+		private $errors = array();
 		
 		/**
 		 * Instantiates the form object with the given data. If the data contains fields
-		 * not specified in $_fields, they are ignored.
+		 * not specified in $fields, they are ignored.
 		 * @param array $data
 		 */
 		public function __construct($data = null) {
 			if($data === null) {
-				$this->__submitted = false;
-				$this->__data = array();
+				$this->submitted = false;
+				$this->data = array();
 			} else {
-				$this->__submitted = true;
-				$this->__data = $data;
+				$this->submitted = true;
+				$this->data = $data;
 			}
 		}
 		
 		public function submitted() {
-			return $this->__submitted;
+			return $this->submitted;
 		}
 		
-		private static function __generalKey($key) {
+		private static function generalKey($key) {
 			$gKey = array();
 			foreach(explode('.', $key) as $v) {
 				if(is_numeric($v)) {
@@ -90,12 +90,12 @@
 		}
 		
 		public function defaultValue($field) {
-			if(array_key_exists($field, static::$_fields)) {
-				return static::$_fields[$field];
+			if(array_key_exists($field, static::$fields)) {
+				return static::$fields[$field];
 			} else{
-				$gKey = self::__generalKey($field);
-				if(array_key_exists($gKey, static::$_fields)) {
-					return static::$_fields[$gKey];
+				$gKey = self::generalKey($field);
+				if(array_key_exists($gKey, static::$fields)) {
+					return static::$fields[$gKey];
 				}
 			}
 			
@@ -103,13 +103,13 @@
 		}
 		
 		public function get($offset) {
-			return Matrix::pathExists($this->__data, $offset)
-				? Matrix::pathGet($this->__data, $offset)
+			return Matrix::pathExists($this->data, $offset)
+				? Matrix::pathGet($this->data, $offset)
 				: $this->defaultValue($offset);
 		}
 		
 		public function exists($offset) {
-			return Matrix::pathExists($this->__data, $offset) || $this->defaultValue($offset) !== null;
+			return Matrix::pathExists($this->data, $offset) || $this->defaultValue($offset) !== null;
 		}
 		
 		public function offsetExists($offset) {
@@ -130,7 +130,7 @@
 		 * @param array $errors
 		 */
 		public function setErrors($errors) {
-			$this->__errors = $errors;
+			$this->errors = $errors;
 		}
 		
 		/**
@@ -144,10 +144,10 @@
 					$this->addErrors($f, $e);
 				}
 			} elseif(count($errors)) {
-				if (!Matrix::pathExists($this->__errors, $field)) {
-					Matrix::pathSet($this->__errors, $field, $errors);
+				if (!Matrix::pathExists($this->errors, $field)) {
+					Matrix::pathSet($this->errors, $field, $errors);
 				} else {
-					Matrix::pathMerge($this->__errors, $field, $errors);
+					Matrix::pathMerge($this->errors, $field, $errors);
 				}
 			}
 		}
@@ -162,25 +162,25 @@
 		 * @param string $field
 		 */
 		public function errors($field = null) {
-			return Matrix::pathExists($this->__errors, $field)
-				? Matrix::pathGet($this->__errors, $field)
+			return Matrix::pathExists($this->errors, $field)
+				? Matrix::pathGet($this->errors, $field)
 				: array();
 		}
 		
 		/**
-		 * Validates the form based on validation rules set it in $_validate. May be
+		 * Validates the form based on validation rules set it in $validate. May be
 		 * overridden in extending classes to customize validation. Errors are stored
-		 * by field name in $_errors
+		 * by field name in $errors
 		 * @return bool True if no errors were found, false otherwise
 		 */
 		public function validate() {
-			$this->_errors = array();
-			foreach (static::$_validate as $field => $rules) {
+			$this->errors = array();
+			foreach (static::$validate as $field => $rules) {
 				if (count($errors = Validator::check($this[$field], $rules, $this))) {
-					Matrix::pathSet($this->__errors, $field, $errors);
+					Matrix::pathSet($this->errors, $field, $errors);
 				}
 			}
-			return count($this->__errors) == 0;
+			return count($this->errors) == 0;
 		}
 		
 		/**
@@ -190,8 +190,8 @@
 		 * @return bool True if errors exist
 		 */
 		public function valid($field = null) {
-			return Matrix::pathExists($this->__errors, field)
-				? (bool) (count(Matrix::pathGet($this->__errors, $field)) == 0)
+			return Matrix::pathExists($this->errors, field)
+				? (bool) (count(Matrix::pathGet($this->errors, $field)) == 0)
 				: true;
 		}
 		
@@ -201,7 +201,7 @@
 		}
 		
 		public static function method() {
-			return strtoupper(static::$_method);
+			return strtoupper(static::$method);
 		}
 		
 		/**
@@ -213,17 +213,17 @@
 		public static function compatible($data, $allowExtraFields = false) {
 			if(!$allowExtraFields) {
 				foreach(Matrix::flatten($data) as $key => $value) {
-					if(!array_key_exists($key, static::$_fields)) {
-						if(!array_key_exists(self::__generalKey($key), static::$_fields)) {
+					if(!array_key_exists($key, static::$fields)) {
+						if(!array_key_exists(self::generalKey($key), static::$fields)) {
 							return false;
 						}
 					}
 				}
 			}
 			
-			$required = static::$_required === true
-				? array_keys(static::$_fields)
-				: static::$_required;
+			$required = static::$required === true
+				? array_keys(static::$fields)
+				: static::$required;
 			
 			foreach($required as $field) {
 				if(!Matrix::pathExists($data, $field)) {
@@ -240,7 +240,7 @@
 		 * @return Frawst\Form A form object if the data is valid, otherwise null.
 		 */
 		public static function load($data, $allowExtraFields = false) {
-			if(static::$_useToken) {
+			if(static::$useToken) {
 				if(!isset($data[static::TOKEN_NAME]) || !static::checkToken($data[static::TOKEN_NAME])) {
 					return null;
 				} else {
@@ -273,7 +273,7 @@
 		 * @return string The form token
 		 */
 		public static function makeToken() {
-			return static::$_useToken
+			return static::$useToken
 				? Security::makeToken(get_called_class())
 				: null;
 		}

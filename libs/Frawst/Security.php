@@ -3,7 +3,7 @@
 	
 	class Security extends Base {
 		const CSRF_COOKIE_NAME = 'CSRF';
-		private static $__requireCookie = true;
+		private static $requireCookie = true;
 		
 		/**
 		 * @return a unique identifier
@@ -68,7 +68,7 @@
 				if($timeframe <= 0 || microtime(true) <= $parts[1]+$timeframe) {
 					$reconstruct = substr(self::hash($parts[1], $xid), 0, 16);
 					if($reconstruct == $parts[0]) {
-						if(!self::$__requireCookie) {
+						if(!self::$requireCookie) {
 							return true;
 						} elseif(Cookie::exists($c = self::CSRF_COOKIE_NAME.'.'.$reconstruct)) {
 							Cookie::delete($c);

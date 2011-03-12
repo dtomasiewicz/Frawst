@@ -2,14 +2,14 @@
 	namespace Frawst;
 	
 	abstract class Helper extends Base implements HelperInterface {
-		private $__View;
+		private $View;
 		
 		public function __construct(ViewInterface $view) {
-			$this->__View = $view;
+			$this->View = $view;
 		}
 		
 		public function view() {
-			return $this->__View;
+			return $this->View;
 		}
 		
 		public function setup() {

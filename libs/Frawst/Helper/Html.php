@@ -9,20 +9,20 @@
 	 */
 	class Html extends Helper {
 		
-		private $__tags = array(
+		private $tags = array(
 			'image' => '<img src="%s" %s>',
 			'link' => '<a href="%s" %s>%s</a>'
 		);
 		
-		private $__js = array();
-		private $__css = array();
+		private $js = array();
+		private $css = array();
 		
 		public function image($path, $attrs = array()) {
-			return sprintf($this->__tags['image'], $this->view()->webroot('public/images/'.$path), $this->parseAttributes($attrs));
+			return sprintf($this->tags['image'], $this->view()->webroot('public/images/'.$path), $this->parseAttributes($attrs));
 		}
 		
 		public function link($uri, $content, $attrs = array()) {
-			return sprintf($this->__tags['link'], $uri, $this->parseAttributes($attrs), $content);
+			return sprintf($this->tags['link'], $uri, $this->parseAttributes($attrs), $content);
 		}
 		
 		public function appLink($route, $content, $attrs = array()) {
@@ -46,19 +46,19 @@
 		}
 		
 		public function addJs($file) {
-			$this->__js[$file] = $file;
+			$this->js[$file] = $file;
 		}
 		
 		public function js() {
-			return $this->__js;
+			return $this->js;
 		}
 		
 		public function addCss($file) {
-			$this->__css[$file] = $file;
+			$this->css[$file] = $file;
 		}
 		
 		public function css() {
-			return $this->__css;
+			return $this->css;
 		}
 		
 	}
