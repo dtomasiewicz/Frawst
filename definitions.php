@@ -7,6 +7,14 @@
 		define('Frawst\SCRIPT_START', microtime(true));
 	}
 	
+	if(!defined('Frawst\NO_CONFLICT')) {
+		define('Frawst\NO_CONFLICT', false);
+	}
+	
+	if(!defined('Frawst\ENVIRONMENT')) {
+		define('Frawst\ENVIRONMENT', 'production');
+	}
+	
 	if(!defined('Frawst\APP_NAME')) {
 		define('Frawst\APP_NAME', basename(dirname(dirname($_SERVER['SCRIPT_FILENAME']))));
 	}
