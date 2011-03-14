@@ -3,11 +3,20 @@
 	
 	interface RouteInterface {
 		public function __construct($route);
-		public function controller();
 		public function param($key);
 		public function option($name);
 		public function original();
 		public function resolved();
 		public static function getPath($route);
 		public function path();
+		
+		/**
+		 * @return string The name of the controller for the request. Must exist.
+		 */
+		public function controller();
+		
+		/**
+		 * @return string The name of the content view for rendering. Must exist.
+		 */
+		public function template();
 	}

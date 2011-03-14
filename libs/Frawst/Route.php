@@ -212,4 +212,8 @@
 		public function path() {
 			return self::getPath($this->resolved());
 		}
+		
+		public function template() {
+			return strtolower($this->controller);
+		}
 	}

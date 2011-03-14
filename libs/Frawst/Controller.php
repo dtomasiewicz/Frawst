@@ -62,16 +62,16 @@
 		 * Attempts to access a component. If the component class exists but has not yet been instantiated
 		 * for this controller, instantiation will happen first.
 		 * @param string $name Name of the component
-		 * @return mixed The component object, or false if the component does not exist
+		 * @return Component The component object, or null if the component does not exist
 		 */
 		public function component($name) {
 			$name = $this->getImplementation('ns:Frawst\ComponentInterface').'\\'.$name;
-			if (!isset($this->components[$name])) {
+			if (!array_key_exists($name, $this->components)) {
 				if(class_exists($name)) {
 					$this->components[$name] = new $name($this);
 					$this->components[$name]->setup();
 				} else {
-					$this->components[$name] = false;
+					$this->components[$name] = null;
 				}
 			}
 			return $this->components[$name];
@@ -112,5 +112,13 @@
 			} else {
 				throw new Exception('Invalid controller property: '.$name);
 			}
+		}
+		
+		public static function controllerExists($controller) {
+			return class_exists(self::controllerClass($controller));
+		}
+		
+		public static function controllerClass($controller) {
+			return 'Frawst\Controller\\'.str_replace('/', '\\', $controller);
 		}
 	}

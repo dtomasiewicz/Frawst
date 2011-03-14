@@ -3,7 +3,6 @@
 	
 	interface RequestInterface {
 		public function __construct(RouteInterface $route, $data, $method, $headers);
-		public function headers();
 		public function header($name);
 		public function isAjax();
 		public function subRequest(RouteInterface $route, $data, $method);

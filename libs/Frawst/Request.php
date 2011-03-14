@@ -88,19 +88,12 @@
 		}
 		
 		/**
-		 * @return array Associative array of request headers
-		 */
-		public function headers() {
-			return $this->headers;
-		}
-		
-		/**
 		 * Gets the value of a request header
 		 * @param string $name
 		 * @return string The value of the request header, or null if not set
 		 */
-		public function header($name) {
-			return isset($this->headers[$name])
+		public function header($name = null) {
+			return $name !== null && array_key_exists($name, $this->headers)
 				? $this->headers[$name]
 				: null;
 		}
@@ -270,7 +263,7 @@
 		/**
 		 * @return float The runtime elapsed for this request.
 		 */
-		public function getRuntime() {
+		public function runtime() {
 			return microtime(true) - $this->startTime;
 		}
 		

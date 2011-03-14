@@ -96,7 +96,7 @@
 			$status = $this->Response->status();
 			
 			if($this->Response->isOk()) {
-				if(null !== $this->templatePath($template = 'controller/'.$this->request()->route()->controller())) {
+				if(null !== self::templatePath($template = 'content/'.$this->request()->route()->template())) {
 					return $template;
 				} else {
 					return null;
@@ -107,7 +107,7 @@
 				
 				$exhausted = false;
 				while(!$exhausted) {
-					if(null !== $this->templatePath($template = $dir.'/'.$status)) {
+					if(null !== self::templatePath($template = $dir.'/'.$status)) {
 						return $template;
 					} else {
 						if(false !== $pos = strrpos($dir, '/')) {
@@ -127,12 +127,12 @@
 		 * @param string $file
 		 * @return string the absolute path to the file, or null if it does not exist
 		 */
-		protected function templatePath($file) {
+		protected static function templatePath($file) {
 			return Loader::loadPath('views/'.$file);
 		}
 		
 		protected function renderFile($file, $data) {
-			if(null !== $file = $this->templatePath($file)) {
+			if(null !== $file = self::templatePath($file)) {
 				extract($data);
 				ob_start();
 				require($file);
@@ -194,11 +194,12 @@
  			return $this->helpers[$name];
  		}
  		
- 		public function layout($layout = null) {
- 			if ($layout !== null) {
- 				$this->layout = $layout;
- 			}
+ 		public function layout() {
  			return $this->layout;
+ 		}
+ 		
+ 		public function setLayout($layout = null) {
+ 			$this->layout = $layout;
  		}
 		
 		public function __get($name) {
@@ -211,5 +212,9 @@
 			} else {
 				throw new Exception('Invalid view property: '.$name);
 			}
+		}
+		
+		public static function contentExists($view) {
+			return self::findTemplate('content/'.$view) !== null;
 		}
 	}
