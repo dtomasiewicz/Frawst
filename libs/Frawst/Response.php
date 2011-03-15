@@ -237,14 +237,11 @@
 					if(isset($this->internalRedirect)) {
 						$reqClass = $this->getImplementation('Frawst\RequestInterface');
 						$routeClass = $this->getImplementation('Frawst\RouteInterface');
-						$req = new $reqClass(new $routeClass($this->internalRedirect), array(), 'GET', $this->Request->headers());
+						$req = new $reqClass(new $routeClass($this->internalRedirect), array(), 'GET', $this->Request->header());
 						$this->data = $req->execute()->render();
 					} elseif($this->mustRedirect()) {
 						throw new \Frawst\Exception('Cannot render a request pending an external redirection.');
 					} else {
-						if(!is_array($this->data)) {
-							$this->data = array($this->data);
-						}
 						$viewClass = $this->getImplementation('Frawst\ViewInterface');
 						$this->View = new $viewClass($this);
 						$this->data = $this->View->render($this->data);
@@ -305,13 +302,12 @@
 				flush();
 				$this->data->read(true);
 				exit;
-			} else {
-				$out = $this->render();
-				$this->sendHeaders();
-				echo $out;
-			
-				exit;
 			}
+			
+			$out = $this->render();
+			$this->sendHeaders();
+			echo $out;
+			exit;
 		}
 		
 		private function sendHeaders() {

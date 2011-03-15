@@ -31,6 +31,8 @@
 		 */
 		private $options;
 		
+		private $template;
+		
 		/**
 		 * Constructor.
 		 * @param string $route The route to parse
@@ -124,46 +126,59 @@
 			return true;
 		}
 		
-		/**
-		 * Determines the controller and parameters based on the route.
-		 * @param string $route
-		 */
 		protected function resolve() {
-			$route = explode('/', trim($this->route, '/'));
+			$vClass = $this->getImplementation('Frawst\ViewInterface');
+			$cClass = $this->getImplementation('Frawst\ControllerInterface');
 			
-			// ignore blank route segments
-			foreach($route as $key => $segment) {
-				if($segment === '') {
-					unset($route[$key]);
-					$route = array_values($route);
-				}
-			}
-			
-			$class = 'Frawst\Controller';
-			$this->controller = '';
-			$exists = true;
-			while($exists && count($route)) {
-				$name = ucfirst(strtolower($route[0]));
-				if(class_exists($c = $class.'\\'.$name) || class_exists($c .= 'Controller')) {
-					$this->controller .= '/'.$name;
-					array_shift($route); 
-					$class = $c;
+			if($vClass::contentExists($content = strtolower($this->route))) {
+				$this->template = $content;
+				$controller = str_replace(' ', '/', ucwords(str_replace('/', ' ', $this->route)));
+				if($cClass::controllerExists($controller)) {
+					$this->controller = $controller;
 				} else {
-					$exists = false;
+					$this->controller = null;
+				}
+				$this->params = array();
+			} else {
+				$parts = explode('/', $this->route);
+				$this->controller = null;
+				
+				$exists = true;
+				$abstract = true;
+				while($exists && $abstract && count($parts)) {
+					$controller = $this->controller === null
+						? ucfirst($parts[0])
+						: $this->controller.'/'.ucfirst($parts[0]);
+					if($parts[0] != '' && $cClass::controllerExists($controller)) {
+						array_shift($parts);
+						$this->controller = $controller;
+						$abstract = $cClass::controllerIsAbstract($this->controller);
+					} else {
+						$exists = false;
+					}
+				}
+				
+				$this->params = $parts;
+				
+				while($abstract) {
+					$controller = $this->controller === null
+						? 'Index'
+						: $this->controller.'/Index';
+					if($cClass::controllerExists($controller)) {
+						$this->controller = $controller;
+						$abstract = $cClass::controllerIsAbstract($this->controller);
+					} else {
+						$this->controller = null;
+						$abstract = false;
+					}
+				}
+				
+				if($this->controller !== null && $vClass::contentExists($c = strtolower($this->controller))) {
+					$this->template = $c;
+				} else {
+					$this->template = null;
 				}
 			}
-			
-			$reflection = strlen($this->controller)
-				? new \ReflectionClass($class)
-				: false;
-			
-			if(!$reflection || $reflection->isAbstract()) {
-				$this->controller .= '/Index';
-				$class .= '\Index';
-			}
-			
-			$this->controller = ltrim($this->controller, '/');
-			$this->params = $route;
 		}
 		
 		public function controller() {
@@ -214,6 +229,6 @@
 		}
 		
 		public function template() {
-			return strtolower($this->controller);
+			return $this->template;
 		}
 	}

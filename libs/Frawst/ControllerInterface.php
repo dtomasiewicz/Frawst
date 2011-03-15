@@ -43,4 +43,14 @@
 		 * @return string
 		 */
 		public static function controllerClass($controller);
+		
+		/**
+		 * Determines if the specified controller is abstract or not. An abstract
+		 * controller cannot be used as a request controller, but a sub-controller
+		 * may be.
+		 * @param string $controller Name of the controller, correctly capitalized with
+		 *                           forward slashes
+		 * @return bool
+		 */
+		public static function controllerIsAbstract($controller);
 	}

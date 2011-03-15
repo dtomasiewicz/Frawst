@@ -215,6 +215,6 @@
 		}
 		
 		public static function contentExists($view) {
-			return self::findTemplate('content/'.$view) !== null;
+			return self::templatePath('content/'.$view) !== null;
 		}
 	}

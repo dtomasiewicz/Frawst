@@ -83,7 +83,7 @@
 		  	$this->headers = $headers;
 			$this->persist = $persist;
 			$this->Route = $route;
-				
+			
 			$this->Controller = null;
 		}
 		
@@ -93,9 +93,13 @@
 		 * @return string The value of the request header, or null if not set
 		 */
 		public function header($name = null) {
-			return $name !== null && array_key_exists($name, $this->headers)
-				? $this->headers[$name]
-				: null;
+			if($name === null) {
+				return $this->headers;
+			} elseif(array_key_exists($name, $this->headers)) {
+				return $this->headers[$name];
+			} else {
+				return null;
+			}
 		}
 		
 		/**
@@ -126,21 +130,30 @@
 		 * @return mixed The response object for this Request
 		 */
 		public function execute() {
+			$cClass = $this->getImplementation('Frawst\ControllerInterface');
 			$resClass = $this->getImplementation('Frawst\ResponseInterface');
 			$response = new $resClass($this);
 			
-			$controllerClass = $this->getImplementation('ns:Frawst\ControllerInterface').'\\'.str_replace('/', '\\', $this->Route->controller());
-			$this->Controller = new $controllerClass($this, $response);
+			$controller = $this->Route->controller();
+			if($controller !== null) {
+				$controllerClass = $cClass::controllerClass($controller);
+				$this->Controller = new $controllerClass($this, $response);
 			
-			try {
-				$response->data($this->Controller->execute());
-			} catch(\Exception $e) {
-				$response->data('<div class="Frawst-Debug">'.
-					'<h1>A Controller Problem Occurred!</h1>'.
-					'<pre>'.$e.'</pre></div>');
+				try {
+					$response->data($this->Controller->execute());
+				} catch(\Exception $e) {
+					$response->data('<div class="Frawst-Debug">'.
+						'<h1>A Controller Problem Occurred!</h1>'.
+						'<pre>'.$e.'</pre></div>');
+				}
+			
+				$this->Controller = null;
+			} else {
+				if($this->Route->template() === null) {
+					$response->notFound();
+				}
+				$response->data(null);
 			}
-			
-			$this->Controller = null;
 			
 			return $response;
 		}

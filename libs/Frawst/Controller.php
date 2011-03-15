@@ -121,4 +121,14 @@
 		public static function controllerClass($controller) {
 			return 'Frawst\Controller\\'.str_replace('/', '\\', $controller);
 		}
+		
+		public static function controllerIsAbstract($controller) {
+			$class = self::controllerClass($controller);
+			if(class_exists($class)) {
+				$r = new \ReflectionClass($class);
+				return $r->isAbstract();
+			} else {
+				throw new Exception('Cannot determine if non-existant controller is abstract: '.$controller);
+			}
+		}
 	}
