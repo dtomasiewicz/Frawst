@@ -1,6 +1,8 @@
 <?php
 	namespace Frawst\Test;
-	use Frawst\ControllerInterface;
+	use Frawst\ControllerInterface,
+	    Frawst\RequestInterface,
+	    Frawst\ResponseInterface;
 	
 	require_once 'Stub.php';
 	
@@ -10,4 +12,7 @@
 		public function response() {return $this->getSeed('response', func_get_args());}
 		public function execute() {return $this->getSeed('execute', func_get_args());}
 		public function component($name) {return $this->getSeed('component', func_get_args());}
+		public static function controllerExists($controller) {return self::getClassSeed('controllerExists', func_get_args());}
+		public static function controllerIsAbstract($controller) {return self::getClassSeed('controllerIsAbstract', func_get_args());}
+		public static function controllerClass($controller) {return self::getClassSeed('controllerClass', func_get_args());} 
 	}

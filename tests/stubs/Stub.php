@@ -13,8 +13,20 @@
 			self::addSeed($this->seeds, $method, array('return' => $return, 'args' => $args));
 		}
 		
+		public function seedReturns($method, $return, $argLists) {
+			foreach($argLists as $argList) {
+				$this->seedReturn($method, $return, $argList);
+			}
+		}
+		
 		public static function seedClassReturn($method, $return, $args = null) {
 			self::addClassSeed(get_called_class(), $method, array('return' => $return, 'args' => $args));
+		}
+		
+		public static function seedClassReturns($method, $return, $argLists) {
+			foreach($argLists as $argList) {
+				self::seedClassReturn($method, $return, $argList);
+			}
 		}
 		
 		public function seedImplementation($method, $impl) {
@@ -64,7 +76,7 @@
 		public static function getClassSeed($method, $args = null) {
 			$cc = get_called_class();
 			if(isset(self::$classSeeds[$cc])
-			  && $seed = self::getSeed(self::$classSeeds[$cc], $method, $args)) {
+			  && $seed = self::getSeedInternal(self::$classSeeds[$cc], $method, $args)) {
 				return self::evalSeed($seed, $args);
 			} else {
 				self::seedNotFound($cc, $method, $args);
@@ -72,7 +84,7 @@
 		}
 		
 		public function getSeed($method, $args = null) {
-			if($seed = self::getSeed($this->seeds, $method, $args)) {
+			if($seed = self::getSeedInternal($this->seeds, $method, $args)) {
 				return self::evalSeed($seed, $args);
 			} else {
 				return static::getClassSeed($method, $args);
@@ -91,7 +103,7 @@
 		 * Get a seed based on method and arguments.
 		 *   seeded return > seeded implementation
 		 */
-		private static function getSeed(&$seeds, $method, $args) {
+		private static function getSeedInternal(&$seeds, $method, $args) {
 			$matchSeed = null;
 			if(isset($seeds[$method])) {
 				foreach($seeds[$method] as &$seed) {

@@ -35,5 +35,5 @@
  		 * @param string $view The content path (usually a lower-cased route)
  		 * @return bool
  		 */
- 		public static function contentExists($view);
+ 		public static function contentExists($content);
 	}

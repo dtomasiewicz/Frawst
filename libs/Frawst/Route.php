@@ -140,15 +140,19 @@
 				}
 				$this->params = array();
 			} else {
-				$parts = explode('/', $this->route);
+				$oParts = explode('/', $this->route);
+				if($oParts[0] == '') {
+					array_shift($oParts);
+				}
+				$parts = $oParts;
 				$this->controller = null;
 				
 				$exists = true;
 				$abstract = true;
 				while($exists && $abstract && count($parts)) {
 					$controller = $this->controller === null
-						? ucfirst($parts[0])
-						: $this->controller.'/'.ucfirst($parts[0]);
+						? ucfirst(strtolower($parts[0]))
+						: $this->controller.'/'.ucfirst(strtolower($parts[0]));
 					if($parts[0] != '' && $cClass::controllerExists($controller)) {
 						array_shift($parts);
 						$this->controller = $controller;
@@ -157,8 +161,6 @@
 						$exists = false;
 					}
 				}
-				
-				$this->params = $parts;
 				
 				while($abstract) {
 					$controller = $this->controller === null
@@ -172,6 +174,10 @@
 						$abstract = false;
 					}
 				}
+				
+				$this->params = $this->controller === null
+					? $oParts
+					: $parts;
 				
 				if($this->controller !== null && $vClass::contentExists($c = strtolower($this->controller))) {
 					$this->template = $c;
