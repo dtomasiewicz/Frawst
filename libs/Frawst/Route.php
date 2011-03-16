@@ -128,10 +128,10 @@
 			$vClass = static::getClassImplementation('Frawst\ViewInterface');
 			$cClass = static::getClassImplementation('Frawst\ControllerInterface');
 			
-			if($vClass::contentExists($content = strtolower($route))) {
+			if($vClass::exists($content = strtolower($route))) {
 				$template = $content;
 				$c = str_replace(' ', '/', ucwords(str_replace('/', ' ', $route)));
-				if($cClass::controllerExists($c)) {
+				if($cClass::exists($c)) {
 					$controller = $c;
 				} else {
 					$controller = null;
@@ -151,10 +151,10 @@
 					$c = $controller === null
 						? ucfirst(strtolower($parts[0]))
 						: $controller.'/'.ucfirst(strtolower($parts[0]));
-					if($parts[0] != '' && $cClass::controllerExists($c)) {
+					if($parts[0] != '' && $cClass::exists($c)) {
 						array_shift($parts);
 						$controller = $c;
-						$abstract = $cClass::controllerIsAbstract($controller);
+						$abstract = $cClass::isAbstract($controller);
 					} else {
 						$exists = false;
 					}
@@ -164,9 +164,9 @@
 					$c = $controller === null
 						? 'Index'
 						: $controller.'/Index';
-					if($cClass::controllerExists($c)) {
+					if($cClass::exists($c)) {
 						$controller = $c;
-						$abstract = $cClass::controllerIsAbstract($controller);
+						$abstract = $cClass::isAbstract($controller);
 					} else {
 						$controller = null;
 						$abstract = false;
@@ -176,13 +176,14 @@
 				$template = null;
 				if($controller !== null) {
 					$params = $parts;
-					if($vClass::contentExists($c = strtolower($controller))) {
+					if($vClass::exists($c = strtolower($controller))) {
 						$template = $c;
 					}
 				}
 			}
 			
-			return new Route($controller, $template, $params, $options, $route);
+			$c = get_called_class();
+			return new $c($controller, $template, $params, $options, $route);
 		}
 		
 		public function controller() {

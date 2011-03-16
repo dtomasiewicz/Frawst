@@ -2,7 +2,7 @@
 	namespace Frawst;
 	
 	interface RequestInterface {
-		public function __construct($route, $data, $method, $headers);
+		public function __construct(RouteInterface $route, array $data, $method, array $headers, array $persist);
 		public function header($name);
 		public function isAjax();
 		public function subRequest($route, $data, $method);
@@ -11,4 +11,5 @@
 		public function param($index);
 		public function option($name);
 		public function data($key);
+		public static function factory($route, array $data, $method, array $headers, array $persist);
 	}

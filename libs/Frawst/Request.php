@@ -75,22 +75,26 @@
 		 * @param array $headers
 		 * @param array $persist
 		 */
-		public function __construct($route, $data = array(), $method = self::METHOD_GET, $headers = array(), $persist = array()) {
-			if($route instanceof RouteInterface) {
-				$this->Route = $route;
-			} else {
-				$rClass = $this->getImplementation('Frawst\RouteInterface');
-				$this->Route = $rClass::resolve($route);
-			}
-			
+		public function __construct(RouteInterface $route, array $data, $method, array $headers, array $persist) {
 			$this->startTime = microtime(true);
-		  	
+			$this->Route = $route;
 			$this->data = $data;
 		  	$this->method = strtoupper($method);
 		  	$this->headers = $headers;
 			$this->persist = $persist;
 			
+			$this->forms = array();
 			$this->Controller = null;
+		}
+		
+		public static function factory($route, array $data = array(), $method = self::METHOD_GET,
+		  array $headers = array(), array $persist = array()) {
+			if(!($route instanceof RouteInterface)) {
+				$rClass = self::getClassImplementation('Frawst\RouteInterface');
+				$route = $rClass::resolve($route);
+			}
+			$c = get_called_class();
+			return new $c($route, $data, $method, $headers, $persist);
 		}
 		
 		/**
@@ -126,8 +130,7 @@
 		public function subRequest($route, $data = array(), $method = 'GET') {
 			$headers = $this->headers;
 			$headers['X-Requested-With'] = 'XMLHttpRequest';
-			$reqClass = $this->getImplementation('Frawst\RequestInterface');
-			return new $reqClass($route, $data, $method, $headers, $this->persist);
+			return self::factory($route, $data, $method, $headers, $this->persist);
 		}
 		
 		/**
@@ -138,12 +141,11 @@
 		public function execute() {
 			$cClass = $this->getImplementation('Frawst\ControllerInterface');
 			$resClass = $this->getImplementation('Frawst\ResponseInterface');
-			$response = new $resClass($this);
+			$response = $resClass::factory($this);
 			
 			$controller = $this->Route->controller();
 			if($controller !== null) {
-				$controllerClass = $cClass::controllerClass($controller);
-				$this->Controller = new $controllerClass($this, $response);
+				$this->Controller = $cClass::factory($controller, $response);
 			
 				try {
 					$response->data($this->Controller->execute());
@@ -247,20 +249,12 @@
 		 * @param string $formName The name of the form.
 		 * @return Frawst\Form
 		 */
-		public function form($formName = null) {
-			if($formName === null) {
-				$formClass = $this->getImplementation('Frawst\FormInterface');
-				return $formClass::load($this->data, true);
-			} else {
-				$formName = $this->getImplementation('ns:Frawst\FormInterface').'\\'.$formName;
-				if (isset($this->forms[$formName])) {
-					return $this->forms[$formName];
-				} elseif(class_exists($formName) && $formName::method() == $this->method()) {
-					return $this->forms[$formName] = $formName::load($this->data);
-				} else {
-					return null;
-				}
+		public function form($name = null, $checkToken = true) {
+			if(!array_key_exists($name, $this->forms)) {
+				$fClass = $this->getImplementation('Frawst\FormInterface');
+				$this->forms[$name] = $fClass::factory($name, $this->data, $checkToken);
 			}
+			return $this->forms[$name];
 		}
 		
 		/**

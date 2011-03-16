@@ -19,4 +19,21 @@
 		public function teardown() {
 			
 		}
+		
+		private static function className($name) {
+			return 'Frawst\Helper\\'.str_replace('/', '\\', $name);
+		}
+		
+		public static function factory($name, ViewInterface $view) {
+			$c = self::className($name);
+			if(class_exists($c)) {
+				return new $c($view);
+			} else {
+				return null;
+			}
+		}
+		
+		public static function exists($name) {
+			return class_exists(self::className($name));
+		}
 	}

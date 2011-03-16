@@ -2,7 +2,7 @@
 	namespace Frawst;
 	
 	interface ControllerInterface {
-		public function __construct(RequestInterface $request, ResponseInterface $response);
+		public function __construct(ResponseInterface $response);
 		
 		/**
 		 * @return Request The request object this controller is acting for
@@ -27,22 +27,15 @@
 		 */
 		public function component($name);
 		
+		public static function factory($name, ResponseInterface $response);
+		
 		/**
 		 * Determines whether or not a controller with the given name exists
 		 * @param string $controller Name of the controller, correctly capitalized with
 		 *                           forward slashes 
 		 * @return bool
 		 */
-		public static function controllerExists($controller);
-		
-		/**
-		 * Returns the classname of the specified controller.
-		 *   Ex: controllerClass('User/View') --> 'Frawst\Controller\User\View'
-		 * @param string $controller Name of the controller, correctly capitalized with
-		 *                           forward slashes
-		 * @return string
-		 */
-		public static function controllerClass($controller);
+		public static function exists($name);
 		
 		/**
 		 * Determines if the specified controller is abstract or not. An abstract
@@ -52,5 +45,5 @@
 		 *                           forward slashes
 		 * @return bool
 		 */
-		public static function controllerIsAbstract($controller);
+		public static function isAbstract($name);
 	}

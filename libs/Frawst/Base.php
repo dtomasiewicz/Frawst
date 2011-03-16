@@ -14,10 +14,6 @@
 				'Frawst\ControllerInterface' => 'Frawst\Controller',
 				'Frawst\ComponentInterface' => 'Frawst\Component',
 				'Frawst\HelperInterface' => 'Frawst\Helper',
-				'ns:Frawst\ControllerInterface' => 'Frawst\Controller',
-				'ns:Frawst\ComponentInterface' => 'Frawst\Component',
-				'ns:Frawst\HelperInterface' => 'Frawst\Helper',
-				'ns:Frawst\FormInterface' => 'Frawst\Form',
 				'configRead' => array('Frawst\Config', 'read')
 			)
 		);

@@ -16,25 +16,19 @@
 		 */
 		private $data;
 		
-		/**
-		 * @var Frawst\Request The request using the controller
-		 */
-		private $Request;
-		
 		private $Response;
 		
 		/**
 		 * Constructor.
 		 * @param Frawst\Request The request using the controller
 		 */
-		public function __construct(RequestInterface $request, ResponseInterface $response) {
-			$this->Request = $request;
+		public function __construct(ResponseInterface $response) {
 			$this->Response = $response;
 			$this->components = array();
 		}
 		
 		public function request() {
-			return $this->Request;
+			return $this->Response->request();
 		}
 		
 		public function response() {
@@ -65,15 +59,13 @@
 		 * @return Component The component object, or null if the component does not exist
 		 */
 		public function component($name) {
-			$name = $this->getImplementation('ns:Frawst\ComponentInterface').'\\'.$name;
 			if (!array_key_exists($name, $this->components)) {
-				if(class_exists($name)) {
-					$this->components[$name] = new $name($this);
+				$cClass = $this->getImplementation('Frawst\ComponentInterface');
+				if(null !== $this->components[$name] = $cClass::factory($name, $this)) {
 					$this->components[$name]->setup();
-				} else {
-					$this->components[$name] = null;
 				}
 			}
+			
 			return $this->components[$name];
 		}
 		
@@ -104,7 +96,7 @@
 		
 		public function __get($name) {
 			if($name == 'Request') {
-				return $this->Request;
+				return $this->request();
 			} elseif($name == 'Response') {
 				return $this->Response;
 			} elseif($c = $this->component($name)) {
@@ -114,21 +106,30 @@
 			}
 		}
 		
-		public static function controllerExists($controller) {
-			return class_exists(self::controllerClass($controller));
-		}
-		
-		public static function controllerClass($controller) {
+		private static function className($controller) {
 			return 'Frawst\Controller\\'.str_replace('/', '\\', $controller);
 		}
 		
-		public static function controllerIsAbstract($controller) {
-			$class = self::controllerClass($controller);
+		public static function factory($name, ResponseInterface $response) {
+			$c = self::className($name);
+			if(class_exists($c)) {
+				return new $c($response);
+			} else {
+				return null;
+			}
+		}
+		
+		public static function exists($name) {
+			return class_exists(self::className($name));
+		}
+		
+		public static function isAbstract($name) {
+			$class = self::className($name);
 			if(class_exists($class)) {
 				$r = new \ReflectionClass($class);
 				return $r->isAbstract();
 			} else {
-				throw new Exception('Cannot determine if non-existant controller is abstract: '.$controller);
+				throw new Exception('Cannot determine if non-existant controller is abstract: '.$name);
 			}
 		}
 	}

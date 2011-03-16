@@ -25,4 +25,21 @@
 		public function controller() {
 			return $this->Controller;
 		}
+		
+		public static function factory($name, ControllerInterface $controller = null) {
+			$c = self::className($name);
+			if(class_exists($c)) {
+				return new $c($controller);
+			} else {
+				return null;
+			}
+		}
+		
+		public static function exists($name) {
+			return class_exists(self::className($name));
+		}
+		
+		private static function className($name) {
+			return 'Frawst\Component\\'.str_replace('/', '\\', $name);
+		}
 	}

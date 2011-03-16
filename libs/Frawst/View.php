@@ -18,12 +18,19 @@
 			$this->layout = 'default';
 		}
 		
-		public function exists($key) {
-			return Matrix::pathExists($this->data, $key);
+		public static function factory(ResponseInterface $response) {
+			$c = get_called_class();
+			return new $c($response);
+		}
+		
+		public static function exists($name) {
+			return self::templatePath('content/'.$name) !== null;
 		}
 		
 		public function get($key) {
-			return Matrix::pathGet($this->data, $key);
+			return Matrix::pathExists($this->data, $key)
+				? Matrix::pathGet($this->data, $key)
+				: null;
 		}
 		
 		public function set($key, $value = null) {
@@ -34,10 +41,6 @@
 			} else {
 				Matrix::pathSet($this->data, $key, $value);
 			}
-		}
-		
-		public function remove($key) {
-			Matrix::pathUnset($this->data, $key);
 		}
 		
 		public function response() {
@@ -142,7 +145,7 @@
 			}
 		}
 		
-		public function partial($partial, $data = array()) {
+		private function partial($partial, $data = array()) {
 			return $this->renderFile('partial/'.$partial, $data);
 		}
 
@@ -171,21 +174,19 @@
 			return rtrim($this->Response->request()->route()->resolved().$qs, '?&');
 		}
 
-		public function ajax($route, $data = array(), $method = 'GET') {
+		private function ajax($route, $data = array(), $method = 'GET') {
 			$request = $this->Response->request()->subRequest($route, $data, $method);
 			return $request->execute()->render();
 		}
  		
  		public function helper($name) {
- 			$name = $this->getImplementation('ns:Frawst\HelperInterface').'\\'.$name;
- 			if (!isset($this->helpers[$name])) {
- 				if(class_exists($name)) {
- 					$this->helpers[$name] = new $name($this);
+ 			if (!array_key_exists($name, $this->helpers)) {
+ 				$hClass = $this->getImplementation('Frawst\HelperInterface');
+ 				if(null !== $this->helpers[$name] = $hClass::factory($name, $this)) {
  					$this->helpers[$name]->setup();
- 				} else {
- 					return null;
  				}
  			}
+ 			
  			return $this->helpers[$name];
  		}
  		
@@ -207,9 +208,5 @@
 			} else {
 				throw new Exception('Invalid view property: '.$name);
 			}
-		}
-		
-		public static function contentExists($view) {
-			return self::templatePath('content/'.$view) !== null;
 		}
 	}

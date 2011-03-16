@@ -28,6 +28,8 @@
 		 */
 		protected static $fields = array();
 		
+		protected static $allowExtra = false;
+		
 		/**
 		 * An array of key/value pairs where the keys are form fields in dot-path form
 		 * and the values are validation rules.
@@ -43,12 +45,6 @@
 		 */
 		protected static $required = array();
 		
-		/**
-		 * Whether or not to require a token for this form. If the form is vulnerable
-		 * to CSRF, this should be set to true.
-		 * @var bool
-		 */
-		protected static $useToken = true;
 		const TOKEN_NAME = '__TOKEN';
 		
 		/**
@@ -70,6 +66,27 @@
 			} else {
 				$this->submitted = true;
 				$this->data = $data;
+			}
+		}
+		
+		private static function className($name) {
+			return 'Frawst\Form\\'.str_replace('/', '\\', $name);
+		}
+		
+		public static function factory($name = null, $data = null, $checkToken = true) {
+			$c = $name === null
+				? get_called_class()
+				: self::className($name);
+			
+			if(is_array($data)) {
+				if($checkToken) {
+					if(!isset($data[$c::TOKEN_NAME]) || !$c::checkToken($data[$c::TOKEN_NAME])) {
+						return null;
+					}
+				}
+				return new $c($data);
+			} else {
+				return new $c();
 			}
 		}
 		
@@ -209,7 +226,7 @@
 		 * be extended to customize behaviour.
 		 * @param array $data
 		 * @return bool
-		 */
+		 *
 		public static function compatible($data, $allowExtraFields = false) {
 			if(!$allowExtraFields) {
 				foreach(Matrix::flatten($data) as $key => $value) {
@@ -232,13 +249,13 @@
 			}
 			
 			return true;
-		}
+		}*/
 		
 		/**
 		 * Attempts to load an instance of the form with the given data.
 		 * @param array $data The form data
 		 * @return Frawst\Form A form object if the data is valid, otherwise null.
-		 */
+		 *
 		public static function load($data, $allowExtraFields = false) {
 			if(static::$useToken) {
 				if(!isset($data[static::TOKEN_NAME]) || !static::checkToken($data[static::TOKEN_NAME])) {
@@ -254,7 +271,7 @@
 			} else {
 				return null;
 			}
-		}
+		}*/
 		
 		/**
 		 * Verifies a given token to determine if it is valid for this session and form. 
@@ -273,8 +290,6 @@
 		 * @return string The form token
 		 */
 		public static function makeToken() {
-			return static::$useToken
-				? Security::makeToken(get_called_class())
-				: null;
+			return Security::makeToken(get_called_class());
 		}
 	}

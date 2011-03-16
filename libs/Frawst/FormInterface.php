@@ -26,11 +26,9 @@
 		
 		public static function method();
 		
-		public static function compatible($data, $allowExtraFields);
-		
-		public static function load($data, $allowExtraFields);
-		
 		public static function checkToken($token);
 		
 		public static function makeToken();
+		
+		public static function factory($name, $data);
 	}

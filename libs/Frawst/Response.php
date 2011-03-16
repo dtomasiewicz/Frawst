@@ -97,6 +97,11 @@
 			$this->View = null;
 		}
 		
+		public static function factory(RequestInterface $request) {
+			$c = get_called_class();
+			return new $c($request);
+		}
+		
 		public function request() {
 			return $this->Request;
 		}
@@ -235,14 +240,14 @@
 			try {
 				if(!is_string($this->data)) {
 					if(isset($this->internalRedirect)) {
-						$reqClass = $this->getImplementation('Frawst\RequestInterface');
-						$req = new $reqClass($this->internalRedirect, array(), 'GET', $this->Request->header());
+						$rClass = $this->getImplementation('Frawst\RequestInterface');
+						$req = $rClass::factory($this->internalRedirect, array(), 'GET', $this->Request->header());
 						$this->data = $req->execute()->render();
 					} elseif($this->mustRedirect()) {
 						throw new \Frawst\Exception('Cannot render a request pending an external redirection.');
 					} else {
-						$viewClass = $this->getImplementation('Frawst\ViewInterface');
-						$this->View = new $viewClass($this);
+						$vClass = $this->getImplementation('Frawst\ViewInterface');
+						$this->View = $vClass::factory($this);
 						$this->data = $this->View->render($this->data);
 						$this->View = null;
 					}

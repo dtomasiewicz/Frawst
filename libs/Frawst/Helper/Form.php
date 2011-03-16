@@ -37,7 +37,8 @@
 		 */
 		public function open($formName, $attrs = array()) {
 			if (!($form = $this->view()->response()->request()->form($formName))) {
-				$form = new $formName();
+				$fClass = $this->getImplementation('Frawst\FormInterface');
+				$form = $fClass::factory($formName);
 			}
 			$this->Form = $form;
 			
