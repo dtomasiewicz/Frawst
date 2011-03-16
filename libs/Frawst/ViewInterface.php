@@ -2,9 +2,6 @@
 	namespace Frawst;
 	
 	interface ViewInterface {
-		
-		public function __construct(ResponseInterface $response);
-		
 		public function render($data);
 
 		public function isAjax();

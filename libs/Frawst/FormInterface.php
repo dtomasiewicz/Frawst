@@ -2,7 +2,6 @@
 	namespace Frawst;
 	
 	interface FormInterface {
-		public function __construct($data);
 		
 		public function submitted();
 		

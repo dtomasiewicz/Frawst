@@ -2,7 +2,6 @@
 	namespace Frawst;
 	
 	interface RouteInterface {
-		public function __construct($route);
 		public function param($key);
 		public function option($name);
 		public function original();

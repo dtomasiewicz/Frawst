@@ -2,7 +2,6 @@
 	namespace Frawst;
 	
 	interface ResponseInterface {
-		public function __construct(RequestInterface $request);
 		public function data($data);
 		public function header($name, $value);
 		public function status($status);

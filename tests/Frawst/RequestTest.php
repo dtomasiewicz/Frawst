@@ -18,22 +18,22 @@
 		public function testIsAjax() {
 			// case should not matter
 			$headers = array('X-Requested-With' => 'xmlhttprequest');
-			$request = new Request('', array(), Request::METHOD_GET, $headers);
+			$request = new Request(new RouteStub(), array(), Request::METHOD_GET, $headers, array());
 			$this->assertTrue(true, $request->isAjax());
 			
 			$headers = array('X-Requested-With' => 'XmlHttpRequest');
-			$request = new Request('', array(), Request::METHOD_GET, $headers);
+			$request = new Request(new RouteStub(), array(), Request::METHOD_GET, $headers, array());
 			$this->assertTrue($request->isAjax());
 			
 			// ignore any other value
 			$headers = array('X-Requested-With' => 'SomethingElse');
-			$request = new Request('', array(), Request::METHOD_GET, $headers);
+			$request = new Request(new RouteStub(), array(), Request::METHOD_GET, $headers, array());
 			$this->assertFalse(false, $request->isAjax());
 		}
 		
 		public function testSubRequest() {
 			$headers = array('X-Test-Header' => 'Test');
-			$request = new Request('', array('test-data' => 'test'), Request::METHOD_GET, $headers);
+			$request = new Request(new RouteStub(), array('test-data' => 'test'), Request::METHOD_GET, $headers, array());
 			$sub = $request->subRequest('');
 			
 			// headers should be passed on to sub-requests

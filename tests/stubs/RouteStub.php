@@ -5,7 +5,6 @@
 	require_once 'Stub.php';
 
 	class RouteStub extends Stub implements RouteInterface {
-		public function __construct($route = null) {}
 		public function param($key = null) {return $this->getSeed('param', func_get_args());}
 		public function option($name = null) {return $this->getSeed('option', func_get_args());}
 		public function original() {return $this->getSeed('original', func_get_args());}

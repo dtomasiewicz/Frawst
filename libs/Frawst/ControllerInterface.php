@@ -2,8 +2,6 @@
 	namespace Frawst;
 	
 	interface ControllerInterface {
-		public function __construct(ResponseInterface $response);
-		
 		/**
 		 * @return Request The request object this controller is acting for
 		 */
