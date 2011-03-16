@@ -6,6 +6,7 @@
 		public function param($key);
 		public function option($name);
 		public function original();
+		public static function resolve($route);
 		public function resolved();
 		public static function getPath($route);
 		public function path();

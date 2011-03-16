@@ -4,7 +4,7 @@
 	class Base {
 		private $impls = array();
 		
-		private static $defaultImpls = array(
+		private static $classImpls = array(
 			'Frawst\Base' => array(
 				'Frawst\RequestInterface' => 'Frawst\Request',
 				'Frawst\ResponseInterface' => 'Frawst\Response',
@@ -22,23 +22,23 @@
 			)
 		);
 		
-		public static function setDefaultImplementation($interface, $implementation) {
+		public static function setClassImplementation($interface, $implementation) {
 			$class = get_called_class();
-			if(!array_key_exists($class, self::$defaultImpls)) {
-				self::$defaultImpls[$class] = array();
+			if(!array_key_exists($class, self::$classImpls)) {
+				self::$classImpls[$class] = array();
 			}
-			self::$defaultImpls[$class][$interface] = $implementation;
+			self::$classImpls[$class][$interface] = $implementation;
 		}
 		
 		public function setImplementation($interface, $implementation) {
 			$this->impls[$interface] = $implementation;
 		}
 		
-		public static function getDefaultImplementation($interface) {
+		public static function getClassImplementation($interface) {
 			$class = get_called_class();
 			while($class !== false) {
-				if(array_key_exists($class, self::$defaultImpls) && array_key_exists($interface, self::$defaultImpls[$class])) {
-					return self::$defaultImpls[$class][$interface];
+				if(array_key_exists($class, self::$classImpls) && array_key_exists($interface, self::$classImpls[$class])) {
+					return self::$classImpls[$class][$interface];
 				} else {
 					$class = get_parent_class($class);
 				}
@@ -48,13 +48,13 @@
 		public function getImplementation($interface) {
 			return array_key_exists($interface, $this->impls)
 				? $this->impls[$interface]
-				: static::getDefaultImplementation($interface);
+				: static::getClassImplementation($interface);
 		}
 		
-		public static function callDefaultImplementation($impl) {
+		public static function callClassImplementation($impl) {
 			$args = func_get_args();
 			array_shift($args);
-			return call_user_func_array(static::getDefaultImplementation($impl), $args);
+			return call_user_func_array(static::getClassImplementation($impl), $args);
 		}
 		
 		public function callImplementation($impl) {

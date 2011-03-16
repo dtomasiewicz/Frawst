@@ -75,14 +75,20 @@
 		 * @param array $headers
 		 * @param array $persist
 		 */
-		public function __construct(RouteInterface $route, $data = array(), $method = self::METHOD_GET, $headers = array(), $persist = array()) {
+		public function __construct($route, $data = array(), $method = self::METHOD_GET, $headers = array(), $persist = array()) {
+			if($route instanceof RouteInterface) {
+				$this->Route = $route;
+			} else {
+				$rClass = $this->getImplementation('Frawst\RouteInterface');
+				$this->Route = $rClass::resolve($route);
+			}
+			
 			$this->startTime = microtime(true);
 		  	
 			$this->data = $data;
 		  	$this->method = strtoupper($method);
 		  	$this->headers = $headers;
 			$this->persist = $persist;
-			$this->Route = $route;
 			
 			$this->Controller = null;
 		}
@@ -117,7 +123,7 @@
 		 * @param string $route
 		 * @return Frawst\Request The sub-request object
 		 */
-		public function subRequest(RouteInterface $route, $data = array(), $method = 'GET') {
+		public function subRequest($route, $data = array(), $method = 'GET') {
 			$headers = $this->headers;
 			$headers['X-Requested-With'] = 'XMLHttpRequest';
 			$reqClass = $this->getImplementation('Frawst\RequestInterface');

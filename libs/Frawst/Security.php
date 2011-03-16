@@ -22,7 +22,7 @@
 		 */
 		public static function hash($string, $salt = null) {
 			if (!isset($salt)) {
-				$salt = self::callDefaultImplementation('configRead', 'Frawst', 'salt');
+				$salt = self::callClassImplementation('configRead', 'Frawst', 'salt');
 			}
 			
 			return sha1($salt.$string);			

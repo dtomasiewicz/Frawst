@@ -5,21 +5,16 @@
 	 * Frawst routing class.
 	 */
 	class Route extends Base implements RouteInterface {
-		/**
-		 * @var string The original route supplied to this class in the constructor,
-		 *             before custom routing rules are applied.
-		 */
-		private $original;
 		
 		/**
-		 * @var string The route after custom routing rules are applied.
-		 */
-		private $route;
-		
-		/**
-		 * @var array The stack of controller names represented by the route.
+		 * @var array The existing controller this route has been resolved to.
 		 */
 		private $controller;
+		
+		/**
+		 * @var string The existing content template this route has been resolved to.
+		 */
+		private $template;
 		
 		/**
 		 * @var array Array of parameters defined by this route.
@@ -31,7 +26,11 @@
 		 */
 		private $options;
 		
-		private $template;
+		/**
+		 * @var string The original route supplied to this class in the constructor,
+		 *             before custom routing rules are applied.
+		 */
+		private $original;
 		
 		/**
 		 * Constructor.
@@ -39,16 +38,12 @@
 		 * @param bool $customRoute If set to true, will check the route against
 		 *                          any specified custom routing rules.
 		 */
-		public function __construct($route, $customRoute = false) {
-			$this->original = $route;
-
-			if($customRoute) {
-				$this->routeCustom();
-			} else {
-				$this->route = $route;
-			}
-			
-			$this->resolve();
+		public function __construct($controller = null, $template = null, $params = array(), $options = array(), $original = null) {
+			$this->controller = $controller;
+			$this->template = $template;
+			$this->params = $params;
+			$this->options = $options;
+			$this->original = $original === null ? $controller : $original;
 		}
 
 		/**
@@ -57,20 +52,19 @@
 		 *     'user/^[0-9]+$:id' => 'user/view/:id'
 		 *         user/6 --> user/view/6
 		 */
-		protected function routeCustom() {
-			if(is_array($rules = $this->callImplementation('configRead', 'Routing', 'rules'))) {
+		private static function routeCustom($route) {
+			if(is_array($rules = self::callClassImplementation('configRead', 'Routing', 'rules'))) {
 				foreach($rules as $pattern => $newRoute) {
-					if($this->matchRoute($pattern, $this->original, $newRoute)) {
-						return;
+					if(is_array($match = self::matchRoute($pattern, $route, $newRoute))) {
+						return $match;
 					}
 				}
 			}
 			
-			$this->route = $this->original;
-			$this->options = array();
+			return array($route, array());
 		}
 
-		private function matchRoute($pattern, $route, $newRoute) {
+		private static function matchRoute($pattern, $route, $newRoute) {
 			$r = explode('/', $route);
 			$p = explode('/', $pattern);
 
@@ -120,71 +114,75 @@
 				}
 			}
 
-			$this->route = implode('/', $new);
-			$this->options = $opts;
-
-			return true;
+			return array($this->route, $opts);
 		}
 		
-		protected function resolve() {
-			$vClass = $this->getImplementation('Frawst\ViewInterface');
-			$cClass = $this->getImplementation('Frawst\ControllerInterface');
+		public static function resolve($route, $routeCustom = false) {
 			
-			if($vClass::contentExists($content = strtolower($this->route))) {
-				$this->template = $content;
-				$controller = str_replace(' ', '/', ucwords(str_replace('/', ' ', $this->route)));
-				if($cClass::controllerExists($controller)) {
-					$this->controller = $controller;
-				} else {
-					$this->controller = null;
-				}
-				$this->params = array();
+			if($routeCustom) {
+				list($route, $options) = self::routeCustom($route);
 			} else {
-				$oParts = explode('/', $this->route);
-				if($oParts[0] == '') {
-					array_shift($oParts);
+				$options = array();
+			}
+			
+			$vClass = static::getClassImplementation('Frawst\ViewInterface');
+			$cClass = static::getClassImplementation('Frawst\ControllerInterface');
+			
+			if($vClass::contentExists($content = strtolower($route))) {
+				$template = $content;
+				$c = str_replace(' ', '/', ucwords(str_replace('/', ' ', $route)));
+				if($cClass::controllerExists($c)) {
+					$controller = $c;
+				} else {
+					$controller = null;
 				}
-				$parts = $oParts;
-				$this->controller = null;
+				$params = array();
+			} else {
+				$parts = explode('/', $route);
+				if($parts[0] == '') {
+					array_shift($parts);
+				}
+				$params = $parts;
+				$controller = null;
 				
 				$exists = true;
 				$abstract = true;
 				while($exists && $abstract && count($parts)) {
-					$controller = $this->controller === null
+					$c = $controller === null
 						? ucfirst(strtolower($parts[0]))
-						: $this->controller.'/'.ucfirst(strtolower($parts[0]));
-					if($parts[0] != '' && $cClass::controllerExists($controller)) {
+						: $controller.'/'.ucfirst(strtolower($parts[0]));
+					if($parts[0] != '' && $cClass::controllerExists($c)) {
 						array_shift($parts);
-						$this->controller = $controller;
-						$abstract = $cClass::controllerIsAbstract($this->controller);
+						$controller = $c;
+						$abstract = $cClass::controllerIsAbstract($controller);
 					} else {
 						$exists = false;
 					}
 				}
 				
 				while($abstract) {
-					$controller = $this->controller === null
+					$c = $controller === null
 						? 'Index'
-						: $this->controller.'/Index';
-					if($cClass::controllerExists($controller)) {
-						$this->controller = $controller;
-						$abstract = $cClass::controllerIsAbstract($this->controller);
+						: $controller.'/Index';
+					if($cClass::controllerExists($c)) {
+						$controller = $c;
+						$abstract = $cClass::controllerIsAbstract($controller);
 					} else {
-						$this->controller = null;
+						$controller = null;
 						$abstract = false;
 					}
 				}
 				
-				$this->params = $this->controller === null
-					? $oParts
-					: $parts;
-				
-				if($this->controller !== null && $vClass::contentExists($c = strtolower($this->controller))) {
-					$this->template = $c;
-				} else {
-					$this->template = null;
+				$template = null;
+				if($controller !== null) {
+					$params = $parts;
+					if($vClass::contentExists($c = strtolower($controller))) {
+						$template = $c;
+					}
 				}
 			}
+			
+			return new Route($controller, $template, $params, $options, $route);
 		}
 		
 		public function controller() {

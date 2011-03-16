@@ -172,11 +172,6 @@
 		}
 
 		public function ajax($route, $data = array(), $method = 'GET') {
-			if(!($route instanceof RouteInterface)) {
-				$routeClass = $this->getImplementation('Frawst\RouteInterface');
-				$route = new $routeClass($route);
-			}
-			
 			$request = $this->Response->request()->subRequest($route, $data, $method);
 			return $request->execute()->render();
 		}

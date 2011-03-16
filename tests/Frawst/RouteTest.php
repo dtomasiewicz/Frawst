@@ -22,8 +22,8 @@
 		 *     view
 		 */
 		public function setUp() {
-			Route::setDefaultImplementation('Frawst\ViewInterface', 'Frawst\Test\ViewStub');
-			Route::setDefaultImplementation('Frawst\ControllerInterface', 'Frawst\Test\ControllerStub');
+			Route::setClassImplementation('Frawst\ViewInterface', 'Frawst\Test\ViewStub');
+			Route::setClassImplementation('Frawst\ControllerInterface', 'Frawst\Test\ControllerStub');
 			
 			ViewStub::seedClassReturn('contentExists', false);
 			ViewStub::seedClassReturns('contentExists', true, array(
@@ -48,32 +48,32 @@
 		
 		public function testResolve() {
 			// controller-less (static page)
-			$route = new Route('some/static/page');
+			$route = Route::resolve('some/static/page');
 			$this->assertEquals(null, $route->controller());
 			$this->assertEquals('some/static/page', $route->template());
 			$this->assertEquals(array(), $route->param());
 			
 			// controller and view both exist
-			$route = new Route('user/view');
+			$route = Route::resolve('user/view');
 			$this->assertEquals('User/View', $route->controller());
 			$this->assertEquals('user/view', $route->template());
 			$this->assertEquals(array(), $route->param());
 			
 			// case-insensitivity, parameters
-			$route = new Route('uSeR/VieW/5/6/7');
+			$route = Route::resolve('uSeR/VieW/5/6/7');
 			$this->assertEquals('User/View', $route->controller());
 			$this->assertEquals('user/view', $route->template());
 			$this->assertEquals(array('5', '6', '7'), $route->param());
 			
 			// string parameter
-			$route = new Route('user/edit/5');
+			$route = Route::resolve('user/edit/5');
 			$this->assertEquals('User/Index', $route->controller());
 			$this->assertEquals('user/index', $route->template());
 			$this->assertEquals(array('edit', '5'), $route->param());
 			
 			// empty route, abstract controller with no index
-			$route = new Route('');
-			$route2 = new Route('index');
+			$route = Route::resolve('');
+			$route2 = Route::resolve('index');
 			$this->assertEquals(null, $route->controller());
 			$this->assertEquals(null, $route->template());
 			$this->assertEquals(array(), $route->param());

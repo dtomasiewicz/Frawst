@@ -9,6 +9,7 @@
 		public function param($key = null) {return $this->getSeed('param', func_get_args());}
 		public function option($name = null) {return $this->getSeed('option', func_get_args());}
 		public function original() {return $this->getSeed('original', func_get_args());}
+		public static function resolve($route) {return self::getClassSeed('resolve', func_get_args());}
 		public function resolved() {return $this->getSeed('resolved', func_get_args());}
 		public static function getPath($route = null) {return static::getClassStatic('getPath', func_get_args());}
 		public function path() {return $this->getSeed('path', func_get_args());}

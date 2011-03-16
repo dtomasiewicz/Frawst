@@ -236,8 +236,7 @@
 				if(!is_string($this->data)) {
 					if(isset($this->internalRedirect)) {
 						$reqClass = $this->getImplementation('Frawst\RequestInterface');
-						$routeClass = $this->getImplementation('Frawst\RouteInterface');
-						$req = new $reqClass(new $routeClass($this->internalRedirect), array(), 'GET', $this->Request->header());
+						$req = new $reqClass($this->internalRedirect, array(), 'GET', $this->Request->header());
 						$this->data = $req->execute()->render();
 					} elseif($this->mustRedirect()) {
 						throw new \Frawst\Exception('Cannot render a request pending an external redirection.');

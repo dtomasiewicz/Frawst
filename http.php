@@ -67,5 +67,5 @@
 		$route = substr($route, 0, -strlen(AJAX_SUFFIX));
 	}
 	
-	$request = new Request(new Route($route, true), $data, $method, $headers);
+	$request = new Request(Route::resolve($route, true), $data, $method, $headers);
 	$request->execute()->send();
