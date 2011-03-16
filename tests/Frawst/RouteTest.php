@@ -71,15 +71,23 @@
 			$this->assertEquals('user/index', $route->template());
 			$this->assertEquals(array('edit', '5'), $route->param());
 			
-			// empty route, abstract controller with no index
+			// empty route
 			$route = Route::resolve('');
-			$route2 = Route::resolve('index');
 			$this->assertEquals(null, $route->controller());
 			$this->assertEquals(null, $route->template());
 			$this->assertEquals(array(), $route->param());
-			$this->assertEquals(null, $route2->controller());
-			$this->assertEquals(null, $route2->template());
-			$this->assertEquals(array('index'), $route2->param());
+			
+			// route with one empty parameter
+			$route = Route::resolve('/');
+			$this->assertEquals(null, $route->controller());
+			$this->assertEquals(null, $route->template());
+			$this->assertEquals(array(''), $route->param());
+			
+			// non-existent controller/view
+			$route = Route::resolve('index');
+			$this->assertEquals(null, $route->controller());
+			$this->assertEquals(null, $route->template());
+			$this->assertEquals(array('index'), $route->param());
 		}
 		
 	}
