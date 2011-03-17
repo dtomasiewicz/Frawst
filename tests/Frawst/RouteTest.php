@@ -2,7 +2,6 @@
 	namespace Frawst\Test;
 	use \Frawst\Route;
 	
-	require_once 'PHPUnit/Framework.php';
 	require_once '../bootstrap.php';
 	
 	Framework::setupMock('Frawst\ViewInterface', 'ViewMock');

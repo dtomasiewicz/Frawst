@@ -2,7 +2,6 @@
 	namespace Frawst\Test;
 	use \Frawst\Request;
 	
-	require_once 'PHPUnit/Framework.php';
 	require_once '../bootstrap.php';
 	
 	Framework::setupMock('Frawst\RouteInterface', 'RouteMock');
