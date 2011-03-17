@@ -1,5 +1,5 @@
 <?php
-	namespace Frawst;
+	namespace Frawst\Test;
 	
 	define('Frawst\Test\TEST_ROOT', dirname(__FILE__).'/');
 	
@@ -13,8 +13,9 @@
 	require_once '../bootstrap.php';
 	
 	spl_autoload_register(function($class) {
-		if(file_exists($f = ROOT.'libs/'.str_replace('\\', DIRECTORY_SEPARATOR, $class).'.php')) {
-			echo 'Notice: loading core class '.$class."\n";
+		if(file_exists($f = \Frawst\ROOT.'libs/'.str_replace('\\', DIRECTORY_SEPARATOR, $class).'.php')) {
 			require_once $f;
 		}
 	});
+	
+	require_once 'Framework.php';

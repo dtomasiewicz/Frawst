@@ -4,8 +4,9 @@
 	
 	require_once 'PHPUnit/Framework.php';
 	require_once '../bootstrap.php';
-	require_once TEST_ROOT.'stubs/ViewStub.php';
-	require_once TEST_ROOT.'stubs/ControllerStub.php';
+	
+	Framework::setupMock('Frawst\ViewInterface', 'ViewMock');
+	Framework::setupMock('Frawst\ControllerInterface', 'ControllerMock');
 	
 	class RouteTest extends \PHPUnit_Framework_TestCase {
 		
@@ -22,25 +23,22 @@
 		 *     view
 		 */
 		public function setUp() {
-			Route::setClassImplementation('Frawst\ViewInterface', 'Frawst\Test\ViewStub');
-			Route::setClassImplementation('Frawst\ControllerInterface', 'Frawst\Test\ControllerStub');
-			
-			ViewStub::seedClassReturn('contentExists', false);
-			ViewStub::seedClassReturns('contentExists', true, array(
+			ViewMock::seedClassReturn('exists', false);
+			ViewMock::seedClassReturns('exists', true, array(
 				array('some/static/page'),
 				array('user/index'),
 				array('user/view')
 			));
 			
-			ControllerStub::seedClassReturn('controllerExists', false);
-			ControllerStub::seedClassReturns('controllerExists', true, array(
+			ControllerMock::seedClassReturn('exists', false);
+			ControllerMock::seedClassReturns('exists', true, array(
 				array('Index'),
 				array('User'),
 				array('User/Index'),
 				array('User/View')
 			));
-			ControllerStub::seedClassReturn('controllerIsAbstract', false);
-			ControllerStub::seedClassReturns('controllerIsAbstract', true, array(
+			ControllerMock::seedClassReturn('isAbstract', false);
+			ControllerMock::seedClassReturns('isAbstract', true, array(
 				array('Index'),
 				array('User')
 			));

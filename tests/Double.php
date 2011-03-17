@@ -1,7 +1,7 @@
 <?php
 	namespace Frawst\Test;
 	
-	class Stub {
+	class Double {
 		private static $classSeeds = array();
 		private $seeds;
 		
@@ -153,5 +153,4 @@
 			}
 			throw new \Exception($class.'::'.$method.'() was not seeded for '.$argsType);
 		}
-		
 	}
