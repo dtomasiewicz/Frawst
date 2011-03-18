@@ -62,8 +62,10 @@
 				
 				$def .= $access.$static.' function '.$method->getName().'('.$params.") {\n";
 				if($method->isStatic()) {
-					$def .= "return self::getClassSeed('".$method->getName()."', func_get_args());\n";
+					$def .= "static::addStaticCall('".$method->getName()."', func_get_args());\n";
+					$def .= "return static::getClassSeed('".$method->getName()."', func_get_args());\n";
 				} else {
+					$def .= "\$this->addCall('".$method->getName()."', func_get_args());\n";
 					$def .= "return \$this->getSeed('".$method->getName()."', func_get_args());\n";
 				}
 				$def .= "}\n";

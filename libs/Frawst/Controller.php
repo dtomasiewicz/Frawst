@@ -77,7 +77,7 @@
 		public function execute() {
 			if(false !== $data = $this->before()) {
 				if(method_exists($this, $method = strtolower($this->Request->method()))) {
-					$data = call_user_func_array(array($this, $method), $this->Request->param());
+					$data = call_user_func_array(array($this, $method), $this->request()->route()->param());
 				} else {
 					$data = $this->Response->forbidden();
 				}

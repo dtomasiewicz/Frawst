@@ -5,8 +5,12 @@
 		private static $classSeeds = array();
 		private $seeds;
 		
+		private static $staticCalls = array();
+		private $calls;
+		
 		public function __construct() {
 			$this->seeds = array();
+			$this->calls = array();
 		}
 		
 		public function seedReturn($method, $return, $args = null) {
@@ -58,21 +62,6 @@
 			}
 		}
 		
-		private static function addSeed(&$seeds, $method, $seed) {
-			if(!isset($seeds[$method])) {
-				$seeds[$method] = array();
-			}
-			
-			$seeds[$method][] = $seed;
-		}
-		
-		private static function addClassSeed($class, $method, $seed) {
-			if(!isset(self::$classSeeds[$class])) {
-				self::$classSeeds[$class] = array();
-			}
-			self::addSeed(self::$classSeeds[$class], $method, $seed);
-		}
-		
 		public static function getClassSeed($method, $args = null) {
 			$cc = get_called_class();
 			if(isset(self::$classSeeds[$cc])
@@ -91,12 +80,54 @@
 			}
 		}
 		
-		public function __call($method, $args) {
-			return $this->getSeed($method, $args);
+		public function getTimesCalled($method) {
+			if(isset($this->calls[$method])) {
+				return count($this->calls[$method]);
+			} else {
+				return 0;
+			}
 		}
 		
-		public static function __callStatic($method, $args) {
-			return static::getClassSeed($method, $args);
+		public static function getStaticTimesCalled($method) {
+			$cc = get_called_class();
+			if(isset(self::$classCalls[$cc]) && isset(self::$classCalls[$cc][$method])) {
+				return count(self::$classCalls[$cc][$method]);
+			} else {
+				return 0;
+			}
+		}
+		
+		private static function addSeed(&$seeds, $method, $seed) {
+			if(!isset($seeds[$method])) {
+				$seeds[$method] = array();
+			}
+			
+			$seeds[$method][] = $seed;
+		}
+		
+		private static function addClassSeed($class, $method, $seed) {
+			if(!isset(self::$classSeeds[$class])) {
+				self::$classSeeds[$class] = array();
+			}
+			self::addSeed(self::$classSeeds[$class], $method, $seed);
+		}
+		
+		public static function addStaticCall($method, $args) {
+			$cc = get_called_class();
+			if(!isset(self::$staticCalls[$cc])) {
+				self::$staticCalls[$cc] = array();
+			}
+			if(!isset(self::$staticCalls[$cc][$method])) {
+				self::$staticCalls[$cc][$method] = array();
+			}
+			self::$staticCalls[$cc][$method][] = $args;
+		}
+		
+		public function addCall($method, $args) {
+			if(!isset($this->calls[$method])) {
+				$this->calls[$method] = array();
+			}
+			$this->calls[$method][] = $args;
 		}
 		
 		/**

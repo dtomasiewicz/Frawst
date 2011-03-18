@@ -127,7 +127,7 @@
 		 * @param string $route
 		 * @return Frawst\Request The sub-request object
 		 */
-		public function subRequest($route, $data = array(), $method = 'GET') {
+		public function subRequest($route, array $data = array(), $method = 'GET') {
 			$headers = $this->headers;
 			$headers['X-Requested-With'] = 'XMLHttpRequest';
 			return self::factory($route, $data, $method, $headers, $this->persist);
@@ -140,8 +140,8 @@
 		 */
 		public function execute() {
 			$cClass = $this->getImplementation('Frawst\ControllerInterface');
-			$resClass = $this->getImplementation('Frawst\ResponseInterface');
-			$response = $resClass::factory($this);
+			$rClass = $this->getImplementation('Frawst\ResponseInterface');
+			$response = $rClass::factory($this);
 			
 			$controller = $this->Route->controller();
 			if($controller !== null) {
@@ -173,10 +173,18 @@
 			return $this->method;
 		}
 		
+		/**
+		 * @param int $index The parameter index
+		 * @return string The route parameter at the given index
+		 */
 		public function param($index = null) {
 			return $this->Route->param($index);
 		}
 
+		/**
+		 * @param string $name The option name
+		 * @return string The route option specified by name
+		 */
 		public function option($name = null) {
 			return $this->Route->option($name);
 		}
@@ -184,8 +192,8 @@
 		/**
 		 * Returns GET data. See Request::data() for argument/return docs
 		 * @param string $key
-		 * @param string $default
-		 * @return array
+		 * @param array|string $default
+		 * @return array|string
 		 */
 		public function get($key = null, $default = null) {
 			return $this->method == self::METHOD_GET
@@ -196,8 +204,8 @@
 		/**
 		 * Returns POST data. See Request::data() for argument/return docs
 		 * @param string $key
-		 * @param string $default
-		 * @return array
+		 * @param array|string $default
+		 * @return array|string
 		 */
 		public function post($key = null, $default = null) {
 			return $this->method == self::METHOD_POST
@@ -208,8 +216,8 @@
 		/**
 		 * Returns PUT data. See Request::data() for argument/return docs
 		 * @param string $key
-		 * @param string $default
-		 * @return array
+		 * @param array|string $default
+		 * @return array|string
 		 */
 		public function put($key = null, $default = null) {
 			return $this->method == self::METHOD_PUT
@@ -220,8 +228,8 @@
 		/**
 		 * Returns DELETE data. See Request::data() for argument/return docs
 		 * @param string $key
-		 * @param string $default
-		 * @return array
+		 * @param array|string $default
+		 * @return array|string
 		 */
 		public function delete($key = null, $default = null) {
 			return $this->method == self::METHOD_DELETE
@@ -232,9 +240,9 @@
 		/**
 		 * Returns request data
 		 * @param string $key A dot-style associative array index
-		 * @param string $default The value to return if the specified index was
+		 * @param array|string $default The value to return if the specified index was
 		 *                        not found
-		 * @return mixed
+		 * @return array|string
 		 */
 		public function data($key = null, $default = null) {
 			if (Matrix::pathExists($this->data, $key)) {
@@ -264,13 +272,22 @@
 		 * @return mixed The value stored under the persisted value
 		 */
 		public function persist($key, $value = null) {
-			if (!is_null($value)) {
-				$this->persist[$key] = $value;
+			if ($value !== null) {
+				$this->setPersist($key, $value);
 			}
 			
 			return array_key_exists($key, $this->persist)
 				? $this->persist[$key]
 				: null;
+		}
+		
+		/**
+		 * Sets persistent data
+		 * @param string $key A key for the data being persisted
+		 * @param mixed $value The value being persisted
+		 */
+		public function setPersist($key, $value) {
+			$this->persist[$key] = $value;
 		}
 		
 		/**
@@ -280,6 +297,9 @@
 			return microtime(true) - $this->startTime;
 		}
 		
+		/**
+		 * @return RouteInterface The request route
+		 */
 		public function route() {
 			return $this->Route;
 		}
