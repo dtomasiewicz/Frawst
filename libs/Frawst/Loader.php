@@ -71,7 +71,7 @@
 				
 				if (isset(self::$paths[$resourceType])) {
 					foreach (self::$paths[$resourceType] as $rootPath) {
-						if (file_exists($file = $rootPath.DIRECTORY_SEPARATOR.$subPath.'.php')) {
+						if (file_exists($file = $rootPath.$subPath.'.php')) {
 							return $file;
 						}
 					}

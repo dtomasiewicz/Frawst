@@ -22,16 +22,16 @@
 		 */
 		public static function hash($string, $salt = null) {
 			if (!isset($salt)) {
-				$salt = self::callClassImplementation('configRead', 'Frawst', 'salt');
+				$salt = self::callClassImplementation('configRead', 'frawst', 'salt');
 			}
 			
 			return sha1($salt.$string);			
 		}
 		
-		public static function randomAscii($length) {
+		public static function randomAscii($length, $printable = true) {
 			$str = '';
 			for($i = 0; $i < $length; $i++) {
-				$str .= chr(mt_rand(0,255));
+				$str .= chr($printable ? mt_rand(0,128) : mt_rand(32,126));
 			}
 			return $str;
 		}

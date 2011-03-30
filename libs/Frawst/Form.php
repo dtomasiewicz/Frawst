@@ -83,6 +83,7 @@
 					if(!isset($data[$c::TOKEN_NAME]) || !$c::checkToken($data[$c::TOKEN_NAME])) {
 						return null;
 					}
+					unset($data[$c::TOKEN_NAME]);
 				}
 				return new $c($data);
 			} else {
@@ -119,7 +120,7 @@
 			return null;
 		}
 		
-		public function get($offset) {
+		public function get($offset = null) {
 			return Matrix::pathExists($this->data, $offset)
 				? Matrix::pathGet($this->data, $offset)
 				: $this->defaultValue($offset);

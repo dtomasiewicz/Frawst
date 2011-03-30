@@ -53,7 +53,7 @@
 		 *         user/6 --> user/view/6
 		 */
 		private static function routeCustom($route) {
-			if(is_array($rules = self::callClassImplementation('configRead', 'Routing', 'rules'))) {
+			if(is_array($rules = self::callClassImplementation('configRead', 'routing', 'rules'))) {
 				foreach($rules as $pattern => $newRoute) {
 					if(is_array($match = self::matchRoute($pattern, $route, $newRoute))) {
 						return $match;

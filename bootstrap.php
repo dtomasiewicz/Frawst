@@ -22,8 +22,8 @@
 			error_reporting(E_NONE);
 		}
 		
-		date_default_timezone_set(Config::read('Frawst', 'timezone'));
-		setlocale(LC_ALL, Config::read('Frawst', 'locale'));
+		date_default_timezone_set(Config::read('frawst', 'timezone'));
+		setlocale(LC_ALL, Config::read('frawst', 'locale'));
 	}
 	
 	if(file_exists($bs = APP_ROOT.'bootstrap.php')) {

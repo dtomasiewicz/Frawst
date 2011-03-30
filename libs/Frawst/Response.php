@@ -286,7 +286,7 @@
 					header('Location: '.$redirect);
 					exit;
 				}
-			} elseif($this->data instanceof File) {
+			} elseif($this->data instanceof FileInterface) {
 				if($this->header('Content-Type') === null) {
 					// no Content-Type set, transfer as attachment
 					$this->header(array(

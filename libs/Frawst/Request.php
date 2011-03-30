@@ -8,11 +8,8 @@
 	 * application.
 	 * 
 	 * Interface Dependencies:
-	 *   Frawst\RequestInterface  (Frawst\Request)
-	 *   Frawst\ResponseInterface (Frawst\Response)
-	 *   Frawst\FormInterface     (Frawst\Form)
-	 *   ns:Frawst\ControllerInterface     (Frawst\Controller)
-	 *     Namespace prefix for controllers.
+	 *   Frawst\ResponseInterface
+	 *   Frawst\FormInterface
 	 */
 	class Request extends Base implements RequestInterface {
 		

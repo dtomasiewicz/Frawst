@@ -10,18 +10,18 @@
 	abstract class Config extends Base {
 		private static $data = array();
 		
-		public static function read($file, $value = null) {
+		public static function read($file, $key = null) {
 			if (!array_key_exists($file, self::$data)) {
-				if ($path = Loader::loadPath('configs/'.$file)) {
-					$cfg = array();
-					require($path);
-					self::$data[$file] = $cfg;
-					return Matrix::pathExists(self::$data[$file], $value)
-						? Matrix::pathGet(self::$data[$file], $value)
-						: null;
-				} else {
-					return self::$data[$file] = null;
-				}
+				self::load($file);
+			}
+			return Matrix::pathExists(self::$data[$file], $key)
+				? Matrix::pathGet(self::$data[$file], $key)
+				: null;
+		}
+		
+		private static function load($file) {
+			if(null !== $path = Loader::loadPath('configs/'.$file)) {
+				self::$data[$file] = require $path;
 			}
 		}
 	}

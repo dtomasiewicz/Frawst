@@ -8,6 +8,14 @@
 			$this->handle = $handle;
 		}
 		
+		public static function factory($handle) {
+			if($handle) {
+				return new FileHandle($handle);
+			} else {
+				return null;
+			}
+		}
+		
 		public function eof() {
 			return feof($this->handle);
 		}

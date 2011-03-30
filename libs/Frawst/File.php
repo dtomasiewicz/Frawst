@@ -1,13 +1,17 @@
 <?php
 	namespace Frawst;
 	
-	class File extends Base {
+	class File extends Base implements FileInterface {
 		private $name;
 		private $transferName;
 		
 		public function __construct($name) {
 			$this->name = $name;
 			$this->transferName = null;
+		}
+		
+		public static function factory($name) {
+			return new File($name);
 		}
 		
 		public function name() {
@@ -24,10 +28,14 @@
 		
 		public function transferName($name = null) {
 			if($name !== null) {
-				$this->transferName = $name;
+				$this->setTransferName($name);
 			}
 			
 			return $this->transferName === null ? basename($this->name) : $this->transferName;
+		}
+		
+		public function setTransferName($name) {
+			$this->transferName = $name;
 		}
 		
 		public function open($mode) {
