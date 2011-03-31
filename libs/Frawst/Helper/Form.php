@@ -1,6 +1,7 @@
 <?php
 	namespace Frawst\Helper;
 	use \Frawst\Matrix,
+	    \Frawst\Security,
 	    \Frawst\Sanitize;
 	
 	/**
@@ -36,27 +37,31 @@
 		 * @return string HTML for the form opening
 		 */
 		public function open($formName, $attrs = array()) {
-			if (!($form = $this->view()->response()->request()->form($formName))) {
-				$fClass = $this->getImplementation('Frawst\FormInterface');
-				$form = $fClass::factory($formName);
-			}
-			$this->Form = $form;
+			$fClass = $this->getImplementation('Frawst\FormInterface');
+			$class = $fClass::className($formName);
+			
+			$this->Form = $this->view()->response()->request()->form($formName);
 			
 			$attrs['action'] = isset($attrs['action']) ? $attrs['action'] : $this->view()->path();
-			$attrs['method'] = isset($attrs['method']) ? $attrs['method'] : $this->Form->method();
+			
+			if(isset($attrs['method'])) {
+				$method = strtoupper($attrs['method']);
+				$attrs['method'] = $method == 'GET'
+					? 'GET'
+					: 'POST';
+			} else {
+				$method = $attrs['method'] = 'POST';
+			}
 			
 			$out = '<form '.$this->parseAttributes($attrs).'>';
 			
 			// store the method in a hidden field for browsers that don't support
 			// methods other than GET and POST
 			if($attrs['method'] != 'GET') {
-				$out .= '<input type="hidden" name="___METHOD" value="'.$attrs['method'].'">';
+				$out .= '<input type="hidden" name="___METHOD" value="'.$method.'">';
 			}
 			
-			if($token = $this->Form->makeToken()) {
-				$class = get_class($this->Form);
-				$out .= '<input type="hidden" name="'.$class::TOKEN_NAME.'" value="'.$token.'">';
-			}
+			$out .= '<input type="hidden" name="'.$class::tokenName().'" value="'.$class::makeToken().'">';
 			
 			return $out;
 		}
@@ -71,7 +76,7 @@
 		}
 		
 		public function repopulate($field, $default = null) {
-			if($this->Form && $this->Form->submitted()) {
+			if($this->Form) {
 				if(null !== $value = $this->Form->get($field)) {
 					return $value;
 				}
