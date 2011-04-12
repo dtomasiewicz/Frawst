@@ -8,6 +8,7 @@
 	 */
 	
 	namespace Frawst;
+	use Frawst\Core\Module;
 	
 	require 'bootstrap.php';
 	
@@ -67,5 +68,7 @@
 		$route = substr($route, 0, -strlen(AJAX_SUFFIX));
 	}
 	
-	$request = Request::factory(Route::resolve($route, true), $data, $method, $headers);
-	$request->execute()->send();
+	$addr = array_key_exists('REMOTE_ADDR', $_SERVER) ? $_SERVER['REMOTE_ADDR'] : null;
+	$port = array_key_exists('REMOTE_PORT', $_SERVER) ? $_SERVER['REMOTE_PORT'] : null;
+	Module::factory('Main', null, null, $addr, $port)
+		->request($route, $data, $method, $headers)->execute()->send();

@@ -1,11 +1,14 @@
 <?php
 	namespace Frawst;
+	use Frawst\Core\Loader,
+	    Frawst\Core\Config,
+	    Frawst\Core\LanguageException;
 	
 	require 'definitions.php';
-	require 'libs/Frawst/Base.php';
-	require 'libs/Frawst/Loader.php';
+	require 'libs/Frawst/Core/Base.php';
+	require 'libs/Frawst/Core/Loader.php';
 	
-	spl_autoload_register(array('Frawst\Loader', 'loadClass'));
+	spl_autoload_register(array('Frawst\Core\Loader', 'loadClass'));
 	
 	Loader::addBasePath(ROOT);
 	Loader::addBasePath(APP_ROOT);

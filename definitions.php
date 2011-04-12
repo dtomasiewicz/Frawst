@@ -31,8 +31,8 @@
 		define('Frawst\APP_ROOT', dirname(ROOT).DIRECTORY_SEPARATOR.APP_NAME.DIRECTORY_SEPARATOR);
 	}
 	
-	if(!defined('Frawst\WEB_ROOT')) {
-		define('Frawst\WEB_ROOT', rtrim(dirname($_SERVER['SCRIPT_NAME']), '/').'/');
+	if(!defined('Frawst\PUBLIC_ROOT')) {
+		define('Frawst\PUBLIC_ROOT', rtrim(dirname($_SERVER['SCRIPT_NAME']), '/').'/');
 	}
 	
 	if(!defined('Frawst\AJAX_SUFFIX')) {
